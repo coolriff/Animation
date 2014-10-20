@@ -1,0 +1,10 @@
+﻿  Camera.cpp
+  GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  Lab1.cpp
+  main.cpp
+  ObjectBuffer.cpp
+  Setup.cpp
+  Shader.cpp
+  Generating code
+  Finished generating code
+  Animation.vcxproj -> C:\Animation\Release\Animation.exe

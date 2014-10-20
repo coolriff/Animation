@@ -1,0 +1,11 @@
+#version 330
+
+// Note: no input in this shader, it just outputs the colour of all fragments, in this case set to red (format: R, G, B, A).
+
+out vec4 FragColor;
+in vec4 color;
+
+void main()
+{
+	FragColor = color;
+}

@@ -1,0 +1,10 @@
+﻿  Shader.cpp
+  Setup.cpp
+  ObjectBuffer.cpp
+  main.cpp
+  Lab1.cpp
+  Camera.cpp
+  GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Animation.vcxproj -> C:\Animation\Debug\Animation.exe
