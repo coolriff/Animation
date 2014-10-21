@@ -1,12 +1,23 @@
-﻿  Lab2.cpp
-c:\animation\animation\Cylinder.h(31): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\Cylinder.h(43): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\Cylinder.h(53): warning C4018: '<' : signed/unsigned mismatch
-Lab2.cpp(42): warning C4305: 'argument' : truncation from 'double' to 'const float'
+﻿  Bone.cpp
+  Camera.cpp
+  GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  Lab1.cpp
+  Lab2.cpp
+c:\animation\animation\Cylinder.h(32): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\Cylinder.h(44): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\Cylinder.h(54): warning C4018: '<' : signed/unsigned mismatch
   main.cpp
-c:\animation\animation\Cylinder.h(31): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\Cylinder.h(43): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\Cylinder.h(53): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\Cylinder.h(32): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\Cylinder.h(44): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\Cylinder.h(54): warning C4018: '<' : signed/unsigned mismatch
+  ObjectBuffer.cpp
+  Setup.cpp
+  Shader.cpp
+  Skeleton.cpp
+c:\animation\animation\Cylinder.h(32): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\Cylinder.h(44): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\Cylinder.h(54): warning C4018: '<' : signed/unsigned mismatch
+Skeleton.cpp(114): warning C4305: 'argument' : truncation from 'double' to 'const float'
   Generating code
   Finished generating code
   Animation.vcxproj -> C:\Animation\Release\Animation.exe

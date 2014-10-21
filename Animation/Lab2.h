@@ -5,7 +5,7 @@
 #include "Camera.h"
 #include "Cylinder.h"
 #include "Bone.h"
-
+#include "Skeleton.h"
 
 class Lab2
 {
@@ -18,12 +18,11 @@ public:
 	ObjectBuffer* m_objectBuffer;
 	Camera* m_camera;
 	Bone* bone;
+	Skeleton* skeleton;
 
-	Bone* handNode[16];
-	Cylinder* cylinder[16];
 
 	void run(void);
 	void initShaders();
-	void createHandNode();
+
 };
 

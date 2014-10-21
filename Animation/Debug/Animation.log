@@ -1,15 +1,20 @@
-﻿  Shader.cpp
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.CppClean.targets(75,5): warning : Access to the path 'C:\Animation\Debug\Animation.exe' is denied.
+  Skeleton.cpp
+c:\animation\animation\cylinder.h(32): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\cylinder.h(44): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\cylinder.h(54): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\skeleton.cpp(114): warning C4305: 'argument' : truncation from 'double' to 'const float'
+  Shader.cpp
   Setup.cpp
   ObjectBuffer.cpp
   main.cpp
-c:\animation\animation\cylinder.h(31): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\cylinder.h(43): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\cylinder.h(53): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\cylinder.h(32): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\cylinder.h(44): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\cylinder.h(54): warning C4018: '<' : signed/unsigned mismatch
   Lab2.cpp
-c:\animation\animation\cylinder.h(31): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\cylinder.h(43): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\cylinder.h(53): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\lab2.cpp(58): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\cylinder.h(32): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\cylinder.h(44): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\cylinder.h(54): warning C4018: '<' : signed/unsigned mismatch
   Lab1.cpp
   Camera.cpp
   GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.

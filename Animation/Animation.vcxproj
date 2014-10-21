@@ -92,6 +92,7 @@
     <ClCompile Include="ObjectBuffer.cpp" />
     <ClCompile Include="Setup.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Skeleton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="diffuse.ps" />
@@ -106,6 +107,7 @@
     <ClInclude Include="ObjectBuffer.h" />
     <ClInclude Include="Setup.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Skeleton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

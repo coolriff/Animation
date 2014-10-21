@@ -113,9 +113,11 @@ void Lab1::run(void)
 
 		m_camera->computeMatricesFromInputs();
 
-		GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "MVP");
+		GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
+		GLuint viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
+		GLuint projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
 
-		m_camera->handleMVP(modelLoc);
+		m_camera->handleMVP(modelLoc, viewLoc, projLoc);
 
 		glBindVertexArray(m_objectBuffer->vao);
 

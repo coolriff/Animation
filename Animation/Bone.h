@@ -4,7 +4,7 @@
 #include <iostream>
 #include <iostream>
 #include <vector>
-#include<list>
+#include <list>
 
 
 class Bone
@@ -16,13 +16,13 @@ public:
 	int ids;
 	glm::vec3 pos;
 	glm::mat4 localTransformation;
-	std::vector<Bone> children;
+	Bone* children[5];
 	Bone* parent;
+	int chilrenSize;
 
 	Bone* createBone(int ID, glm::vec3 pos);
 	void addChild(Bone* bone);
-	void addParent(Bone *parent);
-	//std::string findByID(int ID);
+	void addParent(Bone* parent);
 	int getID(Bone* bone);
 	glm::vec3 getPos(Bone* bone);
 

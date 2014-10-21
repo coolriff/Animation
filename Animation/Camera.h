@@ -33,7 +33,7 @@ public:
 	double currentTime;
 
 	void computeMatricesFromInputs();
-	void handleMVP(GLuint mvpLoc);
+	void handleMVP(GLuint modelLoc, GLuint viewLoc, GLuint projLoc);
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjectionMatrix();
 };

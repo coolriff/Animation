@@ -5,6 +5,7 @@
 #include <GL/Glew.h>
 #include <vector>
 
+
 // Macro for indexing vertex buffer
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
