@@ -1,10 +1,12 @@
-﻿  Camera.cpp
-  GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  Lab1.cpp
+﻿  Lab2.cpp
+c:\animation\animation\Cylinder.h(31): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\Cylinder.h(43): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\Cylinder.h(53): warning C4018: '<' : signed/unsigned mismatch
+Lab2.cpp(42): warning C4305: 'argument' : truncation from 'double' to 'const float'
   main.cpp
-  ObjectBuffer.cpp
-  Setup.cpp
-  Shader.cpp
+c:\animation\animation\Cylinder.h(31): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\Cylinder.h(43): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\Cylinder.h(53): warning C4018: '<' : signed/unsigned mismatch
   Generating code
   Finished generating code
   Animation.vcxproj -> C:\Animation\Release\Animation.exe

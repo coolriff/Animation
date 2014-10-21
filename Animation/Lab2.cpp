@@ -7,22 +7,6 @@ Lab2::Lab2(void)
 	m_shader = new Shader();
 	m_objectBuffer = new ObjectBuffer(36);
 	m_camera = new Camera(m_setup);
-	cylinder_1 = new Cylinder();
-	cylinder_2 = new Cylinder();
-	cylinder_3 = new Cylinder();
-	cylinder_4 = new Cylinder();
-	cylinder_5 = new Cylinder();
-	cylinder_6 = new Cylinder();
-	cylinder_7 = new Cylinder();
-	cylinder_8 = new Cylinder();
-	cylinder_9 = new Cylinder();
-	cylinder_10 = new Cylinder();
-	cylinder_11 = new Cylinder();
-	cylinder_12 = new Cylinder();
-	cylinder_13 = new Cylinder();
-	cylinder_14 = new Cylinder();
-	cylinder_15 = new Cylinder();
-	cylinder_16 = new Cylinder();
 	bone = new Bone();
 }
 
@@ -37,66 +21,28 @@ void Lab2::run(void)
 {
 	m_setup->setupGlfwGlew();
 
-
-
 	initShaders();
+
+
+
+	createHandNode();
 
 	glm::vec4 cy_color_up = glm::vec4(1.0, 0.1, 0.1, 1.0);
 	glm::vec4 cy_color_down = glm::vec4(0.1, 0.1, 1.0, 1.0);
 
-	//root
-	cylinder_1->generateVertices(glm::vec4(0, 0, 0, 0), 8.0, 4.0, 4.0, cy_color_up, cy_color_down,2);
-	cylinder_1->generateObjectBuffer(m_shader->GetProgramID());
-
-	// no 5 
-	cylinder_2->generateVertices(glm::vec4(3.2, 8, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_2->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_3->generateVertices(glm::vec4(3.2, 11, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_3->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_4->generateVertices(glm::vec4(3.2, 14, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_4->generateObjectBuffer(m_shader->GetProgramID());
-
-	// no 4
- 	cylinder_5->generateVertices(glm::vec4(1.1, 8, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-  	cylinder_5->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_6->generateVertices(glm::vec4(1.1, 11, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_6->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_7->generateVertices(glm::vec4(1.1, 14, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_7->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_8->generateVertices(glm::vec4(-1.1, 8, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_8->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_9->generateVertices(glm::vec4(-1.1, 11, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_9->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_10->generateVertices(glm::vec4(-1.1, 14, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_10->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_11->generateVertices(glm::vec4(-3.2, 8, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_11->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_12->generateVertices(glm::vec4(-3.2, 11, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_12->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_13->generateVertices(glm::vec4(-3.2, 14, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_13->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_14->generateVertices(glm::vec4(-5, 4, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_14->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_15->generateVertices(glm::vec4(-5, 7, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_15->generateObjectBuffer(m_shader->GetProgramID());
-
-	cylinder_16->generateVertices(glm::vec4(-5, 10, 0, 0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
-	cylinder_16->generateObjectBuffer(m_shader->GetProgramID());
-
-
-	
+	for(int i = 0; i < 16; i++) 
+	{
+		if (i == 0)
+		{
+			cylinder[i] = new Cylinder(glm::vec4(bone->getPos(handNode[i]),0), 8.0, 4.0, 4.0, cy_color_up, cy_color_down,2);
+			cylinder[i]->generateObjectBuffer(m_shader->GetProgramID());
+		}
+		else
+		{
+			cylinder[i] = new Cylinder(glm::vec4(bone->getPos(handNode[i]),0), 3, 0.8, 0.8, cy_color_up, cy_color_down,16);
+			cylinder[i]->generateObjectBuffer(m_shader->GetProgramID());
+		}
+	}
 
 // 	m_objectBuffer->GenerateVBO(vertices,colors);
 // 	m_objectBuffer->LinkBufferToShader(m_shader->GetProgramID());
@@ -112,22 +58,10 @@ void Lab2::run(void)
 
 		m_camera->handleMVP(modelLoc);
 
-		cylinder_1->draw();
-		cylinder_2->draw();
-		cylinder_3->draw();
-		cylinder_4->draw();
-		cylinder_5->draw();
-		cylinder_6->draw();
-		cylinder_7->draw();
-		cylinder_8->draw();
-		cylinder_9->draw();
-		cylinder_10->draw();
-		cylinder_11->draw();
-		cylinder_12->draw();
-		cylinder_13->draw();
-		cylinder_14->draw();
-		cylinder_15->draw();
-		cylinder_16->draw();
+		for (int i = 0; i < 16; i++)
+		{
+			cylinder[i]->draw();
+		}
 
 // 		glBindVertexArray(cylinder->vertex_array_object_id);
 // 		glDrawArrays(GL_TRIANGLES, 0, 12*3);
@@ -156,7 +90,33 @@ void Lab2::initShaders()
 	printf("shaderProgramID is %d\n",m_shader->GetProgramID());
 }
 
-void Lab2::createBones()
+void Lab2::createHandNode()
 {
+	//root
+	handNode[0] = bone->createBone(0,glm::vec3(0,0,0));
 
+	//no 5
+	handNode[1] = bone->createBone(1,glm::vec3(3.2,8,0));
+	handNode[2] = bone->createBone(2,glm::vec3(3.2,11,0));
+	handNode[3] = bone->createBone(3,glm::vec3(3.2,14,0));
+
+	//no 4
+	handNode[4] = bone->createBone(4,glm::vec3(1.1,8,0));
+	handNode[5] = bone->createBone(5,glm::vec3(1.1,11,0));
+	handNode[6] = bone->createBone(6,glm::vec3(1.1,14,0));
+
+	//no 3
+	handNode[7] = bone->createBone(7,glm::vec3(-1.1,8,0));
+	handNode[8] = bone->createBone(8,glm::vec3(-1.1,11,0));
+	handNode[9] = bone->createBone(9,glm::vec3(-1.1,14,0));
+
+	//no 2
+	handNode[10] = bone->createBone(10,glm::vec3(-3.2,8,0));
+	handNode[11] = bone->createBone(11,glm::vec3(-3.2,11,0));
+	handNode[12] = bone->createBone(12,glm::vec3(-3.2,14,0));
+
+	//no 1
+	handNode[13] = bone->createBone(13,glm::vec3(-5,4,0));
+	handNode[14] = bone->createBone(14,glm::vec3(-5,7,0));
+	handNode[15] = bone->createBone(15,glm::vec3(-5,10,0));
 }

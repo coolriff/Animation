@@ -17,27 +17,13 @@ public:
 	Shader* m_shader;
 	ObjectBuffer* m_objectBuffer;
 	Camera* m_camera;
-	Cylinder* cylinder_1;
-	Cylinder* cylinder_2;
-	Cylinder* cylinder_3;
-	Cylinder* cylinder_4;
-	Cylinder* cylinder_5;
-	Cylinder* cylinder_6;
-	Cylinder* cylinder_7;
-	Cylinder* cylinder_8;
-	Cylinder* cylinder_9;
-	Cylinder* cylinder_10;
-	Cylinder* cylinder_11;
-	Cylinder* cylinder_12;
-	Cylinder* cylinder_13;
-	Cylinder* cylinder_14;
-	Cylinder* cylinder_15;
-	Cylinder* cylinder_16;
 	Bone* bone;
 
+	Bone* handNode[16];
+	Cylinder* cylinder[16];
 
 	void run(void);
 	void initShaders();
-	void createBones();
+	void createHandNode();
 };
 

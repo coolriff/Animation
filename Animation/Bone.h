@@ -13,24 +13,18 @@ public:
 	Bone(void);
 	~Bone(void);
 
-	struct Bones
-	{
-		int ids;
-		glm::vec3 pos;
-		glm::mat4 localTransformation;
-		std::list<Bones> children;
-		Bones* parent;
-	};
+	int ids;
+	glm::vec3 pos;
+	glm::mat4 localTransformation;
+	std::vector<Bone> children;
+	Bone* parent;
 
-	std::list<Bones>* allBones;
-
-	Bones createBone(int ID, glm::vec3 pos);
-	void addChild(Bones* bone);
+	Bone* createBone(int ID, glm::vec3 pos);
+	void addChild(Bone* bone);
 	void addParent(Bone *parent);
-	int findByID(int ID);
-	int getID(Bones* bone);
-	void createHand();
-
+	//std::string findByID(int ID);
+	int getID(Bone* bone);
+	glm::vec3 getPos(Bone* bone);
 
 	//glm::mat4 calculateGlobalTransformation(Bones* parent);
 };
