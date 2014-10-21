@@ -102,6 +102,11 @@ public:
 
 	}
 
+	void update(GLuint modelLoc, glm::mat4 ModelMatrix)
+	{
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &ModelMatrix[0][0]);
+	}
+
 	void draw(){
 		glBindVertexArray(vertex_array_object_id);
 

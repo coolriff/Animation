@@ -122,17 +122,46 @@ void Skeleton::updateCylinders()
 /*	/ *cylinder[0]->vertex_positions = glm::rotate(glm::mat4(1.0f), 30.0f, glm::vec3(1,0,0* /));*/
 }
 
-void Skeleton::updateHand()
+void Skeleton::updateHand(GLuint modelLoc)
 {
+
 	for (int i = 0; i < 16; i++)
 	{
-		cylinder[i]->draw();
+		if(i == 0)
+		{
+			glm::mat4 boneModelMatrix = glm::rotate(glm::mat4(1.0f), 45.0f, glm::vec3(1,0,0));
+			cylinder[i]->update(modelLoc,boneModelMatrix);
+			cylinder[i]->draw();
+		}
+		else
+		{
+			glm::mat4 boneModelMatrix = glm::rotate(glm::mat4(1.0f), 0.0f, glm::vec3(1,0,0));
+			cylinder[i]->update(modelLoc,boneModelMatrix);
+			cylinder[i]->draw();
+		}
 	}
 }
 
-// glm::mat4 Skeleton::travel(Bone* bone)
+// void Skeleton::travel(Bone* bone, glm::mat4 updatedModelMatrix)
 // {
-// 	if (bone->getID == 0)
+// 	int idNum = bone->getID(bone);
+// 	if (idNum == 0)
+// 	{
+// 		glm::mat4 currentaLocalTransformation = bone->localTransformation;
+// 		glm::mat4 currentTransform = bone->localTransformation;
+// 	}
+// 	if (idNum > 0)
+// 	{
+// 		glm::mat4 currentaLocalTransformation = bone->parent->localTransformation;
+// 		glm::mat4 currentTransform = bone->localTransformation;
+// 
+// 		
+// 
+// 	}
+// 
+// 
+// 
+// 	if (idNum > -1)
 // 	{
 // 		return bone->localTransformation;
 // 	}
@@ -143,8 +172,7 @@ void Skeleton::updateHand()
 // 			Bone *temp = bone->children[i];
 // 			travel(temp);
 // 		}
-// 		glm::mat4 pGlobaSpace = bone->parent->localTransformation;
-// 		glm::mat4 currentTransform = bone->localTransformation;
+// 
 // 
 // 		return pGlobaSpace*currentTransform;
 // 	}

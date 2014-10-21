@@ -1,19 +1,4 @@
-﻿  Bone.cpp
-  Camera.cpp
-  GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  Lab1.cpp
-  Lab2.cpp
-c:\animation\animation\Cylinder.h(32): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\Cylinder.h(44): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\Cylinder.h(54): warning C4018: '<' : signed/unsigned mismatch
-  main.cpp
-c:\animation\animation\Cylinder.h(32): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\Cylinder.h(44): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\Cylinder.h(54): warning C4018: '<' : signed/unsigned mismatch
-  ObjectBuffer.cpp
-  Setup.cpp
-  Shader.cpp
-  Skeleton.cpp
+﻿  Skeleton.cpp
 c:\animation\animation\Cylinder.h(32): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\Cylinder.h(44): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\Cylinder.h(54): warning C4018: '<' : signed/unsigned mismatch

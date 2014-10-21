@@ -9,6 +9,7 @@ Lab2::Lab2(void)
 	m_camera = new Camera(m_setup);
 	bone = new Bone();
 	skeleton = new Skeleton();
+	cylinder = new Cylinder();
 }
 
 
@@ -28,6 +29,10 @@ void Lab2::run(void)
 
 	skeleton->drawHand(m_shader->GetProgramID());
 
+
+
+	
+
 // 	m_objectBuffer->GenerateVBO(vertices,colors);
 // 	m_objectBuffer->LinkBufferToShader(m_shader->GetProgramID());
 
@@ -44,11 +49,8 @@ void Lab2::run(void)
 
 		m_camera->handleMVP(modelLoc, viewLoc, projLoc);
 
-		skeleton->updateHand();
 
-// 		glBindVertexArray(cylinder->vertex_array_object_id);
-// 		glDrawArrays(GL_TRIANGLES, 0, 12*3);
-// 		glBindVertexArray(0);
+		skeleton->updateHand(modelLoc);
 
 		// Swap buffers
 		glfwSwapBuffers(m_setup->getWindow());

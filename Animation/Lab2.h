@@ -19,6 +19,7 @@ public:
 	Camera* m_camera;
 	Bone* bone;
 	Skeleton* skeleton;
+	Cylinder* cylinder;
 
 
 	void run(void);

@@ -17,8 +17,8 @@ public:
 
 	void createHandNode();
 	void drawHand(GLuint shaderProgramID);
-	void updateHand();
-	glm::mat4 travel(Bone* bone);
+	void updateHand(GLuint modelLoc);
+	void travel(Bone* bone, glm::mat4 updatedModelMatrix);
 	void updateCylinders();
 };
 
