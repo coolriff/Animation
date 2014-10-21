@@ -1,10 +1,14 @@
-#include "Lab1.h"
+//#include "Lab1.h"
+#include "Lab2.h"
 
 
 int main( int argc, char** argv )
 {
-	Lab1* lab1 = new Lab1();
-	lab1->run();
+// 	Lab1* lab1 = new Lab1();
+// 	lab1->run();
+
+	Lab2* lab2 = new Lab2();
+	lab2->run();
 
 	return 0;
 }

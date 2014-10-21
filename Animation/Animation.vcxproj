@@ -84,8 +84,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bone.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Lab1.cpp" />
+    <ClCompile Include="Lab2.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjectBuffer.cpp" />
     <ClCompile Include="Setup.cpp" />
@@ -96,8 +98,11 @@
     <None Include="diffuse.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bone.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cylinder.h" />
     <ClInclude Include="Lab1.h" />
+    <ClInclude Include="Lab2.h" />
     <ClInclude Include="ObjectBuffer.h" />
     <ClInclude Include="Setup.h" />
     <ClInclude Include="Shader.h" />

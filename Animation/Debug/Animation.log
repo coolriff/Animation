@@ -1,10 +1,20 @@
-﻿  Shader.cpp
-  Setup.cpp
-  ObjectBuffer.cpp
-  main.cpp
-  Lab1.cpp
-  Camera.cpp
-  GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  Generating Code...
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+﻿  Lab2.cpp
+c:\animation\animation\cylinder.h(31): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\cylinder.h(43): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\cylinder.h(53): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\lab2.cpp(52): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(55): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(58): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(62): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(65): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(68): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(71): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(74): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(77): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(80): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(83): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(86): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(89): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(92): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab2.cpp(95): warning C4305: 'argument' : truncation from 'double' to 'const float'
   Animation.vcxproj -> C:\Animation\Debug\Animation.exe
