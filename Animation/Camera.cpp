@@ -6,7 +6,7 @@ Camera::Camera(Setup* m_setup)
 	this->m_setup = m_setup;
 
 	// Initial position : on +Z
-	position = glm::vec3( 0, 0, 50 ); 
+	position = glm::vec3( 0, 0, 30 ); 
 	// Initial horizontal angle : toward -Z
 	horizontalAngle = 3.14f;
 	// Initial vertical angle : none

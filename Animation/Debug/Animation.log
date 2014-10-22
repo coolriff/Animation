@@ -1,14 +1,7 @@
 ﻿  Skeleton.cpp
-c:\animation\animation\cylinder.h(32): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\cylinder.h(44): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\cylinder.h(54): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\skeleton.cpp(114): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\cylinder.h(33): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\cylinder.h(45): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\cylinder.h(55): warning C4018: '<' : signed/unsigned mismatch
+c:\animation\animation\skeleton.cpp(121): warning C4305: 'argument' : truncation from 'double' to 'const float'
   GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  Lab2.cpp
-c:\animation\animation\cylinder.h(32): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\cylinder.h(44): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\cylinder.h(54): warning C4018: '<' : signed/unsigned mismatch
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  main.cpp
   Animation.vcxproj -> C:\Animation\Debug\Animation.exe

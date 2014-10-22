@@ -14,8 +14,11 @@ Bone* Bone::createBone(int ID, glm::vec3 pos)
 {
 	Bone* tempBone = new Bone();
 	tempBone->ids = ID;
-	tempBone->pos = pos;
-	tempBone->localTransformation = glm::translate(glm::mat4(1.0),pos)*glm::mat4(1)*glm::scale(glm::mat4(1),glm::vec3(1));
+	tempBone->pos = pos; 
+	tempBone->offset = glm::translate(glm::mat4( 1.0f ), pos); 
+	//tempBone->localTransformation = glm::translate(glm::mat4(1.0),pos)*glm::mat4(1)*glm::scale(glm::mat4(1),glm::vec3(1));
+	tempBone->localTransformation = glm::mat4(1)*glm::translate(glm::mat4(1.0),pos);
+	//tempBone->localTransformation = glm::mat4(1);
 	return tempBone;
 }
 
@@ -38,10 +41,5 @@ glm::vec3 Bone::getPos(Bone* bone)
 {
 	return bone->pos;
 }
-
-// glm::mat4 Bone::calculateGlobalTransformation(Bones* parent)
-// {
-// 	return glm::mat4(1);
-// }
 
 

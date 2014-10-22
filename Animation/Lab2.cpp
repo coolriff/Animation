@@ -49,8 +49,7 @@ void Lab2::run(void)
 
 		m_camera->handleMVP(modelLoc, viewLoc, projLoc);
 
-
-		skeleton->updateHand(modelLoc);
+		skeleton->updateHand(modelLoc, m_shader->GetProgramID());
 
 		// Swap buffers
 		glfwSwapBuffers(m_setup->getWindow());

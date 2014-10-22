@@ -19,7 +19,7 @@ public:
 	Bone* children[5];
 	Bone* parent;
 	int chilrenSize;
-
+	glm::mat4 offset;
 	Bone* createBone(int ID, glm::vec3 pos);
 	void addChild(Bone* bone);
 	void addParent(Bone* parent);

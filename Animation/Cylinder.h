@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <GL/Glew.h>
 #include <vector>
+#include <glm/gtc/type_ptr.hpp>
 
 
 // Macro for indexing vertex buffer
@@ -102,9 +103,11 @@ public:
 
 	}
 
-	void update(GLuint modelLoc, glm::mat4 ModelMatrix)
+	//void update(GLuint modelLoc, glm::mat4 ModelMatrix, GLuint shaderProgramID)
+	void update(glm::mat4 ModelMatrix, GLuint shaderProgramID)
 	{
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &ModelMatrix[0][0]);
+		GLuint modelLoc = glGetUniformLocation(shaderProgramID, "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
 	}
 
 	void draw(){
