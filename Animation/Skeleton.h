@@ -20,12 +20,13 @@ public:
 	double currentTime;
 	float deltaTime;
 	bool timeFlag;
+	float whatsoever;
 
 	void createHandNode();
 	void drawHand(GLuint shaderProgramID);
 	void updateHand(GLuint modelLoc, GLuint shaderProgramID);
 	//void travel(Bone* bone, glm::mat4 updatedModelMatrix);
-	void travel(Bone* bone, GLuint shaderProgramID);
+	Bone* travel(Bone* bone);
 	glm::mat4 calcGlobalTransformation(Bone* bone);
 };
 

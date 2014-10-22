@@ -15,37 +15,37 @@ class Cylinder {
 public:
 	Cylinder(){};
 
-	Cylinder(const glm::vec4 pos, const float height, const float radiusTop, const float radiusBottom, const glm::vec4& colorTop, const glm::vec4& colorBottom, const int segments = 16) 
+	Cylinder(const float height, const float radiusTop, const float radiusBottom, const glm::vec4& colorTop, const glm::vec4& colorBottom, const int segments = 16) 
 	{
-		generateVertices(pos, height, radiusTop, radiusBottom, colorTop, colorBottom, segments);
+		generateVertices(height, radiusTop, radiusBottom, colorTop, colorBottom, segments);
 	};
 
 	// generate a cylinder with the bottom base center at (0,0,0), up on the Y axis
-	void generateVertices(const glm::vec4 pos, const float height, const float radiusTop, const float radiusBottom, const glm::vec4& colorTop, const glm::vec4& colorBottom, const int segments)
+	void generateVertices(const float height, const float radiusTop, const float radiusBottom, const glm::vec4& colorTop, const glm::vec4& colorBottom, const int segments)
 	{
 		vertex_positions.empty();
 		vertex_colors.empty();
 		nbSegments = segments;
 
 		double angle = 0.0;
-		vertex_positions.push_back(glm::vec4(0, height, 0,1)+pos);
+		vertex_positions.push_back(glm::vec4(0, height, 0,1));
 		vertex_colors.push_back(colorTop);
 		for(unsigned int i = 0; i<nbSegments; ++i)
 		{
 			angle = ((double)i)/((double)nbSegments)*2.0*3.14;
-			vertex_positions.push_back(glm::vec4(radiusTop*std::cos(angle),height,radiusTop*std::sin(angle),1.0)+pos);
+			vertex_positions.push_back(glm::vec4(radiusTop*std::cos(angle),height,radiusTop*std::sin(angle),1.0));
 			vertex_colors.push_back(colorTop);
 			vertex_indexes.push_back(0);
 			vertex_indexes.push_back((i+1)%nbSegments + 1);
 			vertex_indexes.push_back(i+1);
 		}
 		
-		vertex_positions.push_back(glm::vec4(0, 0, 0,1)+pos);
+		vertex_positions.push_back(glm::vec4(0, 0, 0,1));
 		vertex_colors.push_back(colorBottom);
 		for(unsigned int i = 0; i<nbSegments; ++i)
 		{
 			angle = ((double)i)/((double)nbSegments)*2.0*3.14;
-			vertex_positions.push_back(glm::vec4(radiusBottom*std::cos(angle),0.0,radiusBottom*std::sin(angle),1.0)+pos);
+			vertex_positions.push_back(glm::vec4(radiusBottom*std::cos(angle),0.0,radiusBottom*std::sin(angle),1.0));
 			vertex_colors.push_back(colorBottom);
 			vertex_indexes.push_back(nbSegments+1);
 			vertex_indexes.push_back(nbSegments+2+(i+1)%nbSegments);

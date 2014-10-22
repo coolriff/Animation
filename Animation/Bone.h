@@ -16,16 +16,14 @@ public:
 	int ids;
 	glm::vec3 pos;
 	glm::mat4 localTransformation;
+	glm::mat4 globalTransformation;
 	Bone* children[5];
 	Bone* parent;
 	int chilrenSize;
-	glm::mat4 offset;
 	Bone* createBone(int ID, glm::vec3 pos);
 	void addChild(Bone* bone);
 	void addParent(Bone* parent);
 	int getID(Bone* bone);
 	glm::vec3 getPos(Bone* bone);
-
-	//glm::mat4 calculateGlobalTransformation(Bones* parent);
 };
 
