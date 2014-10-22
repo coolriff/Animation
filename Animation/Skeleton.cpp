@@ -175,7 +175,11 @@ void Skeleton::updateHand(GLuint modelLoc, GLuint shaderProgramID)
 
 	for (int i = 0; i < 16; i++)
 	{
-		handNode[i]->globalTransformation = handNode[i-1]->localTransformation * modeltest;
+/*		handNode[i]->globalTransformation = handNode[i-1]->localTransformation * modeltest;*/
+		//handNode[i]->localTransformation = handNode[i]->localTransformation * modeltest;
+
+		handNode[i]->globalTransformation = modeltest * handNode[i]->localTransformation * handNode[i-1]->globalTransformation ;
+/*		handNode[i]->globalTransformation = handNode[i-1]->parent->globalTransformation * handNode[i]->localTransformation * modeltest;*/
 		cylinder[i]->update(handNode[i]->globalTransformation, shaderProgramID);
 		cylinder[i]->draw();
 	}
@@ -215,18 +219,18 @@ Bone* Skeleton::travel(Bone* bone)
 
 glm::mat4 Skeleton::calcGlobalTransformation(Bone* bone)
 {
-	glm::mat4 transformation;
+	glm::mat4 currentTransformation;
 	if (!bone)
 	{
-		return transformation;
+		return currentTransformation;
 	}
-	 transformation = bone->localTransformation;
+	 currentTransformation = bone->localTransformation;
 	 while (bone->parent)
 	 {
-		 transformation = bone->parent->globalTransformation * transformation;
+		 currentTransformation = bone->parent->globalTransformation * currentTransformation;
 		 bone = bone->parent;
 	 }
-	 return transformation;
+	 return currentTransformation;
 }
 
 // void Skeleton::travel(Bone* bone, GLuint shaderProgramID )
