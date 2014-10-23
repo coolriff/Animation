@@ -13,8 +13,9 @@ public:
 	Bone(void);
 	~Bone(void);
 
-	int ids;
+	int id;
 	glm::vec3 pos;
+	glm::mat4 offset;
 	glm::mat4 localTransformation;
 	glm::mat4 globalTransformation;
 	Bone* children[5];

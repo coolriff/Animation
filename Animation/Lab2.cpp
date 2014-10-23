@@ -29,10 +29,6 @@ void Lab2::run(void)
 
 	skeleton->drawHand(m_shader->GetProgramID());
 
-
-
-	
-
 // 	m_objectBuffer->GenerateVBO(vertices,colors);
 // 	m_objectBuffer->LinkBufferToShader(m_shader->GetProgramID());
 

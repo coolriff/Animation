@@ -119,7 +119,7 @@ public:
 		size /= sizeof(GLuint);
 		glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0);
 
-		//glBindVertexArray(0);
+		glBindVertexArray(0);
 	}
 
 	int nbSegments;

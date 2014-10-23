@@ -50,7 +50,5 @@ void ObjectBuffer::LinkBufferToShader(GLuint shaderProgramID)
 	glEnableVertexAttribArray(colorID);
 	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(numVertices*3*sizeof(GLfloat)));
 
-
-
 	//glBindVertexArray(0);
 }

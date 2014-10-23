@@ -10,7 +10,6 @@ Skeleton::Skeleton(void)
 	timeFlag = true;
 }
 
-
 Skeleton::~Skeleton(void)
 {
 }
@@ -58,28 +57,31 @@ void Skeleton::createHandNode()
 	handNode[1]->chilrenSize = 1;
 	handNode[2]->children[0] = handNode[3];
 	handNode[2]->chilrenSize = 1;
-
+	handNode[3]->chilrenSize = 0;
 
 	handNode[4]->children[0] = handNode[5];
 	handNode[4]->chilrenSize = 1;
 	handNode[5]->children[0] = handNode[6];
 	handNode[5]->chilrenSize = 1;
+	handNode[6]->chilrenSize = 0;
 
 	handNode[7]->children[0] = handNode[8];
 	handNode[7]->chilrenSize = 1;
 	handNode[8]->children[0] = handNode[9];
 	handNode[8]->chilrenSize = 1;
+	handNode[9]->chilrenSize = 0;
 
 	handNode[10]->children[0] = handNode[11];
 	handNode[10]->chilrenSize = 1;
 	handNode[11]->children[0] = handNode[12];
 	handNode[11]->chilrenSize = 1;
+	handNode[12]->chilrenSize = 0;
 
 	handNode[13]->children[0] = handNode[14];
 	handNode[13]->chilrenSize = 1;
 	handNode[14]->children[0] = handNode[15];
 	handNode[14]->chilrenSize = 1;
-
+	handNode[15]->chilrenSize = 0;
 
 	//add parent
 	handNode[1]->parent = handNode[0];
@@ -102,13 +104,8 @@ void Skeleton::createHandNode()
 
 	handNode[14]->parent = handNode[13];
 	handNode[15]->parent = handNode[14];
-
-// 	for (int i = 1; i < 16; i++)
-// 	{
-// 		handNode[i]->localTransformation = handNode[i]->parent->localTransformation * handNode[i]->localTransformation;
-// 	}
-
 }
+
 
 void Skeleton::drawHand(GLuint shaderProgramID)
 {
@@ -130,64 +127,13 @@ void Skeleton::drawHand(GLuint shaderProgramID)
 	}
 }
 
+
 void Skeleton::updateHand(GLuint modelLoc, GLuint shaderProgramID)
 {
-// 	for (int i = 0; i < 16; i++)
-// 	{
-// 		if(i == 0)
-// 		{
-// 			glm::mat4 boneModelMatrix = glm::rotate(glm::mat4(1.0f), deltaTime, glm::vec3(1,0,0));
-// 			handNode[0]->localTransformation =  boneModelMatrix;
-// 			travel(handNode[0],shaderProgramID);
-// 			cylinder[0]->update(handNode[0]->localTransformation, shaderProgramID);
-// 			cylinder[0]->draw();
-// 		}
-// 		else
-// 		{
-// // 			handNode[i]->localTransformation = glm::rotate(handNode[i]->localTransformation, deltaTime, glm::vec3(1,0,0));
-// // 			cylinder[i]->update(handNode[i]->localTransformation, shaderProgramID);
-// 			cylinder[i]->draw();
-// 		}
-// 	}
-// 
-// 	if(timeFlag)
-// 	{
-// 		deltaTime++;
-// 		if (deltaTime > 40)
-// 		{
-// 			timeFlag = false;
-// 		}
-// 	}
-// 	if (timeFlag == false)
-// 	{
-// 		deltaTime--;
-// 		if (deltaTime < -10)
-// 		{
-// 			timeFlag = true;
-// 		}
-// 	}
-
-	glm::mat4 modeltest = glm::rotate(glm::mat4(1), deltaTime, glm::vec3(1,0,0));
-// 	handNode[1]->localTransformation = handNode[0]->localTransformation * modeltest;
-// 	handNode[2]->localTransformation = handNode[1]->localTransformation * modeltest;
-
- 	travel(handNode[0]);
-
-	for (int i = 0; i < 16; i++)
-	{
-/*		handNode[i]->globalTransformation = handNode[i-1]->localTransformation * modeltest;*/
-		//handNode[i]->localTransformation = handNode[i]->localTransformation * modeltest;
-
-		handNode[i]->globalTransformation = modeltest * handNode[i]->localTransformation * handNode[i-1]->globalTransformation ;
-/*		handNode[i]->globalTransformation = handNode[i-1]->parent->globalTransformation * handNode[i]->localTransformation * modeltest;*/
-		cylinder[i]->update(handNode[i]->globalTransformation, shaderProgramID);
-		cylinder[i]->draw();
-	}
-
 	if(timeFlag)
 	{
 		deltaTime++;
-		if (deltaTime > 40)
+		if (deltaTime > 30)
 		{
 			timeFlag = false;
 		}
@@ -195,71 +141,59 @@ void Skeleton::updateHand(GLuint modelLoc, GLuint shaderProgramID)
 	if (timeFlag == false)
 	{
 		deltaTime--;
-		if (deltaTime < -10)
+		if (deltaTime < 0)
 		{
 			timeFlag = true;
 		}
 	}
+
+	traverse(handNode[0], deltaTime);
+
+	for (int i = 0; i < 16; i++)
+	{
+		//handNode[i]->globalTransformation = glm::translate(handNode[i]->globalTransformation, handNode[i]->pos);
+		cylinder[i]->update(handNode[i]->globalTransformation, shaderProgramID);
+		//cylinder[i]->update(handNode[i]->localTransformation, shaderProgramID);
+		cylinder[i]->draw();
+	}
 }
 
-Bone* Skeleton::travel(Bone* bone)
+
+Bone* Skeleton::traverse(Bone* bone, float deltaTime)
 {
 	if (!bone)
 	{
 		return NULL;
 	}
 
+	if (bone->id != 0)
+	{
+		bone->localTransformation = glm::rotate(bone->offset, deltaTime, glm::vec3(1,0,0));
+	}
+
 	bone->globalTransformation = calcGlobalTransformation(bone);
 
 	for (int i = 0; i < bone->chilrenSize; i++)
 	{
-		travel(bone->children[i]);
+		traverse(bone->children[i], deltaTime);
 	}
 }
+
 
 glm::mat4 Skeleton::calcGlobalTransformation(Bone* bone)
 {
-	glm::mat4 currentTransformation;
+	glm::mat4 currentGlobalTransformation;
 	if (!bone)
 	{
-		return currentTransformation;
+		return currentGlobalTransformation;
 	}
-	 currentTransformation = bone->localTransformation;
-	 while (bone->parent)
-	 {
-		 currentTransformation = bone->parent->globalTransformation * currentTransformation;
-		 bone = bone->parent;
-	 }
-	 return currentTransformation;
-}
 
-// void Skeleton::travel(Bone* bone, GLuint shaderProgramID )
-//// {
-//	if (bone == NULL)
-//	{
-//		return;
-//	}
-//	int idNum = bone->getID(bone);
-//	if (idNum == 0)
-//	{
-///*		glm::mat4 rot = glm::rotate(glm::mat4(1.0f), 45.0f, glm::vec3(1,0,0));*/
-//		bone->localTransformation = bone->localTransformation;
-//// 		cylinder[idNum]->update(bone->localTransformation, shaderProgramID);
-//// 		cylinder[idNum]->draw();
-//	}
-//	if (idNum > 0)
-//	{
-//		glm::mat4 currentParentTransformation = bone->parent->localTransformation;
-//		glm::mat4 currentTransform = bone->localTransformation;
-//// 		glm::mat4 rot = idNum == 5 ? glm::rotate(glm::mat4(), 45.0f, bone->pos) : glm::mat4();
-//// 		//bone->localTransformation = currentParentTransformation * /**/glm::inverse(bone->offset) * currentTransform *  bone->offset;
-//// 		bone->localTransformation = rot * currentParentTransformation * currentTransform ;
-//		bone->localTransformation = currentParentTransformation * currentTransform;
-//// 		cylinder[idNum]->update(bone->localTransformation, shaderProgramID);
-//// 		cylinder[idNum]->draw();
-//	}
-//	for (int i = 0; i < bone->chilrenSize; i++)
-//	{
-//		travel(bone->children[i], shaderProgramID);
-//	}
-//}
+	currentGlobalTransformation = bone->localTransformation;
+
+	while (bone->parent)
+	{
+		currentGlobalTransformation = bone->parent->globalTransformation * currentGlobalTransformation;
+		bone = bone->parent;
+	}
+	return currentGlobalTransformation;
+}
