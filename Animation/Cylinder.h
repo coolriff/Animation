@@ -107,7 +107,7 @@ public:
 	void update(glm::mat4 ModelMatrix, GLuint shaderProgramID)
 	{
 		GLuint modelLoc = glGetUniformLocation(shaderProgramID, "model");
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &ModelMatrix[0][0]);
 	}
 
 	void draw(){

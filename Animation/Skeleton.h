@@ -24,7 +24,7 @@ public:
 
 	void createHandNode();
 	void drawHand(GLuint shaderProgramID);
-	void updateHand(GLuint modelLoc, GLuint shaderProgramID);
+	void updateHand(GLuint shaderProgramID);
 	Bone* traverse(Bone* bone, float deltaTime);
 	glm::mat4 calcGlobalTransformation(Bone* bone);
 };

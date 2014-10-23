@@ -4,17 +4,5 @@ c:\animation\animation\cylinder.h(45): warning C4018: '<' : signed/unsigned mism
 c:\animation\animation\cylinder.h(55): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\skeleton.cpp(124): warning C4305: 'argument' : truncation from 'double' to 'const float'
   GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  Bone.cpp
-  Generating Code...
-c:\animation\animation\skeleton.cpp(178): warning C4715: 'Skeleton::traverse' : not all control paths return a value
-  Compiling...
-  main.cpp
-c:\animation\animation\cylinder.h(33): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\cylinder.h(45): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\cylinder.h(55): warning C4018: '<' : signed/unsigned mismatch
-  Lab2.cpp
-c:\animation\animation\cylinder.h(33): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\cylinder.h(45): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\cylinder.h(55): warning C4018: '<' : signed/unsigned mismatch
-  Generating Code...
+c:\animation\animation\skeleton.cpp(181): warning C4715: 'Skeleton::traverse' : not all control paths return a value
   Animation.vcxproj -> C:\Animation\Debug\Animation.exe

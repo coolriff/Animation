@@ -128,7 +128,7 @@ void Skeleton::drawHand(GLuint shaderProgramID)
 }
 
 
-void Skeleton::updateHand(GLuint modelLoc, GLuint shaderProgramID)
+void Skeleton::updateHand(GLuint shaderProgramID)
 {
 	if(timeFlag)
 	{
@@ -144,13 +144,16 @@ void Skeleton::updateHand(GLuint modelLoc, GLuint shaderProgramID)
 		if (deltaTime < 0)
 		{
 			timeFlag = true;
+
 		}
 	}
 
 	traverse(handNode[0], deltaTime);
+	cylinder[0]->draw();
 
-	for (int i = 0; i < 16; i++)
+	for (int i = 1; i < 16; i++)
 	{
+		//handNode[i]->globalTransformation = handNode[i]->parent->globalTransformation * handNode[i]->localTransformation;
 		cylinder[i]->update(handNode[i]->globalTransformation, shaderProgramID);
 		cylinder[i]->draw();
 	}
@@ -167,10 +170,10 @@ Bone* Skeleton::traverse(Bone* bone, float deltaTime)
 	if (bone->id != 0)
 	{
 		bone->localTransformation = glm::rotate(bone->offset, deltaTime, glm::vec3(1,0,0));
+		bone->globalTransformation = calcGlobalTransformation(bone);
 	}
 
-	bone->globalTransformation = calcGlobalTransformation(bone);
-
+	
 	for (int i = 0; i < bone->chilrenSize; i++)
 	{
 		traverse(bone->children[i], deltaTime);
