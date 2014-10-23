@@ -1,6 +1,5 @@
 #include "Bone.h"
 
-
 Bone::Bone(void)
 {
 }
@@ -21,14 +20,15 @@ Bone* Bone::createBone(int ID, glm::vec3 pos)
 	return tempBone;
 }
 
-void Bone::addChild(Bone* bone)
+void Bone::addChild(Bone* child)
 {
-
+	children[chilrenSize] = child;
+	chilrenSize++;
 }
 
 void Bone::addParent(Bone *parent)
 {
-
+	this->parent = parent;
 }
 
 int Bone::getID(Bone* bone)
@@ -40,5 +40,3 @@ glm::vec3 Bone::getPos(Bone* bone)
 {
 	return bone->pos;
 }
-
-

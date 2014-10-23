@@ -22,9 +22,8 @@ public:
 	Bone* parent;
 	int chilrenSize;
 	Bone* createBone(int ID, glm::vec3 pos);
-	void addChild(Bone* bone);
+	void addChild(Bone* child);
 	void addParent(Bone* parent);
 	int getID(Bone* bone);
 	glm::vec3 getPos(Bone* bone);
 };
-

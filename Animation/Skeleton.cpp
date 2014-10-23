@@ -151,9 +151,7 @@ void Skeleton::updateHand(GLuint modelLoc, GLuint shaderProgramID)
 
 	for (int i = 0; i < 16; i++)
 	{
-		//handNode[i]->globalTransformation = glm::translate(handNode[i]->globalTransformation, handNode[i]->pos);
 		cylinder[i]->update(handNode[i]->globalTransformation, shaderProgramID);
-		//cylinder[i]->update(handNode[i]->localTransformation, shaderProgramID);
 		cylinder[i]->draw();
 	}
 }
