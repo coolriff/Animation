@@ -14,7 +14,7 @@ Camera::Camera(Setup* m_setup)
 	// Initial Field of View
 	initialFoV = 45.0f;
 
-	speed = 3.0f; // 3 units / second
+	speed = 15.0f; // 3 units / second
 	mouseSpeed = 0.005f;
 }
 

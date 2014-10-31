@@ -121,7 +121,7 @@ void Skeleton::drawHand(GLuint shaderProgramID)
 		}
 		else
 		{
-			cylinder[i] = new Cylinder(3, 0.8, 0.8, cy_color_up, cy_color_down,16);
+			cylinder[i] = new Cylinder(5, 0.8, 0.8, cy_color_up, cy_color_down,16);
 			cylinder[i]->generateObjectBuffer(shaderProgramID);
 		}
 	}
@@ -153,7 +153,7 @@ void Skeleton::updateHand(GLuint shaderProgramID)
 
 	for (int i = 1; i < 16; i++)
 	{
-		//handNode[i]->globalTransformation = handNode[i]->parent->globalTransformation * handNode[i]->localTransformation;
+		handNode[i]->globalTransformation = handNode[i]->parent->globalTransformation * handNode[i]->localTransformation;
 		cylinder[i]->update(handNode[i]->globalTransformation, shaderProgramID);
 		cylinder[i]->draw();
 	}
