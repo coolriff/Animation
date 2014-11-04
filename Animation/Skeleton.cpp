@@ -21,28 +21,28 @@ void Skeleton::createHandNode()
 
 	//no 5
 	handNode[1] = bone->createBone(1,glm::vec3(3.2,8,0));
-	handNode[2] = bone->createBone(2,glm::vec3(3.2,11,0));
-	handNode[3] = bone->createBone(3,glm::vec3(3.2,14,0));
+	handNode[2] = bone->createBone(2,glm::vec3(0,3,0));
+	handNode[3] = bone->createBone(3,glm::vec3(0,3,0));
 
 	//no 4
 	handNode[4] = bone->createBone(4,glm::vec3(1.1,8,0));
-	handNode[5] = bone->createBone(5,glm::vec3(1.1,11,0));
-	handNode[6] = bone->createBone(6,glm::vec3(1.1,14,0));
+	handNode[5] = bone->createBone(5,glm::vec3(0,3,0));
+	handNode[6] = bone->createBone(6,glm::vec3(0,3,0));
 
 	//no 3
 	handNode[7] = bone->createBone(7,glm::vec3(-1.1,8,0));
-	handNode[8] = bone->createBone(8,glm::vec3(-1.1,11,0));
-	handNode[9] = bone->createBone(9,glm::vec3(-1.1,14,0));
+	handNode[8] = bone->createBone(8,glm::vec3(0,3,0));
+	handNode[9] = bone->createBone(9,glm::vec3(0,3,0));
 
 	//no 2
 	handNode[10] = bone->createBone(10,glm::vec3(-3.2,8,0));
-	handNode[11] = bone->createBone(11,glm::vec3(-3.2,11,0));
-	handNode[12] = bone->createBone(12,glm::vec3(-3.2,14,0));
+	handNode[11] = bone->createBone(11,glm::vec3(0,3,0));
+	handNode[12] = bone->createBone(12,glm::vec3(0,3,0));
 
 	//no 1
 	handNode[13] = bone->createBone(13,glm::vec3(-5,4,0));
-	handNode[14] = bone->createBone(14,glm::vec3(-5,7,0));
-	handNode[15] = bone->createBone(15,glm::vec3(-5,10,0));
+	handNode[14] = bone->createBone(14,glm::vec3(0,3,0));
+	handNode[15] = bone->createBone(15,glm::vec3(0,3,0));
 
 
 	//add children
@@ -121,7 +121,7 @@ void Skeleton::drawHand(GLuint shaderProgramID)
 		}
 		else
 		{
-			cylinder[i] = new Cylinder(5, 0.8, 0.8, cy_color_up, cy_color_down,16);
+			cylinder[i] = new Cylinder(3, 0.8, 0.8, cy_color_up, cy_color_down,16);
 			cylinder[i]->generateObjectBuffer(shaderProgramID);
 		}
 	}
@@ -170,7 +170,7 @@ Bone* Skeleton::traverse(Bone* bone, float deltaTime)
 	if (bone->id != 0)
 	{
 		bone->localTransformation = glm::rotate(bone->offset, deltaTime, glm::vec3(1,0,0));
-		bone->globalTransformation = calcGlobalTransformation(bone);
+		//bone->globalTransformation = calcGlobalTransformation(bone);
 	}
 
 	
