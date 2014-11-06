@@ -18,7 +18,7 @@ public:
 	glm::mat4 offset;
 	glm::mat4 localTransformation;
 	glm::mat4 globalTransformation;
-	Bone* children[5];
+	Bone* children[1];
 	Bone* parent;
 	int chilrenSize;
 	Bone* createBone(int ID, glm::vec3 pos);
