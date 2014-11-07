@@ -11,7 +11,7 @@ ArmSkeleton::ArmSkeleton(Setup* m_setup)
 	//deltaTime = float(currentTime - lastTime);
 	timeFlag = true;
 	speed = 15.0f;
-	armTargetPos = glm::vec3(20,35,0);
+	armTargetPos = glm::vec3(0,35,0);
 	joint2TargetPos = 1000.0f;
 }
 
@@ -37,17 +37,17 @@ void ArmSkeleton::createArmNode()
 	handNode[2]->parent = handNode[1];
 	handNode[3]->parent = handNode[2];
 
-// 	for (int i = 0 ; i < 4 ; i++)
-// 	{
-// 		if (handNode[i]->id == 0)
-// 		{
-// 			handNode[i]->globalTransformation = handNode[i]->localTransformation;
-// 		}
-// 		else
-// 		{
-// 			handNode[i]->globalTransformation = handNode[i]->parent->globalTransformation * handNode[i]->localTransformation;
-// 		}
-// 	}
+	for (int i = 0 ; i < 4 ; i++)
+	{
+		if (handNode[i]->id == 0)
+		{
+			handNode[i]->globalTransformation = handNode[i]->localTransformation;
+		}
+		else
+		{
+			handNode[i]->globalTransformation = handNode[i]->parent->globalTransformation * handNode[i]->localTransformation;
+		}
+	}
 }
 
 void ArmSkeleton::drawArmMesh(GLuint shaderProgramID)
@@ -130,13 +130,14 @@ void ArmSkeleton::updateArmTarget(GLuint shaderProgramID)
 
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_Z ) == GLFW_PRESS){
 
-		if (joint2TargetPos > 1.0f)
-		{
-			for (int i = 0 ; i < 10 ; i++)
-			{
-				CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
-			}
-		}
+// 		if (joint2TargetPos > 1.0f)
+// 		{
+// 			for (int i = 0 ; i < 10 ; i++)
+// 			{
+// 				CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
+// 			}
+// 		}
+		CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
 	}
 
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_X ) == GLFW_PRESS){
@@ -152,54 +153,72 @@ void ArmSkeleton::updateArmTarget(GLuint shaderProgramID)
 	armTarget->draw();
 }
 
-void ArmSkeleton::CCDIKSolve(Bone* bone, Bone* effector, glm::vec3 armTargetPos, int iterNum)
-{
-	glm::vec3 absJoint2End = effector->pos - bone->pos;
-	glm::vec3 absJoint2Target = bone->pos - armTargetPos;
-
-	absJoint2End = glm::normalize(absJoint2End);
-	absJoint2Target = glm::normalize(absJoint2Target);
-
-	float deltaAngle = glm::dot(absJoint2End, absJoint2Target);
-	float rotationAngle = glm::acos(deltaAngle*360/(2 * 3.14f));
-
-	glm::vec3 rotateAxis = glm::cross(absJoint2Target, absJoint2End);
-
-	rotateAxis = glm::normalize(rotateAxis);
-
-	glm::quat deltaRotation;
-
-// 	if (deltaAngle < 0.9)
-// 	{
-// 		if (rotateAxis.z >= 0)
-// 		{
-// 			deltaRotation = glm::angleAxis(rotationAngle, rotateAxis);
-// 		} 
-// 		else
-// 		{
-// 			deltaRotation = glm::angleAxis(-rotationAngle, rotateAxis);
-// 		}
-// 	}
-
-	deltaRotation = glm::angleAxis(rotationAngle, rotateAxis);
-
-	glm::mat4 quatRotationn = glm::toMat4(glm::normalize(deltaRotation));
-
-	bone->localTransformation *= quatRotationn;
-}
-
-
 // void ArmSkeleton::CCDIKSolve(Bone* bone, Bone* effector, glm::vec3 armTargetPos, int iterNum)
 // {
 // 	glm::vec3 absJoint2End = effector->pos - bone->pos;
-// 	glm::vec3 absJoint2Target = armTargetPos - bone->pos;
+// 	glm::vec3 absJoint2Target = bone->pos - armTargetPos;
 // 
 // 	absJoint2End = glm::normalize(absJoint2End);
 // 	absJoint2Target = glm::normalize(absJoint2Target);
 // 
-// 	float theta = glm::acos(glm::dot(absJoint2End, absJoint2Target));
+// 	float deltaAngle = glm::dot(absJoint2End, absJoint2Target);
+// 	float rotationAngle = glm::acos(deltaAngle*360/(2 * 3.14f));
 // 
-// 	glm::vec3 axis = glm::cross(absJoint2Target, absJoint2End);
+// 	glm::vec3 rotateAxis = glm::cross(absJoint2Target, absJoint2End);
+// 
+// 	rotateAxis = glm::normalize(rotateAxis);
+// 
+// 	glm::quat deltaRotation;
+// 
+// // 	if (deltaAngle < 0.9)
+// // 	{
+// // 		if (rotateAxis.z >= 0)
+// // 		{
+// // 			deltaRotation = glm::angleAxis(rotationAngle, rotateAxis);
+// // 		} 
+// // 		else
+// // 		{
+// // 			deltaRotation = glm::angleAxis(-rotationAngle, rotateAxis);
+// // 		}
+// // 	}
+// 
+// 	deltaRotation = glm::angleAxis(rotationAngle, rotateAxis);
+// 
+// 	glm::mat4 quatRotationn = glm::toMat4(glm::normalize(deltaRotation));
+// 
+// 	bone->localTransformation *= quatRotationn;
+// }
+
+
+void ArmSkeleton::CCDIKSolve(Bone* bone, Bone* effector, glm::vec3 armTargetPos, int iterNum)
+{
+	glm::vec3 effectorPos = glm::vec3(effector->globalTransformation[3][0], effector->globalTransformation[3][1], effector->globalTransformation[3][2]);
+	glm::vec3 bonePos = glm::vec3(bone->globalTransformation[3][0], bone->globalTransformation[3][1], bone->globalTransformation[3][2]);
+
+	glm::vec3 endVector = effectorPos - bonePos;
+	glm::vec3 targetVector = armTargetPos - bonePos;
+	endVector = glm::normalize(endVector);
+	targetVector = glm::normalize(targetVector);
+
+	float cosAngle = (glm::dot(targetVector, endVector));
+	float angle_degrees = (acos(cosAngle)) * 180 / 3.14;
+	glm::vec3 rotation_Axis(glm::normalize(-glm::cross(targetVector, endVector)));
+
+	glm::mat4 local_anim = glm::rotate(bone->offset, angle_degrees, rotation_Axis);
+
+	if (cosAngle < 0.999 )
+	{
+		bone->localTransformation  =  local_anim;
+	}
+
+
+
+// 	endVector = glm::normalize(endVector);
+// 	targetVector = glm::normalize(targetVector);
+
+// 	float theta = glm::acos(glm::dot(endVector, targetVector));
+// 
+// 	glm::vec3 axis = glm::cross(targetVector, endVector);
 // 	axis = glm::normalize(axis);
 // 
 // 	glm::quat deltaRotation = glm::angleAxis(glm::degrees(theta), axis);
@@ -208,29 +227,40 @@ void ArmSkeleton::CCDIKSolve(Bone* bone, Bone* effector, glm::vec3 armTargetPos,
 // 
 // 	glm::mat4 quatRotationn = glm::mat4_cast(deltaRotation);
 // 
-// 	bone->localTransformation =  bone->localTransformation * quatRotationn;
+// 	bone->localTransformation =   quatRotationn;
+
+// 	if (theta < 0.9 || theta > -0.9)
+// 	{
+// 		//bone->localTransformation = glm::rotate(bone->localTransformation, glm::degrees(rotationAngle), rotateAxis);
 // 
-// // 	if (theta < 0.9 || theta > -0.9)
-// // 	{
-// // 		//bone->localTransformation = glm::rotate(bone->localTransformation, glm::degrees(rotationAngle), rotateAxis);
-// // 
-// // 		bone->localTransformation =  bone->localTransformation * quatRotationn;
-// // 	}
-// 
-// // 	if (bone->parent)
-// // 	{
-// // 		CCDIKSolve(bone->parent, effector, armTargetPos, iterNum);
-// // 	}
-// 
-// 	joint2TargetPos = glm::distance(effector->pos, armTargetPos);
-// }
+// 		bone->localTransformation =  bone->localTransformation * quatRotationn;
+// 	}
+
+// 	if (bone->parent)
+// 	{
+// 		CCDIKSolve(bone->parent, effector, armTargetPos, iterNum);
+// 	}
+
+	joint2TargetPos = glm::distance(effectorPos, armTargetPos);
+}
 
 void ArmSkeleton::CalculateInverseKinematics()
 {
-	int iterationCount = 0;
+// 	int iterationCount = 0;
+// 
+// 	while (iterationCount++ < 5)
+// 	{
+// 		CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
+// 	}
 
-	while (iterationCount++ < 10 && joint2TargetPos > 1.0f)
-	{
-		CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
-	}
+	CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
+	CCDIKSolve(handNode[1], handNode[3], armTargetPos, 0);
+	CCDIKSolve(handNode[0], handNode[3], armTargetPos, 0);
+
+// 	if (joint2TargetPos > 2)
+// 	{
+// 		CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
+// 		CCDIKSolve(handNode[1], handNode[3], armTargetPos, 0);
+// 		CCDIKSolve(handNode[0], handNode[3], armTargetPos, 0);
+// 	}
 }

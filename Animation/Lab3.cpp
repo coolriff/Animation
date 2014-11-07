@@ -45,8 +45,9 @@ void Lab3::run(void)
 
 		
 		armSkeleton->updateArmTarget(m_shader->GetProgramID());
-		armSkeleton->CalculateInverseKinematics();
+
 		armSkeleton->updateArmMesh(m_shader->GetProgramID());
+		armSkeleton->CalculateInverseKinematics();
 		
 
 		// Swap buffers
