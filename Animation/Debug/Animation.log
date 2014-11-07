@@ -12,6 +12,4 @@ c:\animation\animation\armskeleton.cpp(113): warning C4305: '+=' : truncation fr
 c:\animation\animation\armskeleton.cpp(118): warning C4305: '-=' : truncation from 'double' to 'float'
 c:\animation\animation\armskeleton.cpp(123): warning C4305: '-=' : truncation from 'double' to 'float'
 c:\animation\animation\armskeleton.cpp(128): warning C4305: '+=' : truncation from 'double' to 'float'
-c:\animation\animation\armskeleton.cpp(204): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-  GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   Animation.vcxproj -> C:\Animation\Debug\Animation.exe

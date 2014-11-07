@@ -194,46 +194,69 @@ void ArmSkeleton::CCDIKSolve(Bone* bone, Bone* effector, glm::vec3 armTargetPos,
 {
 	glm::vec3 effectorPos = glm::vec3(effector->globalTransformation[3][0], effector->globalTransformation[3][1], effector->globalTransformation[3][2]);
 	glm::vec3 bonePos = glm::vec3(bone->globalTransformation[3][0], bone->globalTransformation[3][1], bone->globalTransformation[3][2]);
-
 	glm::vec3 endVector = effectorPos - bonePos;
 	glm::vec3 targetVector = armTargetPos - bonePos;
+
+// 	if (joint2TargetPos > 1)
+// 	{
+// 		endVector = glm::normalize(endVector);
+// 		targetVector = glm::normalize(targetVector);
+// 
+// 		float cosAngle = glm::dot(targetVector, endVector);
+// 		float angle_degrees = (glm::acos(cosAngle)) * 360 /( 2 * 3.14f);
+// 		glm::vec3 rotation_Axis(glm::normalize(-glm::cross(targetVector, endVector)));
+// 
+// 		//glm::mat4 local_anim = glm::rotate(bone->offset, angle_degrees, rotation_Axis);
+// 
+// 		if (cosAngle < 0.999 && cosAngle > -0.999)
+// 		{
+// 			bone->localTransformation = glm::rotate(bone->offset, angle_degrees, rotation_Axis);;
+// 		}
+// 	}
+
 	endVector = glm::normalize(endVector);
 	targetVector = glm::normalize(targetVector);
 
-	float cosAngle = (glm::dot(targetVector, endVector));
-	float angle_degrees = (acos(cosAngle)) * 180 / 3.14;
-	glm::vec3 rotation_Axis(glm::normalize(-glm::cross(targetVector, endVector)));
+	float cos_theta = glm::dot(targetVector, endVector);
+	float half_cos = glm::sqrt(0.5f * (1.0f + cos_theta));
+	float half_sin = glm::sqrt(0.5f * (1.0f - cos_theta));
 
-	glm::mat4 local_anim = glm::rotate(bone->offset, angle_degrees, rotation_Axis);
+	glm::vec3 w = glm::normalize(glm::cross(targetVector, endVector));
+	glm::quat rot = glm::quat(half_cos, half_sin * w.x, half_sin * w.y, half_sin * w.z);
 
-	if (cosAngle < 0.999 )
-	{
-		bone->localTransformation  =  local_anim;
-	}
+	glm::mat4 rotMat4 = glm::toMat4(rot);
+	//glm::mat4 trans = glm::translate(bone->offset,glm::vec3(w.x, w.y, w.z));
+	//glm::mat4 finalTrans = rotMat4 * trans;
 
+	
+		if (cos_theta < 0.999 && cos_theta > -0.999)
+		{
+			bone->localTransformation *= rotMat4;
+		}
 
-
-// 	endVector = glm::normalize(endVector);
-// 	targetVector = glm::normalize(targetVector);
-
+// 
 // 	float theta = glm::acos(glm::dot(endVector, targetVector));
 // 
 // 	glm::vec3 axis = glm::cross(targetVector, endVector);
 // 	axis = glm::normalize(axis);
-// 
-// 	glm::quat deltaRotation = glm::angleAxis(glm::degrees(theta), axis);
-// 
-// 	//glm::mat4 quatRotationn = glm::toMat4(glm::normalize(deltaRotation));
-// 
-// 	glm::mat4 quatRotationn = glm::mat4_cast(deltaRotation);
-// 
-// 	bone->localTransformation =   quatRotationn;
+// // 
+  	glm::quat deltaRotation = glm::angleAxis(glm::degrees(theta), axis);
+//  	glm::mat4 quatRotationn = glm::toMat4(glm::normalize(deltaRotation));
+// // 	glm::mat4 quatRotationn = glm::mat4_cast(deltaRotation);
+// // 
+// // 	bone->localTransformation = glm::rotate(bone->offset, theta, axis);
+// // 
+//  	bone->globalTransformation =  quatRotationn * bone->globalTransformation;
 
-// 	if (theta < 0.9 || theta > -0.9)
+// 	if (theta < 0.99 || theta > -0.99)
 // 	{
-// 		//bone->localTransformation = glm::rotate(bone->localTransformation, glm::degrees(rotationAngle), rotateAxis);
+// 		//bone->globalTransformation = glm::rotate(bone->localTransformation, glm::degrees(theta), axis);
 // 
-// 		bone->localTransformation =  bone->localTransformation * quatRotationn;
+// 		bone->globalTransformation =  bone->globalTransformation * quatRotationn;
+// 	}
+// 	else
+// 	{
+// 		bone->globalTransformation = bone->globalTransformation;
 // 	}
 
 // 	if (bone->parent)
@@ -246,16 +269,16 @@ void ArmSkeleton::CCDIKSolve(Bone* bone, Bone* effector, glm::vec3 armTargetPos,
 
 void ArmSkeleton::CalculateInverseKinematics()
 {
-// 	int iterationCount = 0;
-// 
-// 	while (iterationCount++ < 5)
-// 	{
-// 		CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
-// 	}
+	int iterationCount = 0;
 
-	CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
-	CCDIKSolve(handNode[1], handNode[3], armTargetPos, 0);
-	CCDIKSolve(handNode[0], handNode[3], armTargetPos, 0);
+	while (iterationCount++ < 1)
+	{
+		CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
+ 		CCDIKSolve(handNode[1], handNode[3], armTargetPos, 0);
+ 		CCDIKSolve(handNode[0], handNode[3], armTargetPos, 0);
+	}
+
+
 
 // 	if (joint2TargetPos > 2)
 // 	{
