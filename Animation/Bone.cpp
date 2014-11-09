@@ -9,7 +9,7 @@ Bone::~Bone(void)
 {
 }
 
-Bone* Bone::createBone(int ID, glm::vec3 pos)
+Bone* Bone::createBone(int ID, glm::vec3 pos, float damp_width)
 {
 	Bone* tempBone = new Bone();
 	tempBone->id = ID;
@@ -17,6 +17,7 @@ Bone* Bone::createBone(int ID, glm::vec3 pos)
 	tempBone->offset = glm::translate(glm::mat4(1.0),pos);
 	tempBone->localTransformation = glm::translate(glm::mat4(1.0),pos);
 	tempBone->globalTransformation = glm::mat4(1);
+	tempBone->damp_width = damp_width;
 	return tempBone;
 }
 

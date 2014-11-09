@@ -45,8 +45,12 @@ void Lab3::run(void)
 
 		
 		armSkeleton->updateArmTarget(m_shader->GetProgramID());
-		armSkeleton->CalculateInverseKinematics();
-		armSkeleton->updateArmMesh(m_shader->GetProgramID());
+// 		armSkeleton->calculateInverseKinematics();
+// 		armSkeleton->updateArmMesh(m_shader->GetProgramID());
+		if (armSkeleton->calculateInverseKinematics())
+		{
+			armSkeleton->updateArmMesh(m_shader->GetProgramID());
+		}
 
 		
 

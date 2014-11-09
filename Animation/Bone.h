@@ -20,8 +20,9 @@ public:
 	glm::mat4 globalTransformation;
 	Bone* children[1];
 	Bone* parent;
+	float damp_width;
 	int chilrenSize;
-	Bone* createBone(int ID, glm::vec3 pos);
+	Bone* createBone(int ID, glm::vec3 pos, float damp_width);
 	void addChild(Bone* child);
 	void addParent(Bone* parent);
 	int getID(Bone* bone);

@@ -2,14 +2,17 @@
 c:\animation\animation\cylinder.h(33): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\cylinder.h(45): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\cylinder.h(55): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\armskeleton.cpp(61): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\armskeleton.cpp(64): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\armskeleton.cpp(67): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\armskeleton.cpp(70): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\armskeleton.cpp(103): warning C4305: '+=' : truncation from 'double' to 'float'
-c:\animation\animation\armskeleton.cpp(108): warning C4305: '-=' : truncation from 'double' to 'float'
-c:\animation\animation\armskeleton.cpp(113): warning C4305: '+=' : truncation from 'double' to 'float'
-c:\animation\animation\armskeleton.cpp(118): warning C4305: '-=' : truncation from 'double' to 'float'
-c:\animation\animation\armskeleton.cpp(123): warning C4305: '-=' : truncation from 'double' to 'float'
-c:\animation\animation\armskeleton.cpp(128): warning C4305: '+=' : truncation from 'double' to 'float'
+c:\animation\animation\armskeleton.cpp(65): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\armskeleton.cpp(68): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\armskeleton.cpp(71): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\armskeleton.cpp(74): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\armskeleton.cpp(107): warning C4305: '+=' : truncation from 'double' to 'float'
+c:\animation\animation\armskeleton.cpp(112): warning C4305: '-=' : truncation from 'double' to 'float'
+c:\animation\animation\armskeleton.cpp(117): warning C4305: '+=' : truncation from 'double' to 'float'
+c:\animation\animation\armskeleton.cpp(122): warning C4305: '-=' : truncation from 'double' to 'float'
+c:\animation\animation\armskeleton.cpp(127): warning C4305: '-=' : truncation from 'double' to 'float'
+c:\animation\animation\armskeleton.cpp(132): warning C4305: '+=' : truncation from 'double' to 'float'
+  GLM: angleAxis function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+c:\animation\animation\armskeleton.cpp(462): warning C4715: 'ArmSkeleton::calculateInverseKinematics' : not all control paths return a value
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   Animation.vcxproj -> C:\Animation\Debug\Animation.exe

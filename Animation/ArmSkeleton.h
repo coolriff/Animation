@@ -5,7 +5,9 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include "Setup.h"
-#include "glm/gtx/quaternion.hpp"
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/euler_angles.hpp>
 
 
 class ArmSkeleton
@@ -29,12 +31,15 @@ public:
 	glm::vec3 armTargetPos;
 	glm::mat4 armTargetTransformation;
 	float joint2TargetPos;
+	float endToTargeDistance;
 
 	void createArmNode();
 	void drawArmMesh(GLuint shaderProgramID);
 	void updateArmMesh(GLuint shaderProgramID);
 	void updateArmTarget(GLuint shaderProgramID);
 	void CCDIKSolve(Bone* bone, Bone* effector, glm::vec3 armTargetPos, int iterNum);
-	void CalculateInverseKinematics();
+	bool calculateInverseKinematics();
+	void calcGlobalTransformation();
+	void checkDOFRestrictions(Bone* bone);
 };
 
