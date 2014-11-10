@@ -266,7 +266,7 @@ void ArmSkeleton::updateArmTarget(GLuint shaderProgramID)
 		CCDIKSolve(handNode[0], handNode[3], armTargetPos, 0);
 	}
 
-	armTargetTransformation = glm::translate(glm::mat4(1),armTargetPos);
+	armTargetTransformation = glm::translate(glm::mat4(1),glm::vec3(armTargetPos.x,armTargetPos.y-3,armTargetPos.z));
 	armTarget->update(armTargetTransformation, shaderProgramID);
 	armTarget->draw();
 }
