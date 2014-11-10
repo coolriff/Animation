@@ -17,8 +17,8 @@ public:
 	~ArmSkeleton(void);
 
 	Bone* bone;
-	Bone* handNode[4];
-	Cylinder* cylinder[4];
+	Bone* handNode[19];
+	Cylinder* cylinder[19];
 	Cylinder* armTarget;
 	Setup* m_setup;
 
@@ -41,5 +41,6 @@ public:
 	bool calculateInverseKinematics();
 	void calcGlobalTransformation();
 	void checkDOFRestrictions(Bone* bone);
+	void calcEffectorToTargetDistance();
 };
 

@@ -2,15 +2,16 @@
 #define EFFECTOR_POS 3
 #define MAX_IK_TRIES 100
 #define IK_POS_THRESH 0.5f
+#define HAND_NODE_NUM 19
 
 ArmSkeleton::ArmSkeleton(Setup* m_setup)
 {
 	this->m_setup = m_setup;
 
 	bone = new Bone();
-	//lastTime = glfwGetTime();
-	//currentTime = glfwGetTime();
-	//deltaTime = float(currentTime - lastTime);
+	lastTime = glfwGetTime();
+	currentTime = glfwGetTime();
+	deltaTime = float(currentTime - lastTime);
 	timeFlag = true;
 	speed = 15.0f;
 	armTargetPos = glm::vec3(10,-10,10);
@@ -24,24 +25,103 @@ ArmSkeleton::~ArmSkeleton(void)
 
 void ArmSkeleton::createArmNode()
 {
-	//root
-	handNode[0] = bone->createBone(0,glm::vec3(0,0,0),90.0f);
-	handNode[1] = bone->createBone(1,glm::vec3(0,12,0),90.0f);
-	handNode[2] = bone->createBone(2,glm::vec3(0,12,0),180.0f);
-	handNode[3] = bone->createBone(3,glm::vec3(0,6,0),0.0f);
+	//	handNode[3] = bone->createBone(3,glm::vec3(0,5,0),0.0f);	//effector
+
+
+	handNode[0] = bone->createBone(0,glm::vec3(0,0,0),90.0f);	//upper arm
+	handNode[1] = bone->createBone(1,glm::vec3(0,12,0),90.0f);	//lower arm
+	handNode[2] = bone->createBone(2,glm::vec3(0,12,0),180.0f);	//wrist arm
+	handNode[3] = bone->createBone(3,glm::vec3(0,5,0),0.0f);	//effector
+
+	//1
+	handNode[4] = bone->createBone(4,glm::vec3(2.4,0,0),0.0f); 
+	handNode[5] = bone->createBone(5,glm::vec3(0,1.25,0),0.0f);
+	handNode[6] = bone->createBone(6,glm::vec3(0,1.25,0),0.0f);
+
+	//2
+	handNode[7] = bone->createBone(7,glm::vec3(0.8,0,0),0.0f); 
+	handNode[8] = bone->createBone(8,glm::vec3(0,1.5,0),0.0f);
+	handNode[9] = bone->createBone(9,glm::vec3(0,1.5,0),0.0f);
+
+	//3
+	handNode[10] = bone->createBone(10,glm::vec3(-0.8,0,0),0.0f); 
+	handNode[11] = bone->createBone(11,glm::vec3(0,1.75,0),0.0f);
+	handNode[12] = bone->createBone(12,glm::vec3(0,1.75,0),0.0f);
+
+	//4
+	handNode[13] = bone->createBone(13,glm::vec3(-2.4,0,0),0.0f); 
+	handNode[14] = bone->createBone(14,glm::vec3(0,1.5,0),0.0f);
+	handNode[15] = bone->createBone(15,glm::vec3(0,1.5,0),0.0f);
+
+	//5
+	handNode[16] = bone->createBone(16,glm::vec3(-3.5,-2.5,0),0.0f); 
+	handNode[17] = bone->createBone(17,glm::vec3(0,1.5,0),0.0f);
+	handNode[18] = bone->createBone(18,glm::vec3(0,1.5,0),0.0f);
+
 
 	handNode[0]->children[0] = handNode[1];
 	handNode[1]->children[0] = handNode[2];
 	handNode[2]->children[0] = handNode[3];
+
+	//1
+	handNode[3]->children[0] = handNode[4]; //effector
+	handNode[4]->children[0] = handNode[5];
+	handNode[5]->children[0] = handNode[6];
+
+	//2
+	handNode[3]->children[0] = handNode[7]; //effector
+	handNode[7]->children[0] = handNode[8];
+	handNode[8]->children[0] = handNode[9];
+
+	//3
+	handNode[3]->children[0] = handNode[10]; //effector
+	handNode[10]->children[0] = handNode[11];
+	handNode[11]->children[0] = handNode[12];
+
+	//4
+	handNode[3]->children[0] = handNode[13]; //effector
+	handNode[13]->children[0] = handNode[14];
+	handNode[14]->children[0] = handNode[15];
+
+	//5
+	handNode[3]->children[0] = handNode[16]; //effector
+	handNode[16]->children[0] = handNode[17];
+	handNode[17]->children[0] = handNode[18];
+
 
 	handNode[0]->parent = nullptr;
 	handNode[1]->parent = handNode[0];
 	handNode[2]->parent = handNode[1];
 	handNode[3]->parent = handNode[2];
 
-	//handNode[0]->localTransformation = glm::rotate(handNode[0]->offset, 90.0f, glm::vec3(0,1,0));
+	//1
+	handNode[4]->parent = handNode[3];
+	handNode[5]->parent = handNode[4];
+	handNode[6]->parent = handNode[5];
 
-	for (int i = 0 ; i < 4 ; i++)
+	//2
+	handNode[7]->parent = handNode[3];
+	handNode[8]->parent = handNode[7];
+	handNode[9]->parent = handNode[8];
+
+	//3
+	handNode[10]->parent = handNode[3];
+	handNode[11]->parent = handNode[10];
+	handNode[12]->parent = handNode[11];
+
+	//4
+	handNode[13]->parent = handNode[3];
+	handNode[14]->parent = handNode[13];
+	handNode[15]->parent = handNode[14];
+
+	//5
+	handNode[16]->parent = handNode[3];
+	handNode[17]->parent = handNode[16];
+	handNode[18]->parent = handNode[17];
+
+
+
+	for (int i = 0 ; i < HAND_NODE_NUM ; i++)
 	{
 		if (handNode[i]->id == 0)
 		{
@@ -62,17 +142,57 @@ void ArmSkeleton::drawArmMesh(GLuint shaderProgramID)
 	armTarget = new Cylinder(1, 0.5, 0.5, cy_color_up, cy_color_down,4);
 	armTarget->generateObjectBuffer(shaderProgramID);
 
-	cylinder[0] = new Cylinder(12, 0.8, 0.8, cy_color_up, cy_color_down,16);
+	cylinder[0] = new Cylinder(12, 0.4, 0.8, cy_color_up, cy_color_down,16);	//upper arm
 	cylinder[0]->generateObjectBuffer(shaderProgramID);
 
-	cylinder[1] = new Cylinder(12, 0.8, 0.8, cy_color_up, cy_color_down,16);
+	cylinder[1] = new Cylinder(12, 0.4, 0.8, cy_color_up, cy_color_down,16);	//lower arm
 	cylinder[1]->generateObjectBuffer(shaderProgramID);
 
-	cylinder[2] = new Cylinder(6, 0.8, 0.8, cy_color_up, cy_color_down,16);
+	cylinder[2] = new Cylinder(5, 3, 2, cy_color_up, cy_color_down,2);		//wrist
 	cylinder[2]->generateObjectBuffer(shaderProgramID);
 
-	cylinder[3] = new Cylinder(1, 0.8, 0.8, cy_color_up, cy_color_down,16);
+	cylinder[3] = new Cylinder(1, 0.5, 0.5, cy_color_up, cy_color_down,16);		//effector
 	cylinder[3]->generateObjectBuffer(shaderProgramID);
+
+	//1 finger
+	cylinder[4] = new Cylinder(1.25, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[4]->generateObjectBuffer(shaderProgramID);
+	cylinder[5] = new Cylinder(1.25, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[5]->generateObjectBuffer(shaderProgramID);
+	cylinder[6] = new Cylinder(1.25, 0.4, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[6]->generateObjectBuffer(shaderProgramID);
+
+	//2 finger
+	cylinder[7] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[7]->generateObjectBuffer(shaderProgramID);
+	cylinder[8] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[8]->generateObjectBuffer(shaderProgramID);
+	cylinder[9] = new Cylinder(1.5, 0.4, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[9]->generateObjectBuffer(shaderProgramID);
+
+	//3 finger
+	cylinder[10] = new Cylinder(1.75, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[10]->generateObjectBuffer(shaderProgramID);
+	cylinder[11] = new Cylinder(1.75, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[11]->generateObjectBuffer(shaderProgramID);
+	cylinder[12] = new Cylinder(1.75, 0.4, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[12]->generateObjectBuffer(shaderProgramID);
+
+	//4 finger
+	cylinder[13] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[13]->generateObjectBuffer(shaderProgramID);
+	cylinder[14] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[14]->generateObjectBuffer(shaderProgramID);
+	cylinder[15] = new Cylinder(1.5, 0.4, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[15]->generateObjectBuffer(shaderProgramID);
+
+	//5 finger
+	cylinder[16] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[16]->generateObjectBuffer(shaderProgramID);
+	cylinder[17] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[17]->generateObjectBuffer(shaderProgramID);
+	cylinder[18] = new Cylinder(1.5, 0.4, 0.6, cy_color_up, cy_color_down,16);
+	cylinder[18]->generateObjectBuffer(shaderProgramID);
 }
 
 void ArmSkeleton::updateArmMesh(GLuint shaderProgramID)
@@ -80,7 +200,9 @@ void ArmSkeleton::updateArmMesh(GLuint shaderProgramID)
 	//handNode[0]->localTransformation = glm::rotate(handNode[0]->offset, 45.0f, glm::vec3(1,0,0));
 	//handNode[1]->localTransformation = glm::rotate(handNode[1]->offset, 45.0f, glm::vec3(0,-1,0));
 
-	for (int i = 0; i < 4; i++)
+
+
+	for (int i = 0; i < HAND_NODE_NUM; i++)
 	{
 // 		if (handNode[i]->id == 0)
 // 		{
@@ -98,9 +220,9 @@ void ArmSkeleton::updateArmMesh(GLuint shaderProgramID)
 
 void ArmSkeleton::updateArmTarget(GLuint shaderProgramID)
 {
-	static double lastTime = glfwGetTime();
-	double currentTime = glfwGetTime();
-	float deltaTime = float(currentTime - lastTime);
+// 	static double lastTime = glfwGetTime();
+// 	double currentTime = glfwGetTime();
+// 	float deltaTime = float(currentTime - lastTime);
 
 	// Move y up
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_UP ) == GLFW_PRESS){
@@ -152,7 +274,53 @@ void ArmSkeleton::updateArmTarget(GLuint shaderProgramID)
 
 void ArmSkeleton::calcGlobalTransformation()
 {
-	for (int i = 0 ; i < 4 ; i++)
+// 	if(timeFlag)
+// 	{
+// 		deltaTime++;
+// 		if (deltaTime > 30)
+// 		{
+// 			timeFlag = false;
+// 		}
+// 	}
+// 	if (!timeFlag)
+// 	{
+// 		deltaTime--;
+// 		if (deltaTime < 0)
+// 		{
+// 			timeFlag = true;
+// 
+// 		}
+// 	}
+
+	if (endToTargeDistance < 2.0f)
+	{
+		for (int i = 4; i < 19; i++)
+		{
+			handNode[i]->localTransformation = glm::rotate(handNode[i]->offset, deltaTime, glm::vec3(-1,0,0));
+		}
+		deltaTime += 0.1f;
+		if (deltaTime > 30.0f)
+		{
+			deltaTime = 30.0f;
+		}
+	}
+
+	if (endToTargeDistance >= 2.0f)
+	{
+		for (int i = 4; i < 19; i++)
+		{
+			handNode[i]->localTransformation = glm::rotate(handNode[i]->offset, deltaTime, glm::vec3(-1,0,0));
+		}
+		deltaTime -= 0.1f;
+		if (deltaTime < 0.0f)
+		{
+			deltaTime = 0.0f;
+		}
+	}
+
+	handNode[16]->localTransformation = glm::rotate(handNode[16]->offset, 25.0f, glm::vec3(0,0,1));
+
+	for (int i = 0 ; i < HAND_NODE_NUM ; i++)
 	{
 		if (handNode[i]->id == 0)
 		{
@@ -174,6 +342,7 @@ bool ArmSkeleton::calculateInverseKinematics()
 			CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
 			calcGlobalTransformation();
 		}
+		calcEffectorToTargetDistance();
 		if ( endToTargeDistance <= IK_POS_THRESH)
 		{
 			return true;
@@ -198,7 +367,7 @@ void ArmSkeleton::CCDIKSolve(Bone* bone, Bone* effector, glm::vec3 armTargetPos,
 
 	float cosAngle = glm::dot(targetVectorNor, endVectorNor);
 
-	if (cosAngle < 0.999 && cosAngle > -0.999)
+	if (cosAngle < 0.99999 && cosAngle > -0.99999)
 	{
 		// USE THE CROSS PRODUCT TO CHECK WHICH WAY TO ROTATE
 		float norm_u_norm_v = glm::sqrt( glm::dot(targetVector, targetVector) * glm::dot(endVector, endVector));
@@ -239,8 +408,6 @@ void ArmSkeleton::CCDIKSolve(Bone* bone, Bone* effector, glm::vec3 armTargetPos,
 
 	}
 
-	endToTargeDistance = glm::distance(effectorPos, armTargetPos);
-
 	if (bone->parent)
 	{
 		CCDIKSolve(bone->parent, effector, armTargetPos, iterNum);
@@ -275,4 +442,9 @@ void ArmSkeleton::checkDOFRestrictions(Bone* bone)
 // 
 // 	// BACK TO QUATERNION
 // 	EulerToQuaternion(&euler, &link->quat);
+}
+
+void ArmSkeleton::calcEffectorToTargetDistance()
+{
+	 endToTargeDistance = glm::distance(glm::vec3(handNode[3]->globalTransformation[3][0], handNode[3]->globalTransformation[3][1], handNode[3]->globalTransformation[3][2]), armTargetPos);
 }
