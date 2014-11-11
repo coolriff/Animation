@@ -41,3 +41,13 @@ glm::vec3 Bone::getPos(Bone* bone)
 {
 	return bone->pos;
 }
+
+void Bone::setDOF(float max_rx, float min_rx, float max_ry, float min_ry, float max_rz, float min_rz)
+{
+	this->max_rx = max_rx;
+	this->min_rx = min_rx;
+	this->max_ry = max_ry;
+	this->min_ry = min_ry;
+	this->max_rz = max_rz;
+	this->min_rz = min_rz;
+}

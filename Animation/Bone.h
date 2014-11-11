@@ -22,9 +22,17 @@ public:
 	Bone* parent;
 	float damp_width;
 	int chilrenSize;
+	float max_rx;
+	float min_rx;
+	float max_ry;
+	float min_ry;
+	float max_rz;
+	float min_rz;
+
 	Bone* createBone(int ID, glm::vec3 pos, float damp_width);
 	void addChild(Bone* child);
 	void addParent(Bone* parent);
 	int getID(Bone* bone);
 	glm::vec3 getPos(Bone* bone);
+	void setDOF(float max_rx, float min_rx, float max_ry, float min_ry, float max_rz, float min_rz);
 };

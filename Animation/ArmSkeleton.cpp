@@ -16,6 +16,10 @@ ArmSkeleton::ArmSkeleton(Setup* m_setup)
 	speed = 15.0f;
 	armTargetPos = glm::vec3(10,-10,10);
 	joint2TargetPos = 1000.0f;
+	tempX = 0.0f;
+	tempY = 0.0f;
+	tempZ = 0.0f;
+	deltaT = 0;
 }
 
 
@@ -25,13 +29,14 @@ ArmSkeleton::~ArmSkeleton(void)
 
 void ArmSkeleton::createArmNode()
 {
-	//	handNode[3] = bone->createBone(3,glm::vec3(0,5,0),0.0f);	//effector
-
-
-	handNode[0] = bone->createBone(0,glm::vec3(0,0,0),90.0f);	//upper arm
-	handNode[1] = bone->createBone(1,glm::vec3(0,12,0),90.0f);	//lower arm
-	handNode[2] = bone->createBone(2,glm::vec3(0,12,0),180.0f);	//wrist arm
+	handNode[0] = bone->createBone(0,glm::vec3(0,0,0),0.0f);	//upper arm
+	handNode[1] = bone->createBone(1,glm::vec3(0,12,0),0.0f);	//lower arm
+	handNode[2] = bone->createBone(2,glm::vec3(0,12,0),0.0f);	//wrist arm
 	handNode[3] = bone->createBone(3,glm::vec3(0,5,0),0.0f);	//effector
+
+	handNode[0]->setDOF(90.0f,-90.0f,90.0f,-90.0f,90.0f,-90.0f);
+	handNode[1]->setDOF(90.0f,-90.0f,90.0f,-90.0f,90.0f,-90.0f);
+	handNode[2]->setDOF(45.0f,-45.0f,45.0f,-45.0f,45.0f,-45.0f);
 
 	//1
 	handNode[4] = bone->createBone(4,glm::vec3(2.4,0,0),0.0f); 
@@ -119,8 +124,6 @@ void ArmSkeleton::createArmNode()
 	handNode[17]->parent = handNode[16];
 	handNode[18]->parent = handNode[17];
 
-
-
 	for (int i = 0 ; i < HAND_NODE_NUM ; i++)
 	{
 		if (handNode[i]->id == 0)
@@ -142,10 +145,10 @@ void ArmSkeleton::drawArmMesh(GLuint shaderProgramID)
 	armTarget = new Cylinder(1, 0.5, 0.5, cy_color_up, cy_color_down,4);
 	armTarget->generateObjectBuffer(shaderProgramID);
 
-	cylinder[0] = new Cylinder(12, 0.4, 0.8, cy_color_up, cy_color_down,16);	//upper arm
+	cylinder[0] = new Cylinder(12, 0.5, 1, cy_color_up, cy_color_down,16);	//upper arm
 	cylinder[0]->generateObjectBuffer(shaderProgramID);
 
-	cylinder[1] = new Cylinder(12, 0.4, 0.8, cy_color_up, cy_color_down,16);	//lower arm
+	cylinder[1] = new Cylinder(12, 0.5, 1, cy_color_up, cy_color_down,16);	//lower arm
 	cylinder[1]->generateObjectBuffer(shaderProgramID);
 
 	cylinder[2] = new Cylinder(5, 3, 2, cy_color_up, cy_color_down,2);		//wrist
@@ -200,8 +203,6 @@ void ArmSkeleton::updateArmMesh(GLuint shaderProgramID)
 	//handNode[0]->localTransformation = glm::rotate(handNode[0]->offset, 45.0f, glm::vec3(1,0,0));
 	//handNode[1]->localTransformation = glm::rotate(handNode[1]->offset, 45.0f, glm::vec3(0,-1,0));
 
-
-
 	for (int i = 0; i < HAND_NODE_NUM; i++)
 	{
 // 		if (handNode[i]->id == 0)
@@ -220,55 +221,72 @@ void ArmSkeleton::updateArmMesh(GLuint shaderProgramID)
 
 void ArmSkeleton::updateArmTarget(GLuint shaderProgramID)
 {
-// 	static double lastTime = glfwGetTime();
-// 	double currentTime = glfwGetTime();
-// 	float deltaTime = float(currentTime - lastTime);
 
 	// Move y up
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_UP ) == GLFW_PRESS){
-		armTargetPos.y += 0.1;
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_UP ) == GLFW_PRESS){
+// 		armTargetPos.y += 0.1;
+// 	}
+// 
+// 	// Move y down
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_DOWN ) == GLFW_PRESS){
+// 		armTargetPos.y -= 0.1;
+// 	}
+// 
+// 	// Move x right
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_RIGHT ) == GLFW_PRESS){
+// 		armTargetPos.x += 0.1;
+// 	}
+// 
+// 	// Move x left
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_LEFT ) == GLFW_PRESS){
+// 		armTargetPos.x -= 0.1;
+// 	}
+// 
+// 	// Move z forward
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_I ) == GLFW_PRESS){
+// 		armTargetPos.z -= 0.1;
+// 	}
+// 
+// 	// Move z backward
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_K ) == GLFW_PRESS){
+// 		armTargetPos.z += 0.1;
+// 	}
+// 
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_Z ) == GLFW_PRESS){
+// 		CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
+// 	}
+// 
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_X ) == GLFW_PRESS){
+// 		CCDIKSolve(handNode[1], handNode[3], armTargetPos, 0);
+// 	}
+// 
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_C ) == GLFW_PRESS){
+// 		CCDIKSolve(handNode[0], handNode[3], armTargetPos, 0);
+//	}
+
+	deltaT+=0.004;
+	if(deltaT >=1)
+	{
+		deltaT = 0;
 	}
 
-	// Move y down
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_DOWN ) == GLFW_PRESS){
-		armTargetPos.y -= 0.1;
-	}
-
-	// Move x right
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_RIGHT ) == GLFW_PRESS){
-		armTargetPos.x += 0.1;
-	}
-
-	// Move x left
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_LEFT ) == GLFW_PRESS){
-		armTargetPos.x -= 0.1;
-	}
-
-	// Move z forward
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_I ) == GLFW_PRESS){
-		armTargetPos.z -= 0.1;
-	}
-
-	// Move z backward
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_K ) == GLFW_PRESS){
-		armTargetPos.z += 0.1;
-	}
-
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_Z ) == GLFW_PRESS){
-		CCDIKSolve(handNode[2], handNode[3], armTargetPos, 0);
-	}
-
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_X ) == GLFW_PRESS){
-		CCDIKSolve(handNode[1], handNode[3], armTargetPos, 0);
-	}
-
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_C ) == GLFW_PRESS){
-		CCDIKSolve(handNode[0], handNode[3], armTargetPos, 0);
-	}
+	armTargetPos = interpolateCubic(deltaT, glm::vec3(10,10,10), glm::vec3(10,30,-20),  glm::vec3(40,30,10), glm::vec3(10,10,10));
 
 	armTargetTransformation = glm::translate(glm::mat4(1),glm::vec3(armTargetPos.x,armTargetPos.y-3,armTargetPos.z));
 	armTarget->update(armTargetTransformation, shaderProgramID);
 	armTarget->draw();
+}
+
+glm::vec3 ArmSkeleton::interpolateCubic(float deltaTime, glm::vec3 beingPos, glm::vec3 point1,  glm::vec3 point2, glm::vec3 endPos)
+{
+	//here get the spine formula
+	float countSpine = deltaTime * deltaTime;
+	glm::vec3 tem1 = endPos - point2 - beingPos + point1;
+	glm::vec3 tem2 = beingPos - point1 - tem1;
+	glm::vec3 tem3 = point2 - beingPos;
+	// translateVector = tem1 * counter * countSpine + tem2 * countSpine + tem3 * counter + point1;
+	//bezier curve:
+	return pow(1-deltaTime,3)*beingPos+3*deltaTime*pow(1-deltaTime,2)*point1+3*pow(deltaTime,2)*(1-deltaTime)*point2+pow(deltaTime,3)*endPos;
 }
 
 
@@ -392,12 +410,17 @@ void ArmSkeleton::CCDIKSolve(Bone* bone, Bone* effector, glm::vec3 armTargetPos,
 		float turnDeg = glm::degrees(turnAngle); // COVERT TO DEGREES
 
 		// DAMPING
-		if (turnDeg > bone->damp_width)
-		{
-			turnDeg = bone->damp_width;
-		}
+// 		if (turnDeg > bone->damp_width)
+// 		{
+// 			turnDeg = bone->damp_width;
+// 		}
 
-		glm::mat4 rot =  glm::toMat4(glm::angleAxis(turnDeg, crossResult));
+		glm::quat eulerRot = glm::angleAxis(turnDeg, crossResult);
+
+		eulerRot = checkDOFRestrictions(bone, eulerRot);
+
+		glm::mat4 rot =  glm::toMat4(eulerRot);
+		
 		bone->localTransformation *= rot;
 
 		// 				// HANDLE THE DOF RESTRICTIONS IF I WANT THEM
@@ -415,7 +438,7 @@ void ArmSkeleton::CCDIKSolve(Bone* bone, Bone* effector, glm::vec3 armTargetPos,
 }
 
 
-void ArmSkeleton::checkDOFRestrictions(Bone* bone)
+glm::quat ArmSkeleton::checkDOFRestrictions(Bone* bone, glm::quat rot)
 {
 // 	/// Local Variables ///////////////////////////////////////////////////////////
 // 	tVector		euler;		// PLACE TO STORE EULER ANGLES
@@ -442,6 +465,57 @@ void ArmSkeleton::checkDOFRestrictions(Bone* bone)
 // 
 // 	// BACK TO QUATERNION
 // 	EulerToQuaternion(&euler, &link->quat);
+
+	glm:: vec3 tempEuler = glm::eulerAngles(rot) * 3.14159f / 180.0f;
+
+// 	float tempX,tempY,tempZ;
+// 	float DOF_x,DOF_y,DOF_z;
+
+// 	DOF_x = bone->max_rx - tempX;
+// 
+// 	if (tempEuler.x < bone->max_rx)
+// 	{
+// 		DOF_x = bone->max_rx - tempEuler.x;
+// 	}
+// 
+// 	if (tempEuler.x == bone->max_rx)
+// 	{
+// 		tempEuler.x = 0.0f;
+// 	}
+// 
+// 	if (tempEuler.x > bone->max_rx)
+// 	{
+// 		tempEuler.x = DOF_x;
+// 	}
+
+	if (tempEuler.x > bone->max_rx)
+	{
+		tempEuler.x = bone->max_rx;
+	}
+	if (tempEuler.x < bone->min_rx)
+	{
+		tempEuler.x = bone->min_rx;
+	}
+
+	if (tempEuler.y > bone->max_ry)
+	{
+		tempEuler.y = bone->max_ry;
+	}
+	if (tempEuler.y > bone->max_ry)
+	{
+		tempEuler.y = bone->max_ry;
+	}
+
+	if (tempEuler.z > bone->max_rz)
+	{
+		tempEuler.z = bone->max_rz;
+	}
+	if (tempEuler.z > bone->max_rz)
+	{
+		tempEuler.z = bone->max_rz;
+	}
+
+	return rot = glm::quat(tempEuler);
 }
 
 void ArmSkeleton::calcEffectorToTargetDistance()
