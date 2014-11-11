@@ -41,8 +41,7 @@ public:
 	void drawArmMesh(GLuint shaderProgramID);
 	void updateArmMesh(GLuint shaderProgramID);
 	void updateArmTarget(GLuint shaderProgramID);
-	void CCDIKSolve(Bone* bone, Bone* effector, glm::vec3 armTargetPos, int iterNum);
-	bool calculateInverseKinematics();
+	void calculateInverseKinematics();
 	void calcGlobalTransformation();
 	glm::quat checkDOFRestrictions(Bone* bone, glm::quat rot);
 	void calcEffectorToTargetDistance();

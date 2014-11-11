@@ -24,6 +24,5 @@ ArmSkeleton.cpp(267): warning C4305: '+=' : truncation from 'double' to 'float'
   GLM: yaw function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   GLM: roll function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   Generating code
-c:\animation\animation\armskeleton.cpp(373): warning C4715: 'ArmSkeleton::calculateInverseKinematics' : not all control paths return a value
   Finished generating code
   Animation.vcxproj -> C:\Animation\Release\Animation.exe
