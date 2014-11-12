@@ -17,7 +17,12 @@ c:\animation\animation\armskeleton.cpp(191): warning C4305: 'argument' : truncat
 c:\animation\animation\armskeleton.cpp(195): warning C4305: 'argument' : truncation from 'double' to 'const float'
 c:\animation\animation\armskeleton.cpp(197): warning C4305: 'argument' : truncation from 'double' to 'const float'
 c:\animation\animation\armskeleton.cpp(199): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\armskeleton.cpp(244): warning C4305: '+=' : truncation from 'double' to 'float'
+c:\animation\animation\armskeleton.cpp(216): warning C4305: '+=' : truncation from 'double' to 'float'
+c:\animation\animation\armskeleton.cpp(221): warning C4305: '-=' : truncation from 'double' to 'float'
+c:\animation\animation\armskeleton.cpp(226): warning C4305: '+=' : truncation from 'double' to 'float'
+c:\animation\animation\armskeleton.cpp(231): warning C4305: '-=' : truncation from 'double' to 'float'
+c:\animation\animation\armskeleton.cpp(236): warning C4305: '-=' : truncation from 'double' to 'float'
+c:\animation\animation\armskeleton.cpp(241): warning C4305: '+=' : truncation from 'double' to 'float'
   GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   GLM: angleAxis function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   GLM: pitch function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.

@@ -1,6 +1,6 @@
 #include "ArmSkeleton.h"
 #define EFFECTOR_POS 3
-#define MAX_IK_TRIES 100
+#define MAX_IK_TRIES 10
 #define IK_POS_THRESH 0.5f
 #define HAND_NODE_NUM 19
 
@@ -204,50 +204,53 @@ void ArmSkeleton::updateArmMesh(GLuint shaderProgramID)
 {
 	for (int i = 0; i < HAND_NODE_NUM; i++)
 	{
-		cylinder[i]->update(handNode[i]->globalTransformation, shaderProgramID);
-		cylinder[i]->draw();
+		if (i != 3)
+		{
+			cylinder[i]->update(handNode[i]->globalTransformation, shaderProgramID);
+			cylinder[i]->draw();
+		}
 	}
 }
 
 void ArmSkeleton::updateArmTarget(GLuint shaderProgramID)
 {
-// 	//Move y up
-// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_UP ) == GLFW_PRESS){
-// 		armTargetPos.y += 0.3;
-// 	}
-// 
-// 	// Move y down
-// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_DOWN ) == GLFW_PRESS){
-// 		armTargetPos.y -= 0.3;
-// 	}
-// 
-// 	// Move x right
-// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_RIGHT ) == GLFW_PRESS){
-// 		armTargetPos.x += 0.3;
-// 	}
-// 
-// 	// Move x left
-// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_LEFT ) == GLFW_PRESS){
-// 		armTargetPos.x -= 0.3;
-// 	}
-// 
-// 	// Move z forward
-// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_I ) == GLFW_PRESS){
-// 		armTargetPos.z -= 0.3;
-// 	}
-// 
-// 	// Move z backward
-// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_K ) == GLFW_PRESS){
-// 		armTargetPos.z += 0.3;
-// 	}
-
-	deltaT+=0.004;
-	if(deltaT >=1)
-	{
-		deltaT = 0;
+	//Move y up
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_UP ) == GLFW_PRESS){
+		armTargetPos.y += 0.3;
 	}
 
-	armTargetPos = interpolateCubic(deltaT, glm::vec3(10,10,10), glm::vec3(10,30,-20),  glm::vec3(40,30,10), glm::vec3(10,10,10));
+	// Move y down
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_DOWN ) == GLFW_PRESS){
+		armTargetPos.y -= 0.3;
+	}
+
+	// Move x right
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_RIGHT ) == GLFW_PRESS){
+		armTargetPos.x += 0.3;
+	}
+
+	// Move x left
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_LEFT ) == GLFW_PRESS){
+		armTargetPos.x -= 0.3;
+	}
+
+	// Move z forward
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_I ) == GLFW_PRESS){
+		armTargetPos.z -= 0.3;
+	}
+
+	// Move z backward
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_K ) == GLFW_PRESS){
+		armTargetPos.z += 0.3;
+	}
+
+// 	deltaT+=0.004;
+// 	if(deltaT >=1)
+// 	{
+// 		deltaT = 0;
+// 	}
+// 
+// 	armTargetPos = interpolateCubic(deltaT, glm::vec3(10,10,10), glm::vec3(10,30,-20),  glm::vec3(40,30,10), glm::vec3(10,10,10));
 
 	armTargetTransformation = glm::translate(glm::mat4(1),glm::vec3(armTargetPos.x,armTargetPos.y-3,armTargetPos.z));
 	armTarget->update(armTargetTransformation, shaderProgramID);
@@ -269,7 +272,7 @@ void ArmSkeleton::calcGlobalTransformation()
 			handNode[i]->localTransformation = glm::rotate(handNode[i]->offset, deltaTime, glm::vec3(-1,0,0));
 		}
 		deltaTime += 0.1f;
-		if (deltaTime > 30.0f)
+		if (deltaTime > 40.0f)
 		{
 			deltaTime = 30.0f;
 		}
@@ -296,7 +299,7 @@ void ArmSkeleton::calcGlobalTransformation()
 		{
 			handNode[i]->globalTransformation = handNode[i]->localTransformation;
 		}
-		else
+		else 
 		{
 			handNode[i]->globalTransformation = handNode[i]->parent->globalTransformation * handNode[i]->localTransformation;
 		}
