@@ -42,7 +42,7 @@ glm::vec3 Bone::getPos(Bone* bone)
 	return bone->pos;
 }
 
-void Bone::setDOF(float max_rx, float min_rx, float max_ry, float min_ry, float max_rz, float min_rz)
+void Bone::setJointLimit(float max_rx, float min_rx, float max_ry, float min_ry, float max_rz, float min_rz)
 {
 	this->max_rx = max_rx;
 	this->min_rx = min_rx;

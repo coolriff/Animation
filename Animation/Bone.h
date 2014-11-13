@@ -28,11 +28,14 @@ public:
 	float min_ry;
 	float max_rz;
 	float min_rz;
+	float currentXPos;
+	float currentYPos;
+	float currentZPos;
 
 	Bone* createBone(int ID, glm::vec3 pos, float damp_width);
 	void addChild(Bone* child);
 	void addParent(Bone* parent);
 	int getID(Bone* bone);
 	glm::vec3 getPos(Bone* bone);
-	void setDOF(float max_rx, float min_rx, float max_ry, float min_ry, float max_rz, float min_rz);
+	void setJointLimit(float max_rx, float min_rx, float max_ry, float min_ry, float max_rz, float min_rz);
 };

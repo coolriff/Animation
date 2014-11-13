@@ -32,7 +32,7 @@ public:
 	glm::mat4 armTargetTransformation;
 	float joint2TargetPos;
 	float endToTargeDistance;
-	float tempX,tempY,tempZ;
+	float currentXPos,currentYPos,currentZPos;
 	float DOF_x,DOF_y,DOF_z;
 	float deltaT;
 
@@ -43,7 +43,7 @@ public:
 	void updateArmTarget(GLuint shaderProgramID);
 	void calculateInverseKinematics();
 	void calcGlobalTransformation();
-	glm::quat checkDOFRestrictions(Bone* bone, glm::quat rot);
+	glm::quat calcJointLimit(Bone* bone, glm::vec3 angles);
 	void calcEffectorToTargetDistance();
 	glm::vec3 interpolateCubic(float deltaTime, glm::vec3 beingPos, glm::vec3 point1,  glm::vec3 point2, glm::vec3 endPos);
 };
