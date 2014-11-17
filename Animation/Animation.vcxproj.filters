@@ -48,6 +48,9 @@
     <ClCompile Include="ArmSkeleton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Lab3Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="diffuse.ps">
@@ -91,5 +94,12 @@
     <ClInclude Include="ArmSkeleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Lab3Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="simpleFragmentShader.txt" />
+    <Text Include="simpleVertexShader.txt" />
   </ItemGroup>
 </Project>

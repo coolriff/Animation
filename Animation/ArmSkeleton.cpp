@@ -17,6 +17,7 @@ ArmSkeleton::ArmSkeleton(Setup* m_setup)
 	armTargetPos = glm::vec3(0,-29,0);
 	joint2TargetPos = 1000.0f;
 	deltaT = 0;
+	targetLoops = false;
 }
 
 
@@ -66,8 +67,6 @@ void ArmSkeleton::createArmNode()
 	handNode[13] = bone->createBone(13,glm::vec3(-2.4,0,0),0.0f); 
 	handNode[14] = bone->createBone(14,glm::vec3(0,1.25,0),0.0f);
 	handNode[15] = bone->createBone(15,glm::vec3(0,1.25,0),0.0f);
-
-
 
 	//5
 	handNode[16] = bone->createBone(16,glm::vec3(3.5,-2.5,0),0.0f); 
@@ -263,12 +262,31 @@ void ArmSkeleton::updateArmTarget(GLuint shaderProgramID)
 	}
 
 	deltaT+=0.004;
-	if(deltaT >=1)
+	if(deltaT >= 1)
 	{
 		deltaT = 0;
 	}
 
-	armTargetPos = interpolateCubic(deltaT, glm::vec3(10,10,10), glm::vec3(10,30,-20),  glm::vec3(40,30,10), glm::vec3(10,10,10));
+	if (targetLoops == false)
+	{
+		armTargetPos = interpolateCubic(deltaT, glm::vec3(20,50,15), glm::vec3(130,0,15), glm::vec3(-130,0,15), glm::vec3(-30,10,10));
+
+		if (armTargetPos == glm::vec3(-30,10,10))
+		{
+			targetLoops = true;
+		}
+	}
+
+	if (targetLoops == true)
+	{
+		armTargetPos = interpolateCubic(deltaT, glm::vec3(-30,10,10), glm::vec3(-20,-10,10),
+			glm::vec3(15,-20,-10), glm::vec3(20,50,15));
+
+		if (armTargetPos == glm::vec3(20,50,15))
+		{
+			targetLoops = false;
+		}
+	}
 
 	armTargetTransformation = glm::translate(glm::mat4(1),glm::vec3(armTargetPos.x,armTargetPos.y-3,armTargetPos.z));
 	armTarget->update(armTargetTransformation, shaderProgramID);
@@ -276,7 +294,7 @@ void ArmSkeleton::updateArmTarget(GLuint shaderProgramID)
 }
 
 
-glm::vec3 ArmSkeleton::interpolateCubic(float deltaTime, glm::vec3 beingPos, glm::vec3 point1,  glm::vec3 point2, glm::vec3 endPos)
+glm::vec3 ArmSkeleton::interpolateCubic(float deltaTime, glm::vec3 beingPos, glm::vec3 point1,glm::vec3 point2, glm::vec3 endPos)
 {
 	glm::vec3 p1,p2,p3,p4;
 
@@ -286,6 +304,11 @@ glm::vec3 ArmSkeleton::interpolateCubic(float deltaTime, glm::vec3 beingPos, glm
 	p4 = beingPos;
 
 	return (p1 * pow(deltaTime,3) + p2 * pow(deltaTime,2) + p3 * pow(deltaTime,1) + p4);
+}
+
+glm::vec3 ArmSkeleton::interpolateCubic_2(float deltaTime, glm::vec3 beingPos,glm::vec3 point1,  glm::vec3 point2, glm::vec3 endPos)
+{
+	return pow(1-deltaTime,3)*beingPos+3*deltaTime*pow(1-deltaTime,2)*point1+3*pow(deltaTime,2)*(1-deltaTime)*point2+pow(deltaTime,3)*endPos;
 }
 
 
@@ -325,7 +348,7 @@ void ArmSkeleton::calcGlobalTransformation()
 		{
 			handNode[i]->globalTransformation = handNode[i]->localTransformation;
 		}
-		else 
+		else
 		{
 			handNode[i]->globalTransformation = handNode[i]->parent->globalTransformation * handNode[i]->localTransformation;
 		}
@@ -504,5 +527,5 @@ glm::quat ArmSkeleton::calcJointLimit(Bone* bone, glm::vec3 angles)
 
 void ArmSkeleton::calcEffectorToTargetDistance()
 {
-	 endToTargeDistance = glm::distance(glm::vec3(handNode[3]->globalTransformation[3][0], handNode[3]->globalTransformation[3][1], handNode[3]->globalTransformation[3][2]), armTargetPos);
+	 endToTargeDistance = glm::distance(glm::vec3(handNode[3]->globalTransformation[3][0],handNode[3]->globalTransformation[3][1], handNode[3]->globalTransformation[3][2]), armTargetPos);
 }

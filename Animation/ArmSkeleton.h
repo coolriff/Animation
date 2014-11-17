@@ -35,6 +35,7 @@ public:
 	float currentXPos,currentYPos,currentZPos;
 	float DOF_x,DOF_y,DOF_z;
 	float deltaT;
+	bool targetLoops;
 
 
 	void createArmNode();
@@ -46,5 +47,6 @@ public:
 	glm::quat calcJointLimit(Bone* bone, glm::vec3 angles);
 	void calcEffectorToTargetDistance();
 	glm::vec3 interpolateCubic(float deltaTime, glm::vec3 beingPos, glm::vec3 point1,  glm::vec3 point2, glm::vec3 endPos);
+	glm::vec3 interpolateCubic_2(float deltaTime, glm::vec3 beingPos, glm::vec3 point1,  glm::vec3 point2, glm::vec3 endPos);
 };
 

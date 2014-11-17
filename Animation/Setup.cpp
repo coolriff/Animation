@@ -43,13 +43,14 @@ void Setup::setupGlfwGlew()
 // 	glfwGetWindowSize(window, &width, &height);
  	glfwSetCursorPos(window, 1024/2, 768/2);
 
-	glClearColor(0.0f, 0.2f, 0.2f, 0.0f);
+
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS); 
+	glClearColor(0.0f, 0.2f, 0.2f, 0.0f);
 
-	// Cull triangles which normal is not towards the camera
-	glEnable(GL_CULL_FACE);
+// 	// Cull triangles which normal is not towards the camera
+// 	glEnable(GL_CULL_FACE);
 }
 
 void Setup::cleanUp()

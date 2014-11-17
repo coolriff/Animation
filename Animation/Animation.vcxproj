@@ -90,6 +90,7 @@
     <ClCompile Include="Lab1.cpp" />
     <ClCompile Include="Lab2.cpp" />
     <ClCompile Include="Lab3.cpp" />
+    <ClCompile Include="Lab3Model.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjectBuffer.cpp" />
     <ClCompile Include="Setup.cpp" />
@@ -108,10 +109,15 @@
     <ClInclude Include="Lab1.h" />
     <ClInclude Include="Lab2.h" />
     <ClInclude Include="Lab3.h" />
+    <ClInclude Include="Lab3Model.h" />
     <ClInclude Include="ObjectBuffer.h" />
     <ClInclude Include="Setup.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skeleton.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="simpleFragmentShader.txt" />
+    <Text Include="simpleVertexShader.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
