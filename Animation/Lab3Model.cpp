@@ -1,4 +1,5 @@
 #include "Lab3Model.h"
+#include <Windows.h>
 
 
 Lab3Model::Lab3Model(void)
@@ -8,6 +9,7 @@ Lab3Model::Lab3Model(void)
 	m_objectBuffer = new ObjectBuffer(36);
 	m_camera = new Camera(m_setup);
 	point_count = 0;
+	m_pEffect = new SkinningTechnique();
 }
 
 
@@ -19,29 +21,61 @@ void Lab3Model::run(void)
 {
 	m_setup->setupGlfwGlew();
 
-	initShaders();
+//	initShaders();
 
-	if(!load_mesh("peter.dae", &vao, &point_count, &bone_offset_mats, &bone_count))
-	{
-		printf("load_mesh function crashed !");
+	if (!m_pEffect->Init()) {
+		printf("Error initializing the lighting technique\n");
+	}
+
+	m_pEffect->Enable();
+
+	m_pEffect->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
+	m_pEffect->SetDirectionalLight(m_directionalLight);
+	m_pEffect->SetMatSpecularIntensity(0.0f);
+	m_pEffect->SetMatSpecularPower(0);
+
+	if (!m_mesh.LoadMesh("boblampclean.md5mesh")) {
+		printf("Mesh load failed\n");          
 	}
 
 	do{
 		m_setup->preDraw();
 
-		glUseProgram(m_shader->GetProgramID());
+		m_pEffect->Enable();
 
-		m_camera->computeMatricesFromInputs();
+		vector<Matrix4f> Transforms;
 
-		GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
-		GLuint viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
-		GLuint projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
+		float RunningTime = this->GetRunningTime();
 
-		m_camera->handleMVP(modelLoc, viewLoc, projLoc);
+		m_mesh.BoneTransform(RunningTime, Transforms);
 
-		glUseProgram(m_shader->GetProgramID());
-		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, point_count);
+// 		m_camera->computeMatricesFromInputs();
+// 
+// 		GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
+// 		GLuint viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
+// 		GLuint projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
+// 
+// 		m_camera->handleMVP(modelLoc, viewLoc, projLoc);
+
+		for (uint i = 0 ; i < Transforms.size() ; i++) {
+			m_pEffect->SetBoneTransform(i, Transforms[i]);
+		}
+
+// 		m_pEffect->SetEyeWorldPos(m_pGameCamera->GetPos());
+// 
+// 		Pipeline p;
+// 		p.SetCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());
+// 		p.SetPerspectiveProj(m_persProjInfo);           
+// 		p.Scale(0.1f, 0.1f, 0.1f);                
+// 
+// 		Vector3f Pos(m_position);
+// 		p.WorldPos(Pos);        
+// 		p.Rotate(270.0f, 180.0f, 0.0f);       
+// 		m_pEffect->SetWVP(p.GetWVPTrans());
+// 		m_pEffect->SetWorldMatrix(p.GetWorldTrans());     
+
+
+		m_mesh.Render();
 
 		// Swap buffers
 		glfwSwapBuffers(m_setup->getWindow());
@@ -66,207 +100,20 @@ void Lab3Model::initShaders()
 	printf("shaderProgramID is %d\n",m_shader->GetProgramID());
 }
 
-
-bool Lab3Model::load_mesh(std::string file_name, GLuint* vao, int* point_count, glm::mat4* bone_offset_mats, int* bone_count)
+float Lab3Model::GetRunningTime()
 {
-	const aiScene* scene = importer.ReadFile (file_name, aiProcess_Triangulate);
-
-	if (!scene) 
-	{
-		std::cout << "ERROR: reading mesh - " << file_name << std::endl;
-		return false;
-	}
-
-	std::cout << "Number of animations: " << scene->mNumAnimations << std::endl;
-	std::cout << "Number of meshes: " << scene->mNumMeshes << std::endl;
-	std::cout << "Number of cameras: " << scene->mNumCameras << std::endl;
-	std::cout << "Number of lights: " << scene->mNumLights << std::endl;
-	std::cout << "Number of materials: " << scene->mNumMaterials << std::endl;
-	std::cout << "Number of textures: " << scene->mNumTextures << std::endl;
-
-	/* get first mesh in file only */
-	const aiMesh* mesh = scene->mMeshes[0];
-	std::cout << "Number of vertices in mesh[0]: " << mesh->mNumVertices << std::endl;
-
-	/* pass back number of vertex points in mesh */
-	*point_count = mesh->mNumVertices;
-	int pointNum = *point_count;
-
-	glGenVertexArrays (1, vao);
-	glBindVertexArray (*vao);
-	
-	/* we really need to copy out all the data from AssImp's funny little data
-	structures into pure contiguous arrays before we copy it into data buffers
-	because assimp's texture coordinates are not really contiguous in memory.
-	i allocate some dynamic memory to do this. */
-
-	GLfloat* points = NULL; // array of vertex points
-	GLfloat* normals = NULL; // array of vertex normals
-	GLfloat* texcoords = NULL; // array of texture coordinates
-	GLint* bone_ids = NULL; // array of bone IDs
-	if (mesh->HasPositions ()) 
-	{
-		points = new GLfloat[*point_count * 3 * sizeof (GLfloat)];
-
-		for (int i = 0; i < *point_count; i++) {
-			const aiVector3D* vp = &(mesh->mVertices[i]);
-			points[i * 3] = (GLfloat)vp->x;
-			points[i * 3 + 1] = (GLfloat)vp->y;
-			points[i * 3 + 2] = (GLfloat)vp->z;
-		}
-	}
-	if (mesh->HasNormals ()) 
-	{
-		normals = new GLfloat[*point_count * 3 * sizeof (GLfloat)];
-
-		for (int i = 0; i < *point_count; i++) 
-		{
-			const aiVector3D* vn = &(mesh->mNormals[i]);
-			normals[i * 3] = (GLfloat)vn->x;
-			normals[i * 3 + 1] = (GLfloat)vn->y;
-			normals[i * 3 + 2] = (GLfloat)vn->z;
-		}
-	}
-	if (mesh->HasTextureCoords (0)) 
-	{
-		texcoords = new GLfloat[*point_count * 2 * sizeof (GLfloat)];
-
-		for (int i = 0; i < *point_count; i++) {
-			const aiVector3D* vt = &(mesh->mTextureCoords[0][i]);
-			texcoords[i * 2] = (GLfloat)vt->x;
-			texcoords[i * 2 + 1] = (GLfloat)vt->y;
-		}
-	}
-
-		/* extract bone weights */
-	if (mesh->HasBones ()) {
-		*bone_count = (int)mesh->mNumBones;
-
-		int boneNum = *bone_count;
-		/* an array of bones names. max 256 bones, max name length 64 */
-		char bone_names[256][64];
-		
-		/* here I allocate an array of per-vertex bone IDs.
-		each vertex must know which bone(s) affect it
-		here I simplify, and assume that only one bone can affect each vertex,
-		so my array is only one-dimensional
-		*/
-		bone_ids = (int*)malloc (pointNum * sizeof(int));
-
-		std::string bName;
-		int num_weights;
-
-		
-		for (int b_i = 0; b_i < boneNum; b_i++) 
-		{
-			const aiBone* bone = mesh->mBones[b_i];
-
-			bName = mesh->mBones[b_i]->mName.data;
-			num_weights =  mesh->mBones[b_i]->mNumWeights;
-			
-			/* get bone names */
-			strcpy_s (bone_names[b_i], bone->mName.data);
-
-			std::cout << "Bone_name[ " << b_i << "] = " << bName << std::endl;
-			
-			/* get [inverse] offset matrix for each bone */
-			bone_offset_mats[b_i] = convertAssimpMatrix (bone->mOffsetMatrix);
-			
-			/* get bone weights
-			we can just assume weight is always 1.0, because we are just using 1 bone
-			per vertex. but any bone that affects a vertex will be assigned as the
-			vertex' bone_id */
-			for (int w_i = 0; w_i < num_weights; w_i++) 
-			{
-				aiVertexWeight weight = bone->mWeights[w_i];
-				int vertex_id = (int)weight.mVertexId;
-
-				// ignore weight if less than 0.5 factor
-				if (weight.mWeight >= 0.5f) 
-				{
-					bone_ids[vertex_id] = b_i;
-				}
-			}
-			
-		} // endfor
-		*bone_count = (int)mesh->mNumBones;
-		*point_count = pointNum;
-	} // endif
-
-
-	/* copy mesh data into VBOs */
-	if (mesh->HasPositions ()) 
-	{
-		GLuint vbo;
-		glGenBuffers (1, &vbo);
-		glBindBuffer (GL_ARRAY_BUFFER, vbo);
-		glBufferData (
-			GL_ARRAY_BUFFER,
-			3 * *point_count * sizeof (GLfloat),
-			points,
-			GL_STATIC_DRAW
-			);
-		glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray (0);
-		delete [] points;
-	}
-
-	if (mesh->HasNormals ()) 
-	{
-		GLuint vbo;
-		glGenBuffers (1, &vbo);
-		glBindBuffer (GL_ARRAY_BUFFER, vbo);
-		glBufferData (
-			GL_ARRAY_BUFFER,
-			3 * *point_count * sizeof (GLfloat),
-			normals,
-			GL_STATIC_DRAW
-			);
-		glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray (1);
-		delete [] normals;
-	}
-	if (mesh->HasTextureCoords (0)) {
-		GLuint vbo;
-		glGenBuffers (1, &vbo);
-		glBindBuffer (GL_ARRAY_BUFFER, vbo);
-		glBufferData (
-			GL_ARRAY_BUFFER,
-			2 * *point_count * sizeof (GLfloat),
-			texcoords,
-			GL_STATIC_DRAW
-			);
-		glVertexAttribPointer (2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray (2);
-		delete [] texcoords;
-	}
-	if (mesh->HasBones ()) {
-		GLuint vbo;
-		glGenBuffers (1, &vbo);
-		glBindBuffer (GL_ARRAY_BUFFER, vbo);
-		glBufferData (
-			GL_ARRAY_BUFFER,
-			*point_count * sizeof (GLint),
-			bone_ids,
-			GL_STATIC_DRAW
-			);
-		glVertexAttribIPointer(3, 1, GL_INT, 0, NULL);
-		glEnableVertexAttribArray (3);
-		free (bone_ids);
-	}
-
-	
-	std::cout << "Mesh Loaded" << std::endl;
-
-	return true;
+	float RunningTime = (float)((double)GetCurrentTimeMillis() - (double)m_startTime) / 1000.0f;
+	return RunningTime;
 }
 
 glm::mat4 Lab3Model::convertAssimpMatrix (aiMatrix4x4 m) 
 {
-	return glm::mat4 (
-		m.a1, m.b1, m.c1, m.d1,
-		m.a2, m.b2, m.c2, m.d2,
-		m.a3, m.b3, m.c3, m.d3,
-		m.a4, m.b4, m.c4, m.d4
-		);
+	glm::mat4 to;
+
+	to[0][0] = m.a1; to[0][1] = m.b1; to[0][2] = m.c1; to[0][3] = m.d1;
+	to[1][0] = m.a2; to[1][1] = m.b2; to[1][2] = m.c2; to[1][3] = m.d2;
+	to[2][0] = m.a3; to[2][1] = m.b3; to[2][2] = m.c3; to[2][3] = m.d3;
+	to[3][0] = m.a4; to[3][1] = m.b4; to[3][2] = m.c4; to[3][3] = m.d4;
+
+	return to;
 }
