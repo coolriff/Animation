@@ -33,13 +33,13 @@ void ArmSkeleton::createArmNode()
 	handNode[2] = bone->createBone(2,glm::vec3(0,12,0),0.0f);	//wrist arm
 	handNode[3] = bone->createBone(3,glm::vec3(0,5,0),0.0f);	//effector)
 
-	handNode[0]->setJointLimit(10.0f,-10.0f,10.0f,-10.0f,10.0f,-10.0f);
- handNode[1]->setJointLimit(10.0f,-10.0f,10.0f,-10.0f,10.0f,-10.0f);
- handNode[2]->setJointLimit(10.0f,-10.0f,10.0f,-10.0f,10.0f,-10.0f);
+// 	handNode[0]->setJointLimit(10.0f,-10.0f,10.0f,-10.0f,10.0f,-10.0f);
+//  handNode[1]->setJointLimit(10.0f,-10.0f,10.0f,-10.0f,10.0f,-10.0f);
+//  handNode[2]->setJointLimit(10.0f,-10.0f,10.0f,-10.0f,10.0f,-10.0f);
 
-// 	handNode[0]->setJointLimit(10.0f,-179.0f,90.0f,-10.0f,45.0f,-179.0f);
-// 	handNode[1]->setJointLimit(135.0f,0.0f,90.0f,0.0f,0.0f,0.0f);
-// 	handNode[2]->setJointLimit(75.0f,-75.0f,0.0f,0.0f,45.0f,-45.0f);
+	handNode[0]->setJointLimit(10.0f,-179.0f,90.0f,-10.0f,45.0f,-179.0f);
+	handNode[1]->setJointLimit(135.0f,0.0f,90.0f,0.0f,0.0f,0.0f);
+	handNode[2]->setJointLimit(75.0f,-75.0f,0.0f,0.0f,45.0f,-45.0f);
 
 	for (int i = 0 ; i < 3 ; i++)
 	{
@@ -261,32 +261,32 @@ void ArmSkeleton::updateArmTarget(GLuint shaderProgramID)
 		armTargetPos.z += 0.3;
 	}
 
-// 	deltaT+=0.004;
-// 	if(deltaT >= 1)
-// 	{
-// 		deltaT = 0;
-// 	}
-// 
-// 	if (targetLoops == false)
-// 	{
-// 		armTargetPos = interpolateCubic(deltaT, glm::vec3(20,50,15), glm::vec3(130,0,15), glm::vec3(-130,0,15), glm::vec3(-30,10,10));
-// 
-// 		if (armTargetPos == glm::vec3(-30,10,10))
-// 		{
-// 			targetLoops = true;
-// 		}
-// 	}
-// 
-// 	if (targetLoops == true)
-// 	{
-// 		armTargetPos = interpolateCubic(deltaT, glm::vec3(-30,10,10), glm::vec3(-20,-10,10),
-// 			glm::vec3(15,-20,-10), glm::vec3(20,50,15));
-// 
-// 		if (armTargetPos == glm::vec3(20,50,15))
-// 		{
-// 			targetLoops = false;
-// 		}
-// 	}
+	deltaT+=0.004;
+	if(deltaT >= 1)
+	{
+		deltaT = 0;
+	}
+
+	if (targetLoops == false)
+	{
+		armTargetPos = interpolateCubic(deltaT, glm::vec3(20,50,15), glm::vec3(130,0,15), glm::vec3(-130,0,15), glm::vec3(-30,10,10));
+
+		if (armTargetPos == glm::vec3(-30,10,10))
+		{
+			targetLoops = true;
+		}
+	}
+
+	if (targetLoops == true)
+	{
+		armTargetPos = interpolateCubic(deltaT, glm::vec3(-30,10,10), glm::vec3(-20,-10,10),
+			glm::vec3(15,-20,-10), glm::vec3(20,50,15));
+
+		if (armTargetPos == glm::vec3(20,50,15))
+		{
+			targetLoops = false;
+		}
+	}
 
 	armTargetTransformation = glm::translate(glm::mat4(1),glm::vec3(armTargetPos.x,armTargetPos.y-3,armTargetPos.z));
 	armTarget->update(armTargetTransformation, shaderProgramID);

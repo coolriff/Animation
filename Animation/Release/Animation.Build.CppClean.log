@@ -2,9 +2,7 @@ C:\ANIMATION\ANIMATION\RELEASE\SKELETON.OBJ
 C:\ANIMATION\ANIMATION\RELEASE\SHADER.OBJ
 C:\ANIMATION\ANIMATION\RELEASE\SETUP.OBJ
 C:\ANIMATION\ANIMATION\RELEASE\OBJECTBUFFER.OBJ
-C:\ANIMATION\ANIMATION\RELEASE\MESH.OBJ
 C:\ANIMATION\ANIMATION\RELEASE\MAIN.OBJ
-C:\ANIMATION\ANIMATION\RELEASE\LAB3MODEL.OBJ
 C:\ANIMATION\ANIMATION\RELEASE\LAB3.OBJ
 C:\ANIMATION\ANIMATION\RELEASE\LAB2.OBJ
 C:\ANIMATION\ANIMATION\RELEASE\LAB1.OBJ
@@ -18,9 +16,7 @@ C:\Animation\Animation\Release\Camera.obj
 C:\Animation\Animation\Release\Lab1.obj
 C:\Animation\Animation\Release\Lab2.obj
 C:\Animation\Animation\Release\Lab3.obj
-C:\Animation\Animation\Release\Lab3Model.obj
 C:\Animation\Animation\Release\main.obj
-C:\Animation\Animation\Release\Mesh.obj
 C:\Animation\Animation\Release\ObjectBuffer.obj
 C:\Animation\Animation\Release\Setup.obj
 C:\Animation\Animation\Release\Shader.obj
@@ -28,7 +24,16 @@ C:\Animation\Animation\Release\Skeleton.obj
 C:\Animation\Animation\Release\cl.command.1.tlog
 C:\Animation\Animation\Release\CL.read.1.tlog
 C:\Animation\Animation\Release\CL.write.1.tlog
+C:\Animation\Animation\Release\link-cvtres.read.1.tlog
+C:\Animation\Animation\Release\link-cvtres.write.1.tlog
+C:\Animation\Animation\Release\link-rc.read.1.tlog
+C:\Animation\Animation\Release\link-rc.write.1.tlog
 C:\Animation\Animation\Release\link.command.1.tlog
 C:\Animation\Animation\Release\link.read.1.tlog
+C:\Animation\Animation\Release\link.read.2.tlog
+C:\Animation\Animation\Release\link.read.3.tlog
+C:\Animation\Animation\Release\link.read.4.tlog
+C:\Animation\Animation\Release\link.read.5.tlog
 C:\Animation\Animation\Release\link.write.1.tlog
 C:\Animation\Animation\Release\vc110.pdb
+C:\Animation\Release\Animation.pdb
