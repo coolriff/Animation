@@ -1,10 +1,15 @@
-﻿  HumanSkeleton.cpp
+﻿  Lab3Model.cpp
 c:\animation\animation\Cylinder.h(33): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\Cylinder.h(45): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\Cylinder.h(55): warning C4018: '<' : signed/unsigned mismatch
-HumanSkeleton.cpp(109): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(118): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(371): warning C4305: 'argument' : truncation from 'double' to 'float'
+Lab3Model.cpp(349): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(352): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(355): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(358): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(361): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(364): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(367): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(370): warning C4305: 'argument' : truncation from 'double' to 'const float'
   GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   Generating code
   Finished generating code

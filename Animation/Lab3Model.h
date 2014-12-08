@@ -29,6 +29,7 @@ public:
 	Camera* m_camera;
 	HumanSkeleton* humanSkeleton;
 	Cylinder* plane;
+	Cylinder* gate[7];
 
 	GLuint vao;
 	Assimp::Importer importer;
@@ -36,6 +37,8 @@ public:
 	int point_count;
 	int bone_count;
 
+	void drawGate();
+	void createGate();
 	void run(void);
 	void initShaders();
 	bool load_mesh (std::string file_name, GLuint* vao, int* point_count, glm::mat4* bone_offset_mats, int* bone_count);

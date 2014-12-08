@@ -27,6 +27,8 @@ void Lab3Model::run(void)
 
 	humanSkeleton->drawHumanMesh(m_shader->GetProgramID());
 
+	createGate();
+
 
 	plane = new Cylinder(100, 50, 50, glm::vec4(0.2, 0.2, 0.2, 1.0), glm::vec4(0.2, 0.2, 0.2, 1.0), 2);
 	plane->generateObjectBuffer(m_shader->GetProgramID());
@@ -56,6 +58,9 @@ void Lab3Model::run(void)
 		plane->update(planeMat4, m_shader->GetProgramID());
 		plane->draw();
 
+
+
+		drawGate();
 		
 		humanSkeleton->updateStar(m_shader->GetProgramID());
 		humanSkeleton->keyControl();
@@ -292,4 +297,76 @@ glm::mat4 Lab3Model::convertAssimpMatrix (aiMatrix4x4 m)
 		m.a3, m.b3, m.c3, m.d3,
 		m.a4, m.b4, m.c4, m.d4
 		);
+}
+
+void Lab3Model::drawGate()
+{
+	glm::mat4 gateMat40 = glm::translate(glm::rotate(glm::mat4(1), 90.0f, glm::vec3(0,0,1)),glm::vec3(10,0,-50));
+	//gateMat40 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(0,0,1));
+	gate[0]->update(gateMat40, m_shader->GetProgramID());
+	gate[0]->draw();
+
+	glm::mat4 gateMat41 = glm::translate(glm::rotate(glm::mat4(1), -90.0f, glm::vec3(0,0,1)),glm::vec3(-10,0,-50));
+	//gateMat40 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(0,0,1));
+	gate[1]->update(gateMat41, m_shader->GetProgramID());
+	gate[1]->draw();
+
+	glm::mat4 gateMat42 = glm::translate(glm::mat4(1),glm::vec3(-15,0,-50));
+	gate[2]->update(gateMat42, m_shader->GetProgramID());
+	gate[2]->draw();
+
+	glm::mat4 gateMat43 = glm::translate(glm::mat4(1),glm::vec3(15,0,-50));
+	gate[3]->update(gateMat43, m_shader->GetProgramID());
+	gate[3]->draw();
+
+	glm::mat4 gateMat44 = glm::translate(glm::mat4(1),glm::vec3(-15,10,-50));
+	glm::mat4 offset0 = gateMat44;
+	gateMat44 = glm::rotate(offset0, -90.0f, glm::vec3(1,0,0));
+	gate[4]->update(gateMat44, m_shader->GetProgramID());
+	gate[4]->draw();
+
+	glm::mat4 gateMat45 = glm::translate(glm::mat4(1),glm::vec3(15,10,-50));
+	glm::mat4 offset1 = gateMat45;
+	gateMat45 = glm::rotate(offset1, -90.0f, glm::vec3(1,0,0));
+	gate[5]->update(gateMat45, m_shader->GetProgramID());
+	gate[5]->draw();
+
+	glm::mat4 gateMat46 = glm::translate(glm::mat4(1),glm::vec3(15,0,-60));
+	glm::mat4 offset2 = gateMat46;
+	gateMat46 = glm::rotate(offset2, 27.0f, glm::vec3(1,0,0));
+	gate[6]->update(gateMat46, m_shader->GetProgramID());
+	gate[6]->draw();
+
+	glm::mat4 gateMat47 = glm::translate(glm::mat4(1),glm::vec3(-15,0,-60));
+	glm::mat4 offset3 = gateMat47;
+	gateMat47 = glm::rotate(offset3, 27.0f, glm::vec3(1,0,0));
+	gate[7]->update(gateMat47, m_shader->GetProgramID());
+	gate[7]->draw();
+}
+
+void Lab3Model::createGate()
+{
+	gate[0] = new Cylinder(15, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
+	gate[0]->generateObjectBuffer(m_shader->GetProgramID());
+
+	gate[1] = new Cylinder(15, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
+	gate[1]->generateObjectBuffer(m_shader->GetProgramID());
+
+	gate[2] = new Cylinder(10, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
+	gate[2]->generateObjectBuffer(m_shader->GetProgramID());
+
+	gate[3] = new Cylinder(10, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
+	gate[3]->generateObjectBuffer(m_shader->GetProgramID());
+
+	gate[4] = new Cylinder(5, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
+	gate[4]->generateObjectBuffer(m_shader->GetProgramID());
+
+	gate[5] = new Cylinder(5, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
+	gate[5]->generateObjectBuffer(m_shader->GetProgramID());
+
+	gate[6] = new Cylinder(11.5, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
+	gate[6]->generateObjectBuffer(m_shader->GetProgramID());
+
+	gate[7] = new Cylinder(11.5, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
+	gate[7]->generateObjectBuffer(m_shader->GetProgramID());
 }

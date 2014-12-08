@@ -280,6 +280,7 @@ void HumanSkeleton::keyControl()
 		action_1 = false;
 	}
 
+//		//walk need to keep this 
 // 		if(timeFlag == false)
 // 		{
 // 			dt += 0.5;
@@ -316,14 +317,12 @@ void HumanSkeleton::keyControl()
 
 		if (dt < 10)
 		{
-			humanNode[2]->localTransformation = glm::rotate(humanNode[2]->offset, dt, glm::vec3(-1,0,0));
 			humanNode[5]->localTransformation = glm::rotate(humanNode[5]->offset, dt, glm::vec3(-1,0,0));
 			humanNode[5]->localTransformation = glm::rotate(humanNode[5]->offset, dt, glm::vec3(0,0,1));
 		}
 
 		if (dt < 15)
 		{
-			//humanNode[0]->localTransformation = glm::rotate(humanNode[0]->offset, dt, glm::vec3(0,0,1));
 			humanNode[1]->localTransformation = glm::rotate(humanNode[1]->offset, dt, glm::vec3(-1,0,0));
 		}
 
@@ -367,19 +366,148 @@ void HumanSkeleton::keyControl()
 			actionDegree[12].x = -25;
 		}
 
-
 		humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,5.5,-3),0.03);
 		humanNode[0]->localTransformation = glm::translate(glm::mat4(1), humanNodePos[0]);
 	}
-// 	if (action_2)
-// 	{
-// 		dt += 1;
-// 
-// 		if (dt < 45)
-// 		{
-// 			humanNode[11]->localTransformation = glm::rotate(humanNode[11]->offset, dt, glm::vec3(1,0,0));
-// 		}
-// 	}
+	if (action_2)
+	{
+		dt += 1;
+
+		if (dt < 45) // x 35
+		{
+			humanNode[3]->localTransformation = glm::rotate(humanNode[3]->offset, dt, glm::vec3(1,0,0));
+		}
+
+		if (dt < 45) // z 10
+		{
+			actionDegree[2].z += 2;
+			float temp = actionDegree[2].z;
+			humanNode[2]->localTransformation = glm::rotate(humanNode[2]->offset, temp, glm::vec3(0,0,1));
+		}
+
+		if (dt < 53) // x 65 
+		{
+			float temp = dt * 2;
+// 			actionDegree[11].x += 1;
+// 			float temp = actionDegree[11].x;
+			humanNode[11]->localTransformation = glm::rotate(humanNode[11]->offset, temp, glm::vec3(1,0,0));
+		}
+
+		if (dt < 55) // x -45
+		{
+			actionDegree[5].x += 1;
+			float temp = actionDegree[5].x;
+			humanNode[5]->localTransformation = glm::rotate(humanNode[5]->offset, temp, glm::vec3(-1,0,0));
+		}
+
+		if (dt < 25) // x 20
+		{
+			actionDegree[6].x -= 1;
+			float temp = actionDegree[6].x;
+			humanNode[6]->localTransformation = glm::rotate(humanNode[6]->offset, temp, glm::vec3(1,0,0));
+		}
+
+		if (dt < 65) // x -20
+		{
+			actionDegree[8].x -= 1;
+			float temp = actionDegree[8].x;
+			humanNode[8]->localTransformation = glm::rotate(humanNode[8]->offset, temp, glm::vec3(1,0,0));
+		}
+
+		if (dt > 66)
+		{
+			dt = 0;
+			action_2 = false;
+			action_3 = true;
+			actionDegree[3].x = 35;
+			actionDegree[2].x = 35;
+			actionDegree[2].z = 10;
+			actionDegree[5].x = -45;
+			actionDegree[6].x = 20;
+			actionDegree[8].x = -20;
+			actionDegree[11].x = 65;
+		}
+
+		humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,6.0,-3),0.03);
+		humanNode[0]->localTransformation = glm::translate(glm::mat4(1), humanNodePos[0]);
+	}
+
+	if (action_3)
+	{
+		dt += 1;
+
+		if (dt < 16)
+		{
+			actionDegree[1].x += 1;
+			float temp = actionDegree[1].x;
+			humanNode[1]->localTransformation = glm::rotate(humanNode[1]->offset, temp, glm::vec3(1,0,0));
+		}
+
+		if (dt < 26)
+		{
+			actionDegree[12].x += 1;
+			float temp = actionDegree[12].x;
+			humanNode[12]->localTransformation = glm::rotate(humanNode[12]->offset, temp, glm::vec3(1,0,0));
+		}
+
+		if (dt < 66)
+		{
+			actionDegree[11].x -= 1;
+			float temp = actionDegree[11].x;
+			humanNode[11]->localTransformation = glm::rotate(humanNode[11]->offset, temp, glm::vec3(1,0,0));
+		}
+
+		if (dt < 26)
+		{
+			actionDegree[9].x += 1;
+			float temp = actionDegree[9].x;
+			humanNode[9]->localTransformation = glm::rotate(humanNode[9]->offset, temp, glm::vec3(1,0,0));
+		}
+
+		if (dt < 21)
+		{
+			actionDegree[8].x += 1;
+			float temp = actionDegree[8].x;
+			humanNode[8]->localTransformation = glm::rotate(humanNode[8]->offset, temp, glm::vec3(1,0,0));
+		}
+
+
+		if (dt < 11)
+		{
+			actionDegree[2].z -= 1;
+			float temp = actionDegree[2].z;
+			humanNode[2]->localTransformation = glm::rotate(humanNode[2]->offset, temp, glm::vec3(0,0,1));
+		}
+
+		if (dt < 36)
+		{
+			actionDegree[3].x -= 1;
+			float temp = actionDegree[3].x;
+			humanNode[3]->localTransformation = glm::rotate(humanNode[3]->offset, temp, glm::vec3(1,0,0));
+		}
+
+		if (dt < 46)
+		{
+			actionDegree[5].x += 1;
+			float temp = actionDegree[5].x;
+			humanNode[5]->localTransformation = glm::rotate(humanNode[5]->offset, temp, glm::vec3(1,0,0));
+		}
+
+		if (dt < 21)
+		{
+			actionDegree[6].x -= 1;
+			float temp = actionDegree[6].x;
+			humanNode[6]->localTransformation = glm::rotate(humanNode[6]->offset, temp, glm::vec3(1,0,0));
+		}
+
+		humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,6.5,-4),0.03);
+		humanNode[0]->localTransformation = glm::translate(glm::mat4(1), humanNodePos[0]);
+
+		if (dt > 66)
+		{
+			action_3 = false;
+		}
+	}
 }
 
 void HumanSkeleton::calcGlobalTransformation()
@@ -406,7 +534,3 @@ void HumanSkeleton::createAction()
 {
 
 }
-
-
-
-//ogreLerp(camPos, targetPos, Time);

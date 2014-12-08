@@ -2,9 +2,8 @@
 c:\animation\animation\cylinder.h(33): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\cylinder.h(45): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\cylinder.h(55): warning C4018: '<' : signed/unsigned mismatch
-c:\animation\animation\humanskeleton.cpp(100): warning C4305: 'argument' : truncation from 'double' to 'const float'
 c:\animation\animation\humanskeleton.cpp(109): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\humanskeleton.cpp(232): warning C4305: 'argument' : truncation from 'double' to 'float'
-c:\animation\animation\humanskeleton.cpp(238): warning C4305: 'argument' : truncation from 'double' to 'float'
+c:\animation\animation\humanskeleton.cpp(118): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\humanskeleton.cpp(370): warning C4305: 'argument' : truncation from 'double' to 'float'
   GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   Animation.vcxproj -> C:\Animation\Debug\Animation.exe
