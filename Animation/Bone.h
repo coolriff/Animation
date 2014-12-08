@@ -14,6 +14,7 @@ public:
 	~Bone(void);
 
 	int id;
+	std::string bName;
 	glm::vec3 pos;
 	glm::mat4 offset;
 	glm::mat4 localTransformation;
@@ -33,6 +34,7 @@ public:
 	float currentZPos;
 
 	Bone* createBone(int ID, glm::vec3 pos, float damp_width);
+	Bone* createBone(int ID, glm::vec3 pos);
 	void addChild(Bone* child);
 	void addParent(Bone* parent);
 	int getID(Bone* bone);

@@ -21,6 +21,17 @@ Bone* Bone::createBone(int ID, glm::vec3 pos, float damp_width)
 	return tempBone;
 }
 
+Bone* Bone::createBone(int ID, glm::vec3 pos)
+{
+	Bone* tempBone = new Bone();
+	tempBone->id = ID;
+	tempBone->pos = pos; 
+	tempBone->offset = glm::translate(glm::mat4(1.0),pos);
+	tempBone->localTransformation = glm::translate(glm::mat4(1.0),pos);
+	tempBone->globalTransformation = glm::mat4(1);
+	return tempBone;
+}
+
 void Bone::addChild(Bone* child)
 {
 	children[chilrenSize] = child;

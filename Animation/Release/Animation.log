@@ -1,34 +1,11 @@
-﻿  ArmSkeleton.cpp
+﻿  HumanSkeleton.cpp
 c:\animation\animation\Cylinder.h(33): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\Cylinder.h(45): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\Cylinder.h(55): warning C4018: '<' : signed/unsigned mismatch
-ArmSkeleton.cpp(178): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(180): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(182): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(186): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(188): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(190): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(194): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(196): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(198): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(202): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(204): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(206): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(210): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(212): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(214): warning C4305: 'argument' : truncation from 'double' to 'const float'
-ArmSkeleton.cpp(236): warning C4305: '+=' : truncation from 'double' to 'float'
-ArmSkeleton.cpp(241): warning C4305: '-=' : truncation from 'double' to 'float'
-ArmSkeleton.cpp(246): warning C4305: '+=' : truncation from 'double' to 'float'
-ArmSkeleton.cpp(251): warning C4305: '-=' : truncation from 'double' to 'float'
-ArmSkeleton.cpp(256): warning C4305: '-=' : truncation from 'double' to 'float'
-ArmSkeleton.cpp(261): warning C4305: '+=' : truncation from 'double' to 'float'
-ArmSkeleton.cpp(264): warning C4305: '+=' : truncation from 'double' to 'float'
+HumanSkeleton.cpp(109): warning C4305: 'argument' : truncation from 'double' to 'const float'
+HumanSkeleton.cpp(118): warning C4305: 'argument' : truncation from 'double' to 'const float'
+HumanSkeleton.cpp(371): warning C4305: 'argument' : truncation from 'double' to 'float'
   GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  GLM: angleAxis function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  GLM: pitch function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  GLM: yaw function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  GLM: roll function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   Generating code
   Finished generating code
   Animation.vcxproj -> C:\Animation\Release\Animation.exe

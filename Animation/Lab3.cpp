@@ -10,6 +10,7 @@ Lab3::Lab3(void)
 	bone = new Bone();
 	armSkeleton = new ArmSkeleton(m_setup);
 	cylinder = new Cylinder();
+
 }
 
 

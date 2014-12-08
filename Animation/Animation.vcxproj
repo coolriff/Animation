@@ -87,6 +87,9 @@
     <ClCompile Include="ArmSkeleton.cpp" />
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="HumanSkeleton.cpp" />
+    <ClCompile Include="Keyframe.cpp" />
+    <ClCompile Include="KeyframeControl.cpp" />
     <ClCompile Include="Lab1.cpp" />
     <ClCompile Include="Lab2.cpp" />
     <ClCompile Include="Lab3.cpp" />
@@ -106,6 +109,9 @@
     <ClInclude Include="Bone.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cylinder.h" />
+    <ClInclude Include="HumanSkeleton.h" />
+    <ClInclude Include="Keyframe.h" />
+    <ClInclude Include="KeyframeControl.h" />
     <ClInclude Include="Lab1.h" />
     <ClInclude Include="Lab2.h" />
     <ClInclude Include="Lab3.h" />

@@ -3,6 +3,8 @@
 #include "Shader.h"
 #include "ObjectBuffer.h"
 #include "Camera.h"
+#include "HumanSkeleton.h"
+#include "Cylinder.h"
 
 #include <iostream>
 
@@ -25,6 +27,8 @@ public:
 	Shader* m_shader;
 	ObjectBuffer* m_objectBuffer;
 	Camera* m_camera;
+	HumanSkeleton* humanSkeleton;
+	Cylinder* plane;
 
 	GLuint vao;
 	Assimp::Importer importer;

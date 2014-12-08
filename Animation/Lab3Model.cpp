@@ -8,6 +8,8 @@ Lab3Model::Lab3Model(void)
 	m_objectBuffer = new ObjectBuffer(36);
 	m_camera = new Camera(m_setup);
 	point_count = 0;
+	humanSkeleton = new HumanSkeleton(m_setup);
+	plane = new Cylinder();
 }
 
 
@@ -21,10 +23,20 @@ void Lab3Model::run(void)
 
 	initShaders();
 
-	if(!load_mesh("peter.dae", &vao, &point_count, &bone_offset_mats, &bone_count))
-	{
-		printf("load_mesh function crashed !");
-	}
+	humanSkeleton->createHumanNode();
+
+	humanSkeleton->drawHumanMesh(m_shader->GetProgramID());
+
+
+	plane = new Cylinder(100, 50, 50, glm::vec4(0.2, 0.2, 0.2, 1.0), glm::vec4(0.2, 0.2, 0.2, 1.0), 2);
+	plane->generateObjectBuffer(m_shader->GetProgramID());
+
+
+
+// 	if(!load_mesh("peter.dae", &vao, &point_count, &bone_offset_mats, &bone_count))
+// 	{
+// 		printf("load_mesh function crashed !");
+// 	}
 
 	do{
 		m_setup->preDraw();
@@ -39,9 +51,20 @@ void Lab3Model::run(void)
 
 		m_camera->handleMVP(modelLoc, viewLoc, projLoc);
 
-		glUseProgram(m_shader->GetProgramID());
-		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, point_count);
+		glm::mat4 planeMat4 = glm::translate(glm::mat4(1),glm::vec3(0,0,0));
+		planeMat4 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));
+		plane->update(planeMat4, m_shader->GetProgramID());
+		plane->draw();
+
+		
+		humanSkeleton->updateStar(m_shader->GetProgramID());
+		humanSkeleton->keyControl();
+		//humanSkeleton->calcGlobalTransformation();
+		humanSkeleton->updateHumanMesh(m_shader->GetProgramID());
+
+// 		glUseProgram(m_shader->GetProgramID());
+// 		glBindVertexArray(vao);
+// 		glDrawArrays(GL_TRIANGLES, 0, point_count);
 
 		// Swap buffers
 		glfwSwapBuffers(m_setup->getWindow());

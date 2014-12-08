@@ -7,6 +7,7 @@
 #include "Bone.h"
 #include "ArmSkeleton.h"
 
+
 class Lab3
 {
 public:
