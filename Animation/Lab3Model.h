@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "HumanSkeleton.h"
 #include "Cylinder.h"
+#include "ArmSkeleton.h"
 
 #include <iostream>
 
@@ -29,7 +30,8 @@ public:
 	Camera* m_camera;
 	HumanSkeleton* humanSkeleton;
 	Cylinder* plane;
-	Cylinder* gate[7];
+	Cylinder* gate[8];
+	ArmSkeleton* armSkeleton;
 
 	GLuint vao;
 	Assimp::Importer importer;
@@ -37,6 +39,11 @@ public:
 	int point_count;
 	int bone_count;
 
+	bool thirdCamera;
+	bool followBallCamera;
+	bool drawCircleCamera;
+
+	void timeKeyControl();
 	void drawGate();
 	void createGate();
 	void run(void);

@@ -10,6 +10,10 @@ Lab3Model::Lab3Model(void)
 	point_count = 0;
 	humanSkeleton = new HumanSkeleton(m_setup);
 	plane = new Cylinder();
+	armSkeleton = new ArmSkeleton(m_setup);
+	thirdCamera = false;
+	followBallCamera = false;
+	drawCircleCamera = false;
 }
 
 
@@ -24,32 +28,35 @@ void Lab3Model::run(void)
 	initShaders();
 
 	humanSkeleton->createHumanNode();
-
 	humanSkeleton->drawHumanMesh(m_shader->GetProgramID());
+
+	humanSkeleton->createArmNode();
+	humanSkeleton->drawArmMesh(m_shader->GetProgramID());
 
 	createGate();
 
 
-	plane = new Cylinder(100, 50, 50, glm::vec4(0.2, 0.2, 0.2, 1.0), glm::vec4(0.2, 0.2, 0.2, 1.0), 2);
+	plane = new Cylinder(100, 50, 50, glm::vec4(0.2, 0.6, 0.3, 1.0), glm::vec4(0.2, 0.6, 0.3, 1.0), 2);
 	plane->generateObjectBuffer(m_shader->GetProgramID());
-
-
-
-// 	if(!load_mesh("peter.dae", &vao, &point_count, &bone_offset_mats, &bone_count))
-// 	{
-// 		printf("load_mesh function crashed !");
-// 	}
 
 	do{
 		m_setup->preDraw();
 
 		glUseProgram(m_shader->GetProgramID());
 
+		armSkeleton->createArmNode();
+		armSkeleton->drawArmMesh(m_shader->GetProgramID());
+
+		//m_camera->setPosition(glm::vec3(humanSkeleton->humanNode[0]->pos.x + 5, humanSkeleton->humanNode[0]->pos.y + 5, humanSkeleton->humanNode[0]->pos.z + 5));
+		//m_camera->setDirection(glm::vec3(0,0,0));
+
 		m_camera->computeMatricesFromInputs();
 
 		GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
 		GLuint viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
 		GLuint projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
+
+		timeKeyControl();
 
 		m_camera->handleMVP(modelLoc, viewLoc, projLoc);
 
@@ -58,14 +65,20 @@ void Lab3Model::run(void)
 		plane->update(planeMat4, m_shader->GetProgramID());
 		plane->draw();
 
-
-
 		drawGate();
-		
-		humanSkeleton->updateStar(m_shader->GetProgramID());
+
 		humanSkeleton->keyControl();
-		//humanSkeleton->calcGlobalTransformation();
+		humanSkeleton->updateBallPos(m_shader->GetProgramID());
+		humanSkeleton->calculateInverseKinematics();
+		humanSkeleton->updateStar(m_shader->GetProgramID());
+		
+		humanSkeleton->calcGlobalTransformation();
 		humanSkeleton->updateHumanMesh(m_shader->GetProgramID());
+		humanSkeleton->updateArmMesh(m_shader->GetProgramID());
+
+// 		armSkeleton->updateArmTarget(m_shader->GetProgramID());
+// 		armSkeleton->calculateInverseKinematics();
+ 		humanSkeleton->updateArmMesh(m_shader->GetProgramID());
 
 // 		glUseProgram(m_shader->GetProgramID());
 // 		glBindVertexArray(vao);
@@ -93,7 +106,6 @@ void Lab3Model::initShaders()
 	printf("fragmentShaderID is %d\n",fragmentShaderID);
 	printf("shaderProgramID is %d\n",m_shader->GetProgramID());
 }
-
 
 bool Lab3Model::load_mesh(std::string file_name, GLuint* vao, int* point_count, glm::mat4* bone_offset_mats, int* bone_count)
 {
@@ -301,43 +313,43 @@ glm::mat4 Lab3Model::convertAssimpMatrix (aiMatrix4x4 m)
 
 void Lab3Model::drawGate()
 {
-	glm::mat4 gateMat40 = glm::translate(glm::rotate(glm::mat4(1), 90.0f, glm::vec3(0,0,1)),glm::vec3(10,0,-50));
+	glm::mat4 gateMat40 = glm::translate(glm::rotate(glm::mat4(1), 90.0f, glm::vec3(0,0,1)),glm::vec3(10,0,-100));
 	//gateMat40 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(0,0,1));
 	gate[0]->update(gateMat40, m_shader->GetProgramID());
 	gate[0]->draw();
 
-	glm::mat4 gateMat41 = glm::translate(glm::rotate(glm::mat4(1), -90.0f, glm::vec3(0,0,1)),glm::vec3(-10,0,-50));
+	glm::mat4 gateMat41 = glm::translate(glm::rotate(glm::mat4(1), -90.0f, glm::vec3(0,0,1)),glm::vec3(-10,0,-100));
 	//gateMat40 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(0,0,1));
 	gate[1]->update(gateMat41, m_shader->GetProgramID());
 	gate[1]->draw();
 
-	glm::mat4 gateMat42 = glm::translate(glm::mat4(1),glm::vec3(-15,0,-50));
+	glm::mat4 gateMat42 = glm::translate(glm::mat4(1),glm::vec3(-15,0,-100));
 	gate[2]->update(gateMat42, m_shader->GetProgramID());
 	gate[2]->draw();
 
-	glm::mat4 gateMat43 = glm::translate(glm::mat4(1),glm::vec3(15,0,-50));
+	glm::mat4 gateMat43 = glm::translate(glm::mat4(1),glm::vec3(15,0,-100));
 	gate[3]->update(gateMat43, m_shader->GetProgramID());
 	gate[3]->draw();
 
-	glm::mat4 gateMat44 = glm::translate(glm::mat4(1),glm::vec3(-15,10,-50));
+	glm::mat4 gateMat44 = glm::translate(glm::mat4(1),glm::vec3(-15,10,-100));
 	glm::mat4 offset0 = gateMat44;
 	gateMat44 = glm::rotate(offset0, -90.0f, glm::vec3(1,0,0));
 	gate[4]->update(gateMat44, m_shader->GetProgramID());
 	gate[4]->draw();
 
-	glm::mat4 gateMat45 = glm::translate(glm::mat4(1),glm::vec3(15,10,-50));
+	glm::mat4 gateMat45 = glm::translate(glm::mat4(1),glm::vec3(15,10,-100));
 	glm::mat4 offset1 = gateMat45;
 	gateMat45 = glm::rotate(offset1, -90.0f, glm::vec3(1,0,0));
 	gate[5]->update(gateMat45, m_shader->GetProgramID());
 	gate[5]->draw();
 
-	glm::mat4 gateMat46 = glm::translate(glm::mat4(1),glm::vec3(15,0,-60));
+	glm::mat4 gateMat46 = glm::translate(glm::mat4(1),glm::vec3(15,0,-110));
 	glm::mat4 offset2 = gateMat46;
 	gateMat46 = glm::rotate(offset2, 27.0f, glm::vec3(1,0,0));
 	gate[6]->update(gateMat46, m_shader->GetProgramID());
 	gate[6]->draw();
 
-	glm::mat4 gateMat47 = glm::translate(glm::mat4(1),glm::vec3(-15,0,-60));
+	glm::mat4 gateMat47 = glm::translate(glm::mat4(1),glm::vec3(-15,0,-110));
 	glm::mat4 offset3 = gateMat47;
 	gateMat47 = glm::rotate(offset3, 27.0f, glm::vec3(1,0,0));
 	gate[7]->update(gateMat47, m_shader->GetProgramID());
@@ -369,4 +381,22 @@ void Lab3Model::createGate()
 
 	gate[7] = new Cylinder(11.5, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
 	gate[7]->generateObjectBuffer(m_shader->GetProgramID());
+}
+
+void Lab3Model::timeKeyControl()
+{
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_R ) == GLFW_PRESS){
+		thirdCamera = true;
+	}
+
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_P ) == GLFW_PRESS)
+	{
+		thirdCamera = false;
+		m_camera->setPosition(humanSkeleton->slerp(m_camera->position,glm::vec3(0,10,-20),0.1));
+	}
+
+	if (thirdCamera)
+	{
+		m_camera->cameraUpdate(glm::vec3(humanSkeleton->humanNode[0]->pos.x, humanSkeleton->humanNode[0]->pos.y, humanSkeleton->humanNode[0]->pos.z + 10.0f), humanSkeleton->humanNode[0]->pos);
+	}
 }

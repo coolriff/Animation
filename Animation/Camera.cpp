@@ -6,7 +6,7 @@ Camera::Camera(Setup* m_setup)
 	this->m_setup = m_setup;
 
 	// Initial position : on +Z
-	position = glm::vec3( 0, 0, 15 ); 
+	position = glm::vec3( 0, 5, 15 ); 
 	// Initial horizontal angle : toward -Z
 	horizontalAngle = 3.14f;
 	// Initial vertical angle : none
@@ -45,7 +45,7 @@ void Camera::computeMatricesFromInputs()
 
 	// Direction : Spherical coordinates to Cartesian coordinates conversion
 	direction = glm::vec3(
-		cos(verticalAngle) * sin(horizontalAngle), 
+		cos(verticalAngle) * sin(horizontalAngle),
 		sin(verticalAngle),
 		cos(verticalAngle) * cos(horizontalAngle)
 		);
@@ -80,7 +80,7 @@ void Camera::computeMatricesFromInputs()
 	float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
 
 	// Projection matrix : 45бу Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-	ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 100.0f);
+	ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 1000.0f);
 	// Camera matrix
 	ViewMatrix       = glm::lookAt(
 		position,           // Camera is here
@@ -113,4 +113,19 @@ glm::mat4 Camera::getViewMatrix()
 glm::mat4 Camera::getProjectionMatrix()
 {
 	return ProjectionMatrix;
+}
+
+void Camera::setPosition(glm::vec3 position)
+{
+	this->position = position;
+}
+
+void Camera::setDirection(glm::vec3 direction)
+{
+	this->direction = direction;
+}
+
+void Camera::cameraUpdate(glm::vec3 pos, glm::vec3 direction)
+{
+	ViewMatrix = glm::lookAt(pos,direction,up);
 }

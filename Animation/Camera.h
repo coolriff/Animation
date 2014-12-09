@@ -32,9 +32,12 @@ public:
 	float deltaTime;
 	double currentTime;
 
+	void cameraUpdate(glm::vec3 pos, glm::vec3 direction);
 	void computeMatricesFromInputs();
 	void handleMVP(GLuint modelLoc, GLuint viewLoc, GLuint projLoc);
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjectionMatrix();
+	void setPosition(glm::vec3 position);
+	void setDirection(glm::vec3 direction);
 };
 

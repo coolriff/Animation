@@ -18,7 +18,7 @@ public:
 
 	Bone* bone;
 	Bone* handNode[19];
-	Cylinder* cylinder[19];
+	Cylinder* armCylinder[19];
 	Cylinder* armTarget;
 	Setup* m_setup;
 
@@ -49,4 +49,3 @@ public:
 	glm::vec3 interpolateCubic(float deltaTime, glm::vec3 beingPos, glm::vec3 point1,  glm::vec3 point2, glm::vec3 endPos);
 	glm::vec3 interpolateCubic_2(float deltaTime, glm::vec3 beingPos, glm::vec3 point1,  glm::vec3 point2, glm::vec3 endPos);
 };
-

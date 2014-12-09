@@ -37,9 +37,9 @@ void ArmSkeleton::createArmNode()
 //  handNode[1]->setJointLimit(10.0f,-10.0f,10.0f,-10.0f,10.0f,-10.0f);
 //  handNode[2]->setJointLimit(10.0f,-10.0f,10.0f,-10.0f,10.0f,-10.0f);
 
-	handNode[0]->setJointLimit(10.0f,-179.0f,90.0f,-10.0f,45.0f,-179.0f);
-	handNode[1]->setJointLimit(135.0f,0.0f,90.0f,0.0f,0.0f,0.0f);
-	handNode[2]->setJointLimit(75.0f,-75.0f,0.0f,0.0f,45.0f,-45.0f);
+// 	handNode[0]->setJointLimit(10.0f,-179.0f,90.0f,-10.0f,45.0f,-179.0f);
+// 	handNode[1]->setJointLimit(135.0f,0.0f,90.0f,0.0f,0.0f,0.0f);
+// 	handNode[2]->setJointLimit(75.0f,-75.0f,0.0f,0.0f,45.0f,-45.0f);
 
 	for (int i = 0 ; i < 3 ; i++)
 	{
@@ -162,57 +162,57 @@ void ArmSkeleton::drawArmMesh(GLuint shaderProgramID)
 	armTarget = new Cylinder(1, 0.5, 0.5, cy_color_up, cy_color_down,4);
 	armTarget->generateObjectBuffer(shaderProgramID);
 
-	cylinder[0] = new Cylinder(12, 0.5, 1, cy_color_up, cy_color_down,16);	//upper arm
-	cylinder[0]->generateObjectBuffer(shaderProgramID);
+	armCylinder[0] = new Cylinder(12, 0.5, 1, cy_color_up, cy_color_down,16);	//upper arm
+	armCylinder[0]->generateObjectBuffer(shaderProgramID);
 
-	cylinder[1] = new Cylinder(12, 0.5, 1, cy_color_up, cy_color_down,16);	//lower arm
-	cylinder[1]->generateObjectBuffer(shaderProgramID);
+	armCylinder[1] = new Cylinder(12, 0.5, 1, cy_color_up, cy_color_down,16);	//lower arm
+	armCylinder[1]->generateObjectBuffer(shaderProgramID);
 
-	cylinder[2] = new Cylinder(5, 3, 2, cy_color_up, cy_color_down,2);		//wrist
-	cylinder[2]->generateObjectBuffer(shaderProgramID);
+	armCylinder[2] = new Cylinder(5, 3, 2, cy_color_up, cy_color_down,2);		//wrist
+	armCylinder[2]->generateObjectBuffer(shaderProgramID);
 
-	cylinder[3] = new Cylinder(1, 0.5, 0.5, cy_color_up, cy_color_down,16);		//effector
-	cylinder[3]->generateObjectBuffer(shaderProgramID);
+	armCylinder[3] = new Cylinder(1, 0.5, 0.5, cy_color_up, cy_color_down,16);		//effector
+	armCylinder[3]->generateObjectBuffer(shaderProgramID);
 
 	//1 finger
-	cylinder[4] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[4]->generateObjectBuffer(shaderProgramID);
-	cylinder[5] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[5]->generateObjectBuffer(shaderProgramID);
-	cylinder[6] = new Cylinder(1.5, 0.4, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[6]->generateObjectBuffer(shaderProgramID);
+	armCylinder[4] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[4]->generateObjectBuffer(shaderProgramID);
+	armCylinder[5] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[5]->generateObjectBuffer(shaderProgramID);
+	armCylinder[6] = new Cylinder(1.5, 0.4, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[6]->generateObjectBuffer(shaderProgramID);
 
 	//2 finger
-	cylinder[7] = new Cylinder(1.75, 0.6, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[7]->generateObjectBuffer(shaderProgramID);
-	cylinder[8] = new Cylinder(1.75, 0.6, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[8]->generateObjectBuffer(shaderProgramID);
-	cylinder[9] = new Cylinder(1.75, 0.4, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[9]->generateObjectBuffer(shaderProgramID);
+	armCylinder[7] = new Cylinder(1.75, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[7]->generateObjectBuffer(shaderProgramID);
+	armCylinder[8] = new Cylinder(1.75, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[8]->generateObjectBuffer(shaderProgramID);
+	armCylinder[9] = new Cylinder(1.75, 0.4, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[9]->generateObjectBuffer(shaderProgramID);
 
 	//3 finger
-	cylinder[10] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[10]->generateObjectBuffer(shaderProgramID);
-	cylinder[11] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[11]->generateObjectBuffer(shaderProgramID);
-	cylinder[12] = new Cylinder(1.5, 0.4, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[12]->generateObjectBuffer(shaderProgramID);
+	armCylinder[10] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[10]->generateObjectBuffer(shaderProgramID);
+	armCylinder[11] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[11]->generateObjectBuffer(shaderProgramID);
+	armCylinder[12] = new Cylinder(1.5, 0.4, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[12]->generateObjectBuffer(shaderProgramID);
 
 	//4 finger
-	cylinder[13] = new Cylinder(1.25, 0.6, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[13]->generateObjectBuffer(shaderProgramID);
-	cylinder[14] = new Cylinder(1.25, 0.6, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[14]->generateObjectBuffer(shaderProgramID);
-	cylinder[15] = new Cylinder(1.25, 0.4, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[15]->generateObjectBuffer(shaderProgramID);
+	armCylinder[13] = new Cylinder(1.25, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[13]->generateObjectBuffer(shaderProgramID);
+	armCylinder[14] = new Cylinder(1.25, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[14]->generateObjectBuffer(shaderProgramID);
+	armCylinder[15] = new Cylinder(1.25, 0.4, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[15]->generateObjectBuffer(shaderProgramID);
 
 	//5 finger
-	cylinder[16] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[16]->generateObjectBuffer(shaderProgramID);
-	cylinder[17] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[17]->generateObjectBuffer(shaderProgramID);
-	cylinder[18] = new Cylinder(1.5, 0.4, 0.6, cy_color_up, cy_color_down,16);
-	cylinder[18]->generateObjectBuffer(shaderProgramID);
+	armCylinder[16] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[16]->generateObjectBuffer(shaderProgramID);
+	armCylinder[17] = new Cylinder(1.5, 0.6, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[17]->generateObjectBuffer(shaderProgramID);
+	armCylinder[18] = new Cylinder(1.5, 0.4, 0.6, cy_color_up, cy_color_down,16);
+	armCylinder[18]->generateObjectBuffer(shaderProgramID);
 }
 
 
@@ -222,8 +222,8 @@ void ArmSkeleton::updateArmMesh(GLuint shaderProgramID)
 	{
 		if (i != 3)
 		{
-			cylinder[i]->update(handNode[i]->globalTransformation, shaderProgramID);
-			cylinder[i]->draw();
+			armCylinder[i]->update(handNode[i]->globalTransformation, shaderProgramID);
+			armCylinder[i]->draw();
 		}
 	}
 }
@@ -231,36 +231,36 @@ void ArmSkeleton::updateArmMesh(GLuint shaderProgramID)
 
 void ArmSkeleton::updateArmTarget(GLuint shaderProgramID)
 {
-	//Move y up
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_UP ) == GLFW_PRESS){
-		armTargetPos.y += 0.3;
-	}
-
-	// Move y down
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_DOWN ) == GLFW_PRESS){
-		armTargetPos.y -= 0.3;
-	}
-
-	// Move x right
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_RIGHT ) == GLFW_PRESS){
-		armTargetPos.x += 0.3;
-	}
-
-	// Move x left
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_LEFT ) == GLFW_PRESS){
-		armTargetPos.x -= 0.3;
-	}
-
-	// Move z forward
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_I ) == GLFW_PRESS){
-		armTargetPos.z -= 0.3;
-	}
-
-	// Move z backward
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_K ) == GLFW_PRESS){
-		armTargetPos.z += 0.3;
-	}
-
+// 	//Move y up
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_UP ) == GLFW_PRESS){
+// 		armTargetPos.y += 0.3;
+// 	}
+// 
+// 	// Move y down
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_DOWN ) == GLFW_PRESS){
+// 		armTargetPos.y -= 0.3;
+// 	}
+// 
+// 	// Move x right
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_RIGHT ) == GLFW_PRESS){
+// 		armTargetPos.x += 0.3;
+// 	}
+// 
+// 	// Move x left
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_LEFT ) == GLFW_PRESS){
+// 		armTargetPos.x -= 0.3;
+// 	}
+// 
+// 	// Move z forward
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_I ) == GLFW_PRESS){
+// 		armTargetPos.z -= 0.3;
+// 	}
+// 
+// 	// Move z backward
+// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_K ) == GLFW_PRESS){
+// 		armTargetPos.z += 0.3;
+// 	}
+// 
 	deltaT+=0.004;
 	if(deltaT >= 1)
 	{
