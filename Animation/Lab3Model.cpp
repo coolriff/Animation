@@ -5,6 +5,7 @@ Lab3Model::Lab3Model(void)
 {
 	m_setup = new Setup();
 	m_shader = new Shader();
+	m_shader_loader = new Shader();
 	m_objectBuffer = new ObjectBuffer(36);
 	m_camera = new Camera(m_setup);
 	point_count = 0;
@@ -14,6 +15,11 @@ Lab3Model::Lab3Model(void)
 	thirdCamera = false;
 	followBallCamera = false;
 	drawCircleCamera = false;
+
+	m_mesh = new Mesh();
+	m_effect = new SkinningTechnique();
+
+	startTime = GetCurrentTimeMillis();
 }
 
 
@@ -25,60 +31,94 @@ void Lab3Model::run(void)
 {
 	m_setup->setupGlfwGlew();
 
-	initShaders();
+	//initShaders();
+	initLoaderShaders();
+
+	if (!m_effect->Init(m_shader_loader->GetProgramID())) 
+	{
+		printf("Error initializing the lighting technique\n");
+	}
+	m_effect->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
+
+	std::string mainName = "../Models/walking_6/walking_6.dae";
+
+	if (!m_mesh->LoadMesh(mainName)) 
+	{
+		cout << "Main Character Load Failed" << endl;
+	}
 
 	humanSkeleton->createHumanNode();
-	humanSkeleton->drawHumanMesh(m_shader->GetProgramID());
+	humanSkeleton->drawHumanMesh(m_shader_loader->GetProgramID());
 
 	humanSkeleton->createArmNode();
-	humanSkeleton->drawArmMesh(m_shader->GetProgramID());
+	humanSkeleton->drawArmMesh(m_shader_loader->GetProgramID());
 
 	createGate();
 
 
 	plane = new Cylinder(100, 50, 50, glm::vec4(0.2, 0.6, 0.3, 1.0), glm::vec4(0.2, 0.6, 0.3, 1.0), 2);
-	plane->generateObjectBuffer(m_shader->GetProgramID());
+	plane->generateObjectBuffer(m_shader_loader->GetProgramID());
 
 	do{
 		m_setup->preDraw();
 
-		glUseProgram(m_shader->GetProgramID());
+		//glUseProgram(m_shader->GetProgramID());
+		glUseProgram(m_shader_loader->GetProgramID());
 
 		armSkeleton->createArmNode();
-		armSkeleton->drawArmMesh(m_shader->GetProgramID());
+		armSkeleton->drawArmMesh(m_shader_loader->GetProgramID());
 
 		//m_camera->setPosition(glm::vec3(humanSkeleton->humanNode[0]->pos.x + 5, humanSkeleton->humanNode[0]->pos.y + 5, humanSkeleton->humanNode[0]->pos.z + 5));
 		//m_camera->setDirection(glm::vec3(0,0,0));
 
 		m_camera->computeMatricesFromInputs();
 
-		GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
-		GLuint viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
-		GLuint projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
+// 		GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
+// 		GLuint viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
+// 		GLuint projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
+
+		GLuint modelLoaderLoc = glGetUniformLocation(m_shader_loader->GetProgramID(), "model");
+		GLuint viewLoaderLoc = glGetUniformLocation(m_shader_loader->GetProgramID(), "view");
+		GLuint projLoaderLoc = glGetUniformLocation(m_shader_loader->GetProgramID(), "projection");
+
+		glm::mat4 modelTrans2 = glm::mat4(1);
+
+		vector<Matrix4f> Transforms;
+		float RunningTime = GetRunningTime();
+		m_mesh->BoneTransform(RunningTime,Transforms);
+
+		for (GLuint i = 0 ; i < Transforms.size() ; i++) 
+		{
+			m_effect->SetBoneTransform(i, Transforms[i]);
+		}	
+
+		m_mesh->Update(modelLoaderLoc,modelTrans2);
+		m_mesh->Render();
 
 		timeKeyControl();
 
-		m_camera->handleMVP(modelLoc, viewLoc, projLoc);
+/*		m_camera->handleMVP(modelLoc, viewLoc, projLoc);*/
+		m_camera->handleMVP(modelLoaderLoc, viewLoaderLoc, projLoaderLoc);
 
 		glm::mat4 planeMat4 = glm::translate(glm::mat4(1),glm::vec3(0,0,0));
 		planeMat4 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));
-		plane->update(planeMat4, m_shader->GetProgramID());
+		plane->update(planeMat4, m_shader_loader->GetProgramID());
 		plane->draw();
 
 		drawGate();
 
-		humanSkeleton->keyControl(m_shader->GetProgramID());
-		humanSkeleton->updateBallPos(m_shader->GetProgramID());
+		humanSkeleton->keyControl(m_shader_loader->GetProgramID());
+		humanSkeleton->updateBallPos(m_shader_loader->GetProgramID());
 		humanSkeleton->calculateInverseKinematics();
-		humanSkeleton->updateStar(m_shader->GetProgramID());
+		humanSkeleton->updateStar(m_shader_loader->GetProgramID());
 		
 		humanSkeleton->calcGlobalTransformation();
-		humanSkeleton->updateHumanMesh(m_shader->GetProgramID());
-		humanSkeleton->updateArmMesh(m_shader->GetProgramID());
+		humanSkeleton->updateHumanMesh(m_shader_loader->GetProgramID());
+		humanSkeleton->updateArmMesh(m_shader_loader->GetProgramID());
 
 // 		armSkeleton->updateArmTarget(m_shader->GetProgramID());
 // 		armSkeleton->calculateInverseKinematics();
- 		humanSkeleton->updateArmMesh(m_shader->GetProgramID());
+ 		humanSkeleton->updateArmMesh(m_shader_loader->GetProgramID());
 
 // 		glUseProgram(m_shader->GetProgramID());
 // 		glBindVertexArray(vao);
@@ -97,7 +137,7 @@ void Lab3Model::run(void)
 void Lab3Model::initShaders()
 {
 	std::string vertexShaderSourceCode,fragmentShaderSourceCode;
-	m_shader->readShaderFile("diffuse.vs",vertexShaderSourceCode);
+	m_shader->readShaderFile("skinning.vs",vertexShaderSourceCode);
 	m_shader->readShaderFile("diffuse.ps",fragmentShaderSourceCode);
 	GLuint vertexShaderID = m_shader->makeShader(vertexShaderSourceCode.c_str(), GL_VERTEX_SHADER);
 	GLuint fragmentShaderID = m_shader->makeShader(fragmentShaderSourceCode.c_str(), GL_FRAGMENT_SHADER);
@@ -315,72 +355,72 @@ void Lab3Model::drawGate()
 {
 	glm::mat4 gateMat40 = glm::translate(glm::rotate(glm::mat4(1), 90.0f, glm::vec3(0,0,1)),glm::vec3(10,0,-100));
 	//gateMat40 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(0,0,1));
-	gate[0]->update(gateMat40, m_shader->GetProgramID());
+	gate[0]->update(gateMat40, m_shader_loader->GetProgramID());
 	gate[0]->draw();
 
 	glm::mat4 gateMat41 = glm::translate(glm::rotate(glm::mat4(1), -90.0f, glm::vec3(0,0,1)),glm::vec3(-10,0,-100));
 	//gateMat40 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(0,0,1));
-	gate[1]->update(gateMat41, m_shader->GetProgramID());
+	gate[1]->update(gateMat41, m_shader_loader->GetProgramID());
 	gate[1]->draw();
 
 	glm::mat4 gateMat42 = glm::translate(glm::mat4(1),glm::vec3(-15,0,-100));
-	gate[2]->update(gateMat42, m_shader->GetProgramID());
+	gate[2]->update(gateMat42, m_shader_loader->GetProgramID());
 	gate[2]->draw();
 
 	glm::mat4 gateMat43 = glm::translate(glm::mat4(1),glm::vec3(15,0,-100));
-	gate[3]->update(gateMat43, m_shader->GetProgramID());
+	gate[3]->update(gateMat43, m_shader_loader->GetProgramID());
 	gate[3]->draw();
 
 	glm::mat4 gateMat44 = glm::translate(glm::mat4(1),glm::vec3(-15,10,-100));
 	glm::mat4 offset0 = gateMat44;
 	gateMat44 = glm::rotate(offset0, -90.0f, glm::vec3(1,0,0));
-	gate[4]->update(gateMat44, m_shader->GetProgramID());
+	gate[4]->update(gateMat44, m_shader_loader->GetProgramID());
 	gate[4]->draw();
 
 	glm::mat4 gateMat45 = glm::translate(glm::mat4(1),glm::vec3(15,10,-100));
 	glm::mat4 offset1 = gateMat45;
 	gateMat45 = glm::rotate(offset1, -90.0f, glm::vec3(1,0,0));
-	gate[5]->update(gateMat45, m_shader->GetProgramID());
+	gate[5]->update(gateMat45, m_shader_loader->GetProgramID());
 	gate[5]->draw();
 
 	glm::mat4 gateMat46 = glm::translate(glm::mat4(1),glm::vec3(15,0,-110));
 	glm::mat4 offset2 = gateMat46;
 	gateMat46 = glm::rotate(offset2, 27.0f, glm::vec3(1,0,0));
-	gate[6]->update(gateMat46, m_shader->GetProgramID());
+	gate[6]->update(gateMat46, m_shader_loader->GetProgramID());
 	gate[6]->draw();
 
 	glm::mat4 gateMat47 = glm::translate(glm::mat4(1),glm::vec3(-15,0,-110));
 	glm::mat4 offset3 = gateMat47;
 	gateMat47 = glm::rotate(offset3, 27.0f, glm::vec3(1,0,0));
-	gate[7]->update(gateMat47, m_shader->GetProgramID());
+	gate[7]->update(gateMat47, m_shader_loader->GetProgramID());
 	gate[7]->draw();
 }
 
 void Lab3Model::createGate()
 {
 	gate[0] = new Cylinder(15, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
-	gate[0]->generateObjectBuffer(m_shader->GetProgramID());
+	gate[0]->generateObjectBuffer(m_shader_loader->GetProgramID());
 
 	gate[1] = new Cylinder(15, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
-	gate[1]->generateObjectBuffer(m_shader->GetProgramID());
+	gate[1]->generateObjectBuffer(m_shader_loader->GetProgramID());
 
 	gate[2] = new Cylinder(10, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
-	gate[2]->generateObjectBuffer(m_shader->GetProgramID());
+	gate[2]->generateObjectBuffer(m_shader_loader->GetProgramID());
 
 	gate[3] = new Cylinder(10, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
-	gate[3]->generateObjectBuffer(m_shader->GetProgramID());
+	gate[3]->generateObjectBuffer(m_shader_loader->GetProgramID());
 
 	gate[4] = new Cylinder(5, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
-	gate[4]->generateObjectBuffer(m_shader->GetProgramID());
+	gate[4]->generateObjectBuffer(m_shader_loader->GetProgramID());
 
 	gate[5] = new Cylinder(5, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
-	gate[5]->generateObjectBuffer(m_shader->GetProgramID());
+	gate[5]->generateObjectBuffer(m_shader_loader->GetProgramID());
 
 	gate[6] = new Cylinder(11.5, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
-	gate[6]->generateObjectBuffer(m_shader->GetProgramID());
+	gate[6]->generateObjectBuffer(m_shader_loader->GetProgramID());
 
 	gate[7] = new Cylinder(11.5, 0.4, 0.4, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0), 16);
-	gate[7]->generateObjectBuffer(m_shader->GetProgramID());
+	gate[7]->generateObjectBuffer(m_shader_loader->GetProgramID());
 }
 
 void Lab3Model::timeKeyControl()
@@ -454,4 +494,22 @@ void Lab3Model::timeKeyControl()
 // 	glm::quat ro = glm::toQuat(m_camera->getViewMatrix());
 
 	//humanSkeleton->humanNode[0]->localTransformation = glm::lookAt(humanSkeleton->humanNode[0]->pos, humanSkeleton->humanNode[0]->pos-m_camera->direction, m_camera->up);
+}
+
+void Lab3Model::initLoaderShaders()
+{
+	std::string vertexShaderSourceCode,fragmentShaderSourceCode;
+	m_shader_loader->readShaderFile("skinning.vs",vertexShaderSourceCode);
+	m_shader_loader->readShaderFile("skinning.fs",fragmentShaderSourceCode);
+	GLuint vertexShaderID = m_shader_loader->makeShader(vertexShaderSourceCode.c_str(), GL_VERTEX_SHADER);
+	GLuint fragmentShaderID = m_shader_loader->makeShader(fragmentShaderSourceCode.c_str(), GL_FRAGMENT_SHADER);
+	m_shader_loader->makeShaderProgram(vertexShaderID,fragmentShaderID);
+	printf("vertexShaderID is %d\n",vertexShaderID);
+	printf("fragmentShaderID is %d\n",fragmentShaderID);
+	printf("shaderProgramID is %d\n",m_shader_loader->GetProgramID());
+}
+
+float Lab3Model::GetRunningTime()
+{
+	return (float)((double) GetCurrentTimeMillis() - startTime) / 1000.0f;
 }

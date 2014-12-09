@@ -7,6 +7,12 @@
 #include "Cylinder.h"
 #include "ArmSkeleton.h"
 
+#include "Mesh.h"
+#include "maths_funcs.h"
+#include "skinning_technique.h"
+#include "ogldev_app.h"
+#include "engine_common.h"
+
 #include <iostream>
 
 // Assimp includes
@@ -26,12 +32,16 @@ public:
 
 	Setup* m_setup;
 	Shader* m_shader;
+	Shader* m_shader_loader;
 	ObjectBuffer* m_objectBuffer;
 	Camera* m_camera;
 	HumanSkeleton* humanSkeleton;
 	Cylinder* plane;
 	Cylinder* gate[8];
 	ArmSkeleton* armSkeleton;
+
+	Mesh* m_mesh;
+	SkinningTechnique* m_effect;
 
 	GLuint vao;
 	Assimp::Importer importer;
@@ -42,7 +52,7 @@ public:
 	bool thirdCamera;
 	bool followBallCamera;
 	bool drawCircleCamera;
-
+	float startTime;
 	void timeKeyControl();
 	void drawGate();
 	void createGate();
@@ -50,5 +60,8 @@ public:
 	void initShaders();
 	bool load_mesh (std::string file_name, GLuint* vao, int* point_count, glm::mat4* bone_offset_mats, int* bone_count);
 	glm::mat4 convertAssimpMatrix (aiMatrix4x4 m);
+
+	void initLoaderShaders();
+	float GetRunningTime();
 };
 
