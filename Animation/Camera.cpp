@@ -49,6 +49,11 @@ void Camera::computeMatricesFromInputs()
 		sin(verticalAngle),
 		cos(verticalAngle) * cos(horizontalAngle)
 		);
+// 	direction = glm::vec3(
+// 		sin(horizontalAngle),
+// 		0,
+// 		 cos(horizontalAngle)
+// 		);
 
 	// Right vector
 	right = glm::vec3(

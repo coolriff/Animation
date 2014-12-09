@@ -67,7 +67,7 @@ void Lab3Model::run(void)
 
 		drawGate();
 
-		humanSkeleton->keyControl();
+		humanSkeleton->keyControl(m_shader->GetProgramID());
 		humanSkeleton->updateBallPos(m_shader->GetProgramID());
 		humanSkeleton->calculateInverseKinematics();
 		humanSkeleton->updateStar(m_shader->GetProgramID());
@@ -385,18 +385,73 @@ void Lab3Model::createGate()
 
 void Lab3Model::timeKeyControl()
 {
+
+
+
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_R ) == GLFW_PRESS){
 		thirdCamera = true;
 	}
 
-	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_P ) == GLFW_PRESS)
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_G ) == GLFW_PRESS){
+		followBallCamera = true;
+	}
+
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_F ) == GLFW_PRESS)
 	{
 		thirdCamera = false;
-		m_camera->setPosition(humanSkeleton->slerp(m_camera->position,glm::vec3(0,10,-20),0.1));
+		followBallCamera = false;
+		//m_camera->setPosition(humanSkeleton->slerp(m_camera->position,glm::vec3(0,10,-20),0.1));
 	}
 
 	if (thirdCamera)
 	{
-		m_camera->cameraUpdate(glm::vec3(humanSkeleton->humanNode[0]->pos.x, humanSkeleton->humanNode[0]->pos.y, humanSkeleton->humanNode[0]->pos.z + 10.0f), humanSkeleton->humanNode[0]->pos);
+		// Move forward
+		if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_W ) == GLFW_PRESS){
+			if (!humanSkeleton->kick)
+			{
+				humanSkeleton->humanNode[0]->localTransformation[3][2] -= 0.05;
+				humanSkeleton->walking = true;
+			}
+		}
+		// Move backward
+		if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_S ) == GLFW_PRESS){
+			if (!humanSkeleton->kick)
+			{
+				humanSkeleton->humanNode[0]->localTransformation[3][2] += 0.05;
+				humanSkeleton->walking = true;
+			}
+		}
+		// Strafe right
+		if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_D ) == GLFW_PRESS){
+			if (!humanSkeleton->kick)
+			{
+				humanSkeleton->humanNode[0]->localTransformation[3][0] += 0.05;
+				humanSkeleton->walking = true;
+			}
+		}
+		// Strafe left
+		if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_A ) == GLFW_PRESS){
+			if (!humanSkeleton->kick)
+			{
+				humanSkeleton->humanNode[0]->localTransformation[3][0] -= 0.05;
+				humanSkeleton->walking = true;
+			}
+		}
+
+		//humanSkeleton->walking = false;
+		//humanSkeleton->humanNode[0]->localTransformation = glm::lookAt(humanSkeleton->humanNode[0]->pos,humanSkeleton->humanNode[0]->pos+m_camera->direction,m_camera->up);
+		m_camera->cameraUpdate(glm::vec3(humanSkeleton->humanNode[0]->pos.x, humanSkeleton->humanNode[0]->pos.y+3.0f, humanSkeleton->humanNode[0]->pos.z + 15.0f), humanSkeleton->humanNode[0]->pos);
 	}
+
+	if (followBallCamera)
+	{
+		//humanSkeleton->humanNode[0]->localTransformation = glm::lookAt(humanSkeleton->humanNode[0]->pos,humanSkeleton->humanNode[0]->pos+m_camera->direction,m_camera->up);
+		m_camera->cameraUpdate(glm::vec3(humanSkeleton->armTargetPos.x, humanSkeleton->armTargetPos.y+3.0f, humanSkeleton->armTargetPos.z + 15.0f), humanSkeleton->armTargetPos);
+	}
+
+// 	glm::quat ro = glm::angleAxis(1.0f, m_camera->up);
+//  	glm::mat4 rot =  glm::rotate()
+// 	glm::quat ro = glm::toQuat(m_camera->getViewMatrix());
+
+	//humanSkeleton->humanNode[0]->localTransformation = glm::lookAt(humanSkeleton->humanNode[0]->pos, humanSkeleton->humanNode[0]->pos-m_camera->direction, m_camera->up);
 }

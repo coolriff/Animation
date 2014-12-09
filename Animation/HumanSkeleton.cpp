@@ -24,6 +24,9 @@ HumanSkeleton::HumanSkeleton(Setup* m_setup)
 	action_4 = false;
 	kick = false;
 	flyingBall = false;
+	walking = false;
+	deltaT = false;
+	ballAnimation = false;
 }
 
 
@@ -33,22 +36,6 @@ HumanSkeleton::~HumanSkeleton(void)
 
 void HumanSkeleton::createHumanNode()
 {
-// 	humanNode[0] = bone->createBone(0,glm::vec3(0,6.5,0));		humanNode[0]->bName = "Torso";
-// 	humanNode[1] = bone->createBone(1,glm::vec3(0,1,0));		humanNode[1]->bName = "Head";
-// 	humanNode[2] = bone->createBone(2,glm::vec3(-1.2,0,0));		humanNode[2]->bName = "Left-upper-arm";
-// 	humanNode[3] = bone->createBone(3,glm::vec3(0,-1.5,0));		humanNode[3]->bName = "Left-lower-arm";
-// 	humanNode[4] = bone->createBone(4,glm::vec3(0,-1.5,0));		humanNode[4]->bName = "Left-wrist";
-// 	humanNode[5] = bone->createBone(5,glm::vec3(1.2,0,0));		humanNode[5]->bName = "Right-upper-arm";
-// 	humanNode[6] = bone->createBone(6,glm::vec3(0,-1.5,0));		humanNode[6]->bName = "Right-lower-arm";
-// 	humanNode[7] = bone->createBone(7,glm::vec3(0,-1.5,0));		humanNode[7]->bName = "Right-wrist";
-// 	humanNode[8] = bone->createBone(8,glm::vec3(-0.5,-2.5,0));	humanNode[8]->bName = "Left-upper-leg";
-// 	humanNode[9] = bone->createBone(9,glm::vec3(0,-2,0));		humanNode[9]->bName = "Left-lower-leg";
-// 	humanNode[10] = bone->createBone(10,glm::vec3(0,-2,0));		humanNode[10]->bName = "Left-foot";
-// 	humanNode[11] = bone->createBone(11,glm::vec3(0.5,-2.5,0));	humanNode[11]->bName = "Right-upper-leg";
-// 	humanNode[12] = bone->createBone(12,glm::vec3(0,-2,0));		humanNode[12]->bName = "Right-lower-leg";
-// 	humanNode[13] = bone->createBone(13,glm::vec3(0,-2,0));		humanNode[13]->bName = "Right-foot";
-// 	humanNode[14] = bone->createBone(14,glm::vec3(0,-2,0));		humanNode[14]->bName = "Pelvis";
-
 	humanNode[0] = bone->createBone(0,glm::vec3(0,6.5,0));		humanNode[0]->bName = "Torso";
 	humanNode[1] = bone->createBone(1,glm::vec3(0,1,0));		humanNode[1]->bName = "Head";
 	humanNode[2] = bone->createBone(2,glm::vec3(-1.2,0,0));		humanNode[2]->bName = "Left-upper-arm";
@@ -240,48 +227,21 @@ glm::vec3 HumanSkeleton::cInterpolate(float time, glm::vec3 p1, glm::vec3 p2, gl
 	return(a0 * pow(time,3) + a1 * pow(time,2) + a2 * pow(time,1) + a3);
 }
 
-void HumanSkeleton::keyControl()
+void HumanSkeleton::keyControl(GLuint shaderProgramID)
 {
-// 	//Move y up
-// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_UP ) == GLFW_PRESS){
-// // 		humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,6.5,0),0.1);
-// // 		humanNode[0]->localTransformation = glm::translate(glm::mat4(1), humanNodePos[0]);
-// 		action_1 = true;
-// 	}
-// 
-// 	// Move y down
-// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_DOWN ) == GLFW_PRESS){
-// // 		humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,6.5,0),0.1);
-// // 		humanNode[0]->localTransformation = glm::translate(glm::mat4(1), humanNodePos[0]);
-// 		action_1 = false;
-// 	}
-// 
-// 	// Move x right
-// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_RIGHT ) == GLFW_PRESS){
-// 		humanNode[2]->localTransformation = glm::rotate(humanNode[2]->offset, 20.0f, glm::vec3(-1,0,0));
-// 		humanNode[5]->localTransformation = glm::rotate(humanNode[5]->offset, 20.0f, glm::vec3(1,0,0));
-// 		humanNode[8]->localTransformation = glm::rotate(humanNode[8]->offset, 20.0f, glm::vec3(1,0,0));
-// 		humanNode[11]->localTransformation = glm::rotate(humanNode[11]->offset, 20.0f, glm::vec3(-1,0,0));
-// 
-// // 		humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,6,-3),0.1);
-// // 		humanNode[0]->localTransformation = glm::translate(glm::mat4(1), humanNodePos[0]);
-// 	}
-// 
-// 	// Move x left
-// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_LEFT ) == GLFW_PRESS){
-// 		humanNode[2]->localTransformation = glm::rotate(humanNode[2]->offset, 20.0f, glm::vec3(1,0,0));
-// 		humanNode[5]->localTransformation = glm::rotate(humanNode[5]->offset, 20.0f, glm::vec3(-1,0,0));
-// 		humanNode[8]->localTransformation = glm::rotate(humanNode[8]->offset, 20.0f, glm::vec3(-1,0,0));
-// 		humanNode[11]->localTransformation = glm::rotate(humanNode[11]->offset, 20.0f, glm::vec3(1,0,0));
-// 
-// // 		humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,6.5,-6),0.1);
-// // 		humanNode[0]->localTransformation = glm::translate(glm::mat4(1), humanNodePos[0]);
-// 	}
+	deltaT+=0.00001;
+	if(deltaT >= 2000)
+	{
+		deltaT = 0;
+	}
 
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_T ) == GLFW_PRESS){
-		kick = true;
-		action_1 = true;
-		flyingBall = true;
+		if (!walking)
+		{
+			kick = true;
+			action_1 = true;
+			flyingBall = true;
+		}
 	}
 
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_F ) == GLFW_PRESS){
@@ -290,12 +250,70 @@ void HumanSkeleton::keyControl()
 
 	if (flyingBall)
 	{
-		armTargetPos = interpolateCubicSpine(0.1, armTargetPos, glm::vec3(20,5,-40),  glm::vec3(10,6,-80), glm::vec3(0,8,-120));
+		///Todo:: rotation for ball
+		armTargetPos = cInterpolate(0.01f, armTargetPos, glm::vec3(armTargetPos.x, armTargetPos.y - 10.0f, armTargetPos.z),  glm::vec3(armTargetPos.x,armTargetPos.y - 20.0f, -80), glm::vec3(armTargetPos.x,armTargetPos.y - 0.5f,-120));
+// 		glm::quat ro = glm::angleAxis(1.0f, glm::vec3(0,1,0));
+// 		glm::mat4 rot =  glm::rotate()
+// 		glm::quat ro = glm::toQuat(m_camera->getViewMatrix());
 	}
 
+	if (walking)
+	{
+		//walk need to keep this 
+		if(timeFlag == false)
+		{
+			dt += 1;
 
+			humanNode[2]->localTransformation = glm::rotate(humanNode[2]->offset, dt, glm::vec3(-1,0,0));
+			humanNode[5]->localTransformation = glm::rotate(humanNode[5]->offset, dt, glm::vec3(1,0,0));
+			humanNode[8]->localTransformation = glm::rotate(humanNode[8]->offset, dt, glm::vec3(1,0,0));
+			humanNode[11]->localTransformation = glm::rotate(humanNode[11]->offset, dt, glm::vec3(-1,0,0));
 
+			if (dt > 20)
+			{
+				timeFlag = true;
+				//walking = false;
+			}
+		}
+		if (timeFlag == true)
+		{
+			dt -= 1;
 
+			humanNode[2]->localTransformation = glm::rotate(humanNode[2]->offset, dt, glm::vec3(-1,0,0));
+			humanNode[5]->localTransformation = glm::rotate(humanNode[5]->offset, dt, glm::vec3(1,0,0));
+			humanNode[8]->localTransformation = glm::rotate(humanNode[8]->offset, dt, glm::vec3(1,0,0));
+			humanNode[11]->localTransformation = glm::rotate(humanNode[11]->offset, dt, glm::vec3(-1,0,0));
+
+			if (dt < -20)
+			{
+				timeFlag = false;
+				//walking = false;
+			}
+		}
+
+		if (timeFlag == false && dt == 0)
+		{
+			walking = false;
+		}
+	}
+
+// 	if (endToTargeDistance < 2)
+// 	{
+// 		ballAnimation = true;
+// 	}
+// 
+// 	if (ballAnimation)
+// 	{
+// 		armTargetTransformation = glm::translate(glm::mat4(1),glm::vec3(armTargetPos.x,armTargetPos.y,armTargetPos.z));
+// 		armTargetTransformation = glm::scale_slow(armTargetTransformation,glm::vec3(0,0.5,0));
+// 		armTarget->update(armTargetTransformation, shaderProgramID);
+// 		armTarget->draw();
+// 	}
+
+	if (!kick)
+	{
+		ballAction();
+	}
 
 	if (kick)
 	{
@@ -354,9 +372,12 @@ void HumanSkeleton::keyControl()
 				actionDegree[12].x = -25;
 			}
 
-			//humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,5.5,-3),0.03);
-			humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,humanNodePos[0].y, humanNodePos[0].z - 1),0.03);
+			humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(humanNodePos[0].x,humanNodePos[0].y, humanNodePos[0].z - 1),0.03);
 			humanNode[0]->localTransformation = glm::translate(glm::mat4(1), humanNodePos[0]);
+
+			//glm::vec3 temp1 = slerp(glm::vec3(humanNode[0]->localTransformation[3][0], humanNode[0]->localTransformation[3][1], humanNode[0]->localTransformation[3][0]), glm::vec3(0,humanNodePos[0].y, humanNodePos[0].z - 1),0.03);
+			//humanNode[0]->localTransformation = glm::translate(glm::mat4(1), humanNodePos[0]);
+
 		}
 		if (action_2)
 		{
@@ -418,7 +439,7 @@ void HumanSkeleton::keyControl()
 			}
 
 			//humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,6.0,-3),0.03);
-			humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,humanNodePos[0].y, humanNodePos[0].z - 1),0.03);
+			humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(humanNodePos[0].x,humanNodePos[0].y, humanNodePos[0].z - 1),0.03);
 			humanNode[0]->localTransformation = glm::translate(glm::mat4(1), humanNodePos[0]);
 		}
 
@@ -491,7 +512,7 @@ void HumanSkeleton::keyControl()
 			}
 
 			//humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,6.5,-4),0.03);
-			humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(0,humanNodePos[0].y,humanNodePos[0].z + 2),0.03);
+			humanNodePos[0] = slerp(humanNodePos[0], glm::vec3(humanNodePos[0].x,humanNodePos[0].y,humanNodePos[0].z + 2),0.03);
 			humanNode[0]->localTransformation = glm::translate(glm::mat4(1), humanNodePos[0]);
 
 			if (dt > 66)
@@ -501,67 +522,6 @@ void HumanSkeleton::keyControl()
 			}
 		}
 	}
-	// 	// MOVE 
-	// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_UP ) == GLFW_PRESS){
-	// 		armTargetPos.y += 0.3;
-	// 	}
-	// 
-	// 	// Move y down
-	// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_DOWN ) == GLFW_PRESS){
-	// 		armTargetPos.y -= 0.3;
-	// 	}
-	// 
-	// 	// Move x right
-	// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_RIGHT ) == GLFW_PRESS){
-	// 		armTargetPos.x += 0.3;
-	// 	}
-	// 
-	// 	// Move x left
-	// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_LEFT ) == GLFW_PRESS){
-	// 		armTargetPos.x -= 0.3;
-	// 	}
-	// 
-	// 	// Move z forward
-	// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_I ) == GLFW_PRESS){
-	// 		armTargetPos.z -= 0.3;
-	// 	}
-	// 
-	// 	// Move z backward
-	// 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_K ) == GLFW_PRESS){
-	// 		armTargetPos.z += 0.3;
-	// 	}
-
-
-	//		//walk need to keep this 
-	// 		if(timeFlag == false)
-	// 		{
-	// 			dt += 0.5;
-	// 
-	// 			humanNode[2]->localTransformation = glm::rotate(humanNode[2]->offset, dt, glm::vec3(-1,0,0));
-	// 			humanNode[5]->localTransformation = glm::rotate(humanNode[5]->offset, dt, glm::vec3(1,0,0));
-	// 			humanNode[8]->localTransformation = glm::rotate(humanNode[8]->offset, dt, glm::vec3(1,0,0));
-	// 			humanNode[11]->localTransformation = glm::rotate(humanNode[11]->offset, dt, glm::vec3(-1,0,0));
-	// 
-	// 			if (dt > 20)
-	// 			{
-	// 				timeFlag = true;
-	// 			}
-	// 		}
-	// 		if (timeFlag == true)
-	// 		{
-	// 			dt -= 0.5;
-	// 
-	// 			humanNode[2]->localTransformation = glm::rotate(humanNode[2]->offset, dt, glm::vec3(-1,0,0));
-	// 			humanNode[5]->localTransformation = glm::rotate(humanNode[5]->offset, dt, glm::vec3(1,0,0));
-	// 			humanNode[8]->localTransformation = glm::rotate(humanNode[8]->offset, dt, glm::vec3(1,0,0));
-	// 			humanNode[11]->localTransformation = glm::rotate(humanNode[11]->offset, dt, glm::vec3(-1,0,0));
-	// 
-	// 			if (dt < -20)
-	// 			{
-	// 				timeFlag = false;
-	// 
-	// 			}
-	// 	if	}
 }
 
 void HumanSkeleton::calcGlobalTransformation()
@@ -578,31 +538,34 @@ void HumanSkeleton::calcGlobalTransformation()
 		}
 	}
 
-// 	if (endToTargeDistance < 4.0f)
-// 	{
-// 		for (int i = 4; i < 19; i++)
-// 		{
-// 			handNode[i]->localTransformation = glm::rotate(handNode[i]->offset, deltaTime, glm::vec3(1,0,0));
-// 		}
-// 		deltaTime += 0.1f;
-// 		if (deltaTime > 40.0f)
-// 		{
-// 			deltaTime = 30.0f;
-// 		}
-// 	}
-// 
-// 	if (endToTargeDistance >= 2.0f)
-// 	{
-// 		for (int i = 4; i < 19; i++)
-// 		{
-// 			handNode[i]->localTransformation = glm::rotate(handNode[i]->offset, deltaTime, glm::vec3(1,0,0));
-// 		}
-// 		deltaTime -= 0.1f;
-// 		if (deltaTime < 0.0f)
-// 		{
-// 			deltaTime = 0.0f;
-// 		}
-// 	}
+	if (ballAnimation)
+	{
+		if (endToTargeDistance < 4.0f)
+		{
+			for (int i = 4; i < 19; i++)
+			{
+				handNode[i]->localTransformation = glm::rotate(handNode[i]->offset, deltaTime, glm::vec3(1,0,0));
+			}
+			deltaTime += 0.1f;
+			if (deltaTime > 40.0f)
+			{
+				deltaTime = 30.0f;
+			}
+		}
+
+		if (endToTargeDistance >= 2.0f)
+		{
+			for (int i = 4; i < 19; i++)
+			{
+				handNode[i]->localTransformation = glm::rotate(handNode[i]->offset, deltaTime, glm::vec3(1,0,0));
+			}
+			deltaTime -= 0.1f;
+			if (deltaTime < 0.0f)
+			{
+				deltaTime = 0.0f;
+			}
+		}
+	}
 
 	for (int i = 0 ; i < HAND_NODE_NUM ; i++)
 	{
@@ -818,10 +781,12 @@ void HumanSkeleton::updateArmMesh(GLuint shaderProgramID)
 
 void HumanSkeleton::updateBallPos(GLuint shaderProgramID)
 {
-	//ballAction();
-	armTargetTransformation = glm::translate(glm::mat4(1),glm::vec3(armTargetPos.x,armTargetPos.y,armTargetPos.z));
-	armTarget->update(armTargetTransformation, shaderProgramID);
-	armTarget->draw();
+	if (!ballAnimation)
+	{
+		armTargetTransformation = glm::translate(glm::mat4(1),glm::vec3(armTargetPos.x,armTargetPos.y,armTargetPos.z));
+		armTarget->update(armTargetTransformation, shaderProgramID);
+		armTarget->draw();
+	}
 }
 
 void HumanSkeleton::ballAction()
@@ -1008,4 +973,16 @@ glm::vec3 HumanSkeleton::interpolateCubicSpine(float counter, glm::vec3 startpoi
 {
 	//bezier curve:
 	return pow(1-counter,3)*startpoint+3*counter*pow(1-counter,2)*point1+3*pow(counter,2)*(1-counter)*point2+pow(counter,3)*targetPoint;
+}
+
+glm::vec3 HumanSkeleton::interpolateCubic(float deltaTime, glm::vec3 beingPos, glm::vec3 point1,glm::vec3 point2, glm::vec3 endPos)
+{
+	glm::vec3 p1,p2,p3,p4;
+
+	p1 = point2 - endPos - point1 + beingPos;
+	p2 = point1 - beingPos - p1;
+	p3 = endPos - point1;
+	p4 = beingPos;
+
+	return (p1 * pow(deltaTime,3) + p2 * pow(deltaTime,2) + p3 * pow(deltaTime,1) + p4);
 }

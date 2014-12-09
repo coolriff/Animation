@@ -39,6 +39,7 @@ public:
 
 	float deltaTime;
 	float dt;
+	float deltaT;
 	bool timeFlag;
 	bool action_1;
 	bool action_2;
@@ -46,6 +47,8 @@ public:
 	bool action_4;
 	bool kick;
 	bool flyingBall;
+	bool walking;
+	bool ballAnimation;
 
 	void createHumanNode();
 	void drawHumanMesh(GLuint shaderProgramID);
@@ -60,13 +63,14 @@ public:
 	void calcEffectorToTargetDistance();
 	glm::quat calcJointLimit(Bone* bone, glm::vec3 angles);
 	glm::vec3 interpolateCubicSpine(float counter, glm::vec3 startpoint, glm::vec3 point1,  glm::vec3 point2, glm::vec3 targetPoint);
+	glm::vec3 interpolateCubic(float deltaTime, glm::vec3 beingPos, glm::vec3 point1,glm::vec3 point2, glm::vec3 endPos);
 
 	void updateStar(GLuint shaderProgramID);
 	float calcDistance(glm::vec3 pos1, glm::vec3 pos2);
 	glm::vec3 slerp (glm::vec3 p1, glm::vec3 p2, float t);
 	void traverse(Bone* bone, float deltaTime);
 	glm::vec3 cInterpolate(float time, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4);
-	void keyControl();
+	void keyControl(GLuint shaderProgramID);
 	void calcGlobalTransformation();
 };
 
