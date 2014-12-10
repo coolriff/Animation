@@ -50,6 +50,7 @@ bool Mesh::LoadMesh(string& Filename)
     if (m_pScene) 
 	{  
 		m_GlobalInverseTransform = m_pScene->mRootNode->mTransformation;
+		rootTransform = m_pScene->mRootNode->mTransformation;
 		m_GlobalInverseTransform.Inverse();
         Ret = InitFromScene(m_pScene, Filename);
 

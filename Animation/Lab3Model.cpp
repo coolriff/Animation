@@ -13,13 +13,26 @@ Lab3Model::Lab3Model(void)
 	plane = new Cylinder();
 	armSkeleton = new ArmSkeleton(m_setup);
 	thirdCamera = false;
+	thirdCamera_2 = false;
 	followBallCamera = false;
 	drawCircleCamera = false;
+	animationState = false;
 
 	m_mesh = new Mesh();
 	m_effect = new SkinningTechnique();
 
+	floor_mesh = new Mesh();
+	floor_effect = new SkinningTechnique();
+
+	football_mesh = new Mesh();
+	football_effect = new SkinningTechnique();
+
+	charRot = 0.0f;
+
 	startTime = GetCurrentTimeMillis();
+
+	targetPos = glm::vec3(0,0,0);
+	conterAni = 0.0f;
 }
 
 
@@ -34,15 +47,44 @@ void Lab3Model::run(void)
 	//initShaders();
 	initLoaderShaders();
 
+
 	if (!m_effect->Init(m_shader_loader->GetProgramID())) 
 	{
 		printf("Error initializing the lighting technique\n");
 	}
 	m_effect->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
 
-	std::string mainName = "../Models/walking_6/walking_6.dae";
+	std::string mainName = "../Models/soccer_pass_1/soccer_pass_1.dae";
 
 	if (!m_mesh->LoadMesh(mainName)) 
+	{
+		cout << "Main Character Load Failed" << endl;
+	}
+
+	//floor
+	if (!floor_effect->Init(m_shader_loader->GetProgramID())) 
+	{
+		printf("Error initializing the lighting technique\n");
+	}
+	floor_effect->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
+
+	std::string floorName = "../Models/untitled.dae";
+
+	if (!floor_mesh->LoadMesh(floorName)) 
+	{
+		cout << "Main Character Load Failed" << endl;
+	}
+
+	//football
+	if (!football_effect->Init(m_shader_loader->GetProgramID())) 
+	{
+		printf("Error initializing the lighting technique\n");
+	}
+	football_effect->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
+
+	std::string footName = "../Models/walking_6/walking_6.dae";
+
+	if (!football_mesh->LoadMesh(footName)) 
 	{
 		cout << "Main Character Load Failed" << endl;
 	}
@@ -68,9 +110,6 @@ void Lab3Model::run(void)
 		armSkeleton->createArmNode();
 		armSkeleton->drawArmMesh(m_shader_loader->GetProgramID());
 
-		//m_camera->setPosition(glm::vec3(humanSkeleton->humanNode[0]->pos.x + 5, humanSkeleton->humanNode[0]->pos.y + 5, humanSkeleton->humanNode[0]->pos.z + 5));
-		//m_camera->setDirection(glm::vec3(0,0,0));
-
 		m_camera->computeMatricesFromInputs();
 
 // 		GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
@@ -81,29 +120,160 @@ void Lab3Model::run(void)
 		GLuint viewLoaderLoc = glGetUniformLocation(m_shader_loader->GetProgramID(), "view");
 		GLuint projLoaderLoc = glGetUniformLocation(m_shader_loader->GetProgramID(), "projection");
 
-		glm::mat4 modelTrans2 = glm::mat4(1);
+// 		vector<Matrix4f> Transforms;
+// 
+// 		glm::mat4 animationMan;
+// 
+// 		if (animationState)
+// 		{
+// 			bool tm = false;
+// 			float RunningTime = GetRunningTime();
+// 
+// 			m_mesh->BoneTransform(RunningTime,Transforms);
+// 
+// 			for (GLuint i = 0 ; i < Transforms.size() ; i++) 
+// 			{
+// 				m_effect->SetBoneTransform(i, Transforms[i]);
+// 
+// 				if (i+1 == Transforms.size() )
+// 				{
+// 					tm = true;
+// 				}
+// 			}
+// 			animationMan = glm::translate(animationMan,glm::vec3(50,0,20));
+// 			animationMan = glm::rotate(convertAssimpMatrix(m_mesh->m_GlobalInverseTransform), 180.0f, glm::vec3(0,1,0));
+// 			animationMan = glm::scale(animationMan,glm::vec3(0.05f,0.05f,0.05f));
+// 			m_mesh->Update(modelLoaderLoc,animationMan);
+// 			m_mesh->Render();
+// 
+// 			if (tm)
+// 			{
+// 				animationState = false;
+// 			}
+// 		}
+// 		else
+// 		{
+// 			animationMan = glm::translate(animationMan,glm::vec3(50,0,20));
+// 			animationMan = glm::rotate(convertAssimpMatrix(m_mesh->m_GlobalInverseTransform),180.0f, glm::vec3(0,1,0));
+// 			animationMan = glm::scale(animationMan,glm::vec3(0.05f,0.05f,0.05f));
+// 			m_mesh->Update(modelLoaderLoc,animationMan);
+// 			m_mesh->Render();
+// 		}
+		glm::mat4 modelTrans2;
 
-		vector<Matrix4f> Transforms;
-		float RunningTime = GetRunningTime();
-		m_mesh->BoneTransform(RunningTime,Transforms);
+		vector<Matrix4f> Transforms;	
 
-		for (GLuint i = 0 ; i < Transforms.size() ; i++) 
+		if(glfwGetKey(m_setup->getWindow(), GLFW_KEY_UP) == GLFW_PRESS)
 		{
-			m_effect->SetBoneTransform(i, Transforms[i]);
-		}	
+			targetPos.z +=0.1;
+
+			float RunningTime = this->GetRunningTime();
+			//modelTrans2 = glm::rotate(modelTrans2,-glm::degrees(sin(fpsCam->horizontalAngle)),fpsCam->up);
+
+			m_mesh->BoneTransform(RunningTime,Transforms);
+
+			for (GLuint i = 0 ; i < Transforms.size() ; i++) 
+			{
+				m_effect->SetBoneTransform(i, Transforms[i]);
+			}
+		}
+		else if(glfwGetKey(m_setup->getWindow(), GLFW_KEY_DOWN) == GLFW_PRESS)
+		{
+			targetPos.z -=0.1;
+
+			float RunningTime = this->GetRunningTime();
+
+			m_mesh->BoneTransform(RunningTime,Transforms);
+
+			for (GLuint i = 0 ; i < Transforms.size() ; i++) 
+			{
+				m_effect->SetBoneTransform(i, Transforms[i]);
+			}	
+		}
+		else if(glfwGetKey(m_setup->getWindow(), GLFW_KEY_LEFT) == GLFW_PRESS)
+		{
+			targetPos.x +=0.1;
+			float RunningTime = this->GetRunningTime();
+
+			m_mesh->BoneTransform(RunningTime,Transforms);
+
+			for (GLuint i = 0 ; i < Transforms.size() ; i++) 
+			{
+				m_effect->SetBoneTransform(i, Transforms[i]);
+			}	
+		}
+		else if(glfwGetKey(m_setup->getWindow(), GLFW_KEY_RIGHT) == GLFW_PRESS)
+		{
+			targetPos.x -=0.1;
+			float RunningTime = this->GetRunningTime();
+			m_mesh->BoneTransform(RunningTime,Transforms);
+
+			for (GLuint i = 0 ; i < Transforms.size() ; i++) 
+			{
+				m_effect->SetBoneTransform(i, Transforms[i]);
+			}	
+		}
+
+		if (humanSkeleton->hAnimation)
+		{
+			float RunningTime = this->GetRunningTime();
+			m_mesh->BoneTransform(RunningTime,Transforms);
+
+			for (GLuint i = 0 ; i < Transforms.size() ; i++) 
+			{
+				m_effect->SetBoneTransform(i, Transforms[i]);
+			}
+
+			conterAni += 0.01f;
+			if (conterAni > 0.75f)
+			{
+				humanSkeleton->hAnimation = false;
+				conterAni = 0.0f;
+			}
+		}
+		else
+		{
+			m_mesh->BoneTransform(0,Transforms);
+
+			for (GLuint i = 0 ; i < Transforms.size() ; i++) 
+			{
+				m_effect->SetBoneTransform(i, Transforms[i]);
+			}	
+		}
+
+		modelTrans2 = glm::translate(modelTrans2,targetPos);
+		modelTrans2 = glm::rotate(convertAssimpMatrix(m_mesh->m_GlobalInverseTransform),180.0f, glm::vec3(0,1,0));
+		modelTrans2 = glm::scale(modelTrans2,glm::vec3(0.05f,0.05f,0.05f));
 
 		m_mesh->Update(modelLoaderLoc,modelTrans2);
 		m_mesh->Render();
 
+		humanSkeleton->hModelMat = convertAssimpMatrix(m_mesh->rootTransform);
+
+
+
+
+		//floor
+		glm::mat4 floors = glm::translate(floors,glm::vec3(0,0,-50));
+		floors = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));
+		floors = glm::scale(floors,glm::vec3(100.0f,100.0f,100.0f));
+		floor_mesh->Update(modelLoaderLoc,floors);
+		floor_mesh->Render();
+
+		//football
+		glm::mat4 mans = glm::translate(glm::mat4(1),glm::vec3(0,-1000,0));
+		mans = glm::scale(mans,glm::vec3(0.01f,0.01f,0.01f));
+		football_mesh->Update(modelLoaderLoc,mans);
+		football_mesh->Render();
+
 		timeKeyControl();
 
-/*		m_camera->handleMVP(modelLoc, viewLoc, projLoc);*/
 		m_camera->handleMVP(modelLoaderLoc, viewLoaderLoc, projLoaderLoc);
 
-		glm::mat4 planeMat4 = glm::translate(glm::mat4(1),glm::vec3(0,0,0));
-		planeMat4 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));
-		plane->update(planeMat4, m_shader_loader->GetProgramID());
-		plane->draw();
+// 		glm::mat4 planeMat4 = glm::translate(glm::mat4(1),glm::vec3(0,0,0));
+// 		planeMat4 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));
+// 		plane->update(planeMat4, m_shader_loader->GetProgramID());
+// 		plane->draw();
 
 		drawGate();
 
@@ -147,208 +317,16 @@ void Lab3Model::initShaders()
 	printf("shaderProgramID is %d\n",m_shader->GetProgramID());
 }
 
-bool Lab3Model::load_mesh(std::string file_name, GLuint* vao, int* point_count, glm::mat4* bone_offset_mats, int* bone_count)
+glm::mat4 Lab3Model::convertAssimpMatrix (Matrix4f m) 
 {
-	const aiScene* scene = importer.ReadFile (file_name, aiProcess_Triangulate);
+	glm::mat4 to;
 
-	if (!scene) 
-	{
-		std::cout << "ERROR: reading mesh - " << file_name << std::endl;
-		return false;
-	}
+	to[0][0] = m.m[0][0];	to[0][1] = m.m[1][0];	to[0][2] = m.m[2][0];	to[0][3] = m.m[3][0];
+	to[1][0] = m.m[0][1];	to[1][1] = m.m[1][1];	to[1][2] = m.m[2][1];	to[1][3] = m.m[3][1];
+	to[2][0] = m.m[0][2];	to[2][1] = m.m[1][2];	to[2][2] = m.m[2][2];	to[2][3] = m.m[3][2];
+	to[3][0] = m.m[0][3];	to[3][1] = m.m[1][3];	to[3][2] = m.m[2][3];	to[3][3] = m.m[3][3];
 
-	std::cout << "Number of animations: " << scene->mNumAnimations << std::endl;
-	std::cout << "Number of meshes: " << scene->mNumMeshes << std::endl;
-	std::cout << "Number of cameras: " << scene->mNumCameras << std::endl;
-	std::cout << "Number of lights: " << scene->mNumLights << std::endl;
-	std::cout << "Number of materials: " << scene->mNumMaterials << std::endl;
-	std::cout << "Number of textures: " << scene->mNumTextures << std::endl;
-
-	/* get first mesh in file only */
-	const aiMesh* mesh = scene->mMeshes[0];
-	std::cout << "Number of vertices in mesh[0]: " << mesh->mNumVertices << std::endl;
-
-	/* pass back number of vertex points in mesh */
-	*point_count = mesh->mNumVertices;
-	int pointNum = *point_count;
-
-	glGenVertexArrays (1, vao);
-	glBindVertexArray (*vao);
-	
-	/* we really need to copy out all the data from AssImp's funny little data
-	structures into pure contiguous arrays before we copy it into data buffers
-	because assimp's texture coordinates are not really contiguous in memory.
-	i allocate some dynamic memory to do this. */
-
-	GLfloat* points = NULL; // array of vertex points
-	GLfloat* normals = NULL; // array of vertex normals
-	GLfloat* texcoords = NULL; // array of texture coordinates
-	GLint* bone_ids = NULL; // array of bone IDs
-	if (mesh->HasPositions ()) 
-	{
-		points = new GLfloat[*point_count * 3 * sizeof (GLfloat)];
-
-		for (int i = 0; i < *point_count; i++) {
-			const aiVector3D* vp = &(mesh->mVertices[i]);
-			points[i * 3] = (GLfloat)vp->x;
-			points[i * 3 + 1] = (GLfloat)vp->y;
-			points[i * 3 + 2] = (GLfloat)vp->z;
-		}
-	}
-	if (mesh->HasNormals ()) 
-	{
-		normals = new GLfloat[*point_count * 3 * sizeof (GLfloat)];
-
-		for (int i = 0; i < *point_count; i++) 
-		{
-			const aiVector3D* vn = &(mesh->mNormals[i]);
-			normals[i * 3] = (GLfloat)vn->x;
-			normals[i * 3 + 1] = (GLfloat)vn->y;
-			normals[i * 3 + 2] = (GLfloat)vn->z;
-		}
-	}
-	if (mesh->HasTextureCoords (0)) 
-	{
-		texcoords = new GLfloat[*point_count * 2 * sizeof (GLfloat)];
-
-		for (int i = 0; i < *point_count; i++) {
-			const aiVector3D* vt = &(mesh->mTextureCoords[0][i]);
-			texcoords[i * 2] = (GLfloat)vt->x;
-			texcoords[i * 2 + 1] = (GLfloat)vt->y;
-		}
-	}
-
-		/* extract bone weights */
-	if (mesh->HasBones ()) {
-		*bone_count = (int)mesh->mNumBones;
-
-		int boneNum = *bone_count;
-		/* an array of bones names. max 256 bones, max name length 64 */
-		char bone_names[256][64];
-		
-		/* here I allocate an array of per-vertex bone IDs.
-		each vertex must know which bone(s) affect it
-		here I simplify, and assume that only one bone can affect each vertex,
-		so my array is only one-dimensional
-		*/
-		bone_ids = (int*)malloc (pointNum * sizeof(int));
-
-		std::string bName;
-		int num_weights;
-
-		
-		for (int b_i = 0; b_i < boneNum; b_i++) 
-		{
-			const aiBone* bone = mesh->mBones[b_i];
-
-			bName = mesh->mBones[b_i]->mName.data;
-			num_weights =  mesh->mBones[b_i]->mNumWeights;
-			
-			/* get bone names */
-			strcpy_s (bone_names[b_i], bone->mName.data);
-
-			std::cout << "Bone_name[ " << b_i << "] = " << bName << std::endl;
-			
-			/* get [inverse] offset matrix for each bone */
-			bone_offset_mats[b_i] = convertAssimpMatrix (bone->mOffsetMatrix);
-			
-			/* get bone weights
-			we can just assume weight is always 1.0, because we are just using 1 bone
-			per vertex. but any bone that affects a vertex will be assigned as the
-			vertex' bone_id */
-			for (int w_i = 0; w_i < num_weights; w_i++) 
-			{
-				aiVertexWeight weight = bone->mWeights[w_i];
-				int vertex_id = (int)weight.mVertexId;
-
-				// ignore weight if less than 0.5 factor
-				if (weight.mWeight >= 0.5f) 
-				{
-					bone_ids[vertex_id] = b_i;
-				}
-			}
-			
-		} // endfor
-		*bone_count = (int)mesh->mNumBones;
-		*point_count = pointNum;
-	} // endif
-
-
-	/* copy mesh data into VBOs */
-	if (mesh->HasPositions ()) 
-	{
-		GLuint vbo;
-		glGenBuffers (1, &vbo);
-		glBindBuffer (GL_ARRAY_BUFFER, vbo);
-		glBufferData (
-			GL_ARRAY_BUFFER,
-			3 * *point_count * sizeof (GLfloat),
-			points,
-			GL_STATIC_DRAW
-			);
-		glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray (0);
-		delete [] points;
-	}
-
-	if (mesh->HasNormals ()) 
-	{
-		GLuint vbo;
-		glGenBuffers (1, &vbo);
-		glBindBuffer (GL_ARRAY_BUFFER, vbo);
-		glBufferData (
-			GL_ARRAY_BUFFER,
-			3 * *point_count * sizeof (GLfloat),
-			normals,
-			GL_STATIC_DRAW
-			);
-		glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray (1);
-		delete [] normals;
-	}
-	if (mesh->HasTextureCoords (0)) {
-		GLuint vbo;
-		glGenBuffers (1, &vbo);
-		glBindBuffer (GL_ARRAY_BUFFER, vbo);
-		glBufferData (
-			GL_ARRAY_BUFFER,
-			2 * *point_count * sizeof (GLfloat),
-			texcoords,
-			GL_STATIC_DRAW
-			);
-		glVertexAttribPointer (2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray (2);
-		delete [] texcoords;
-	}
-	if (mesh->HasBones ()) {
-		GLuint vbo;
-		glGenBuffers (1, &vbo);
-		glBindBuffer (GL_ARRAY_BUFFER, vbo);
-		glBufferData (
-			GL_ARRAY_BUFFER,
-			*point_count * sizeof (GLint),
-			bone_ids,
-			GL_STATIC_DRAW
-			);
-		glVertexAttribIPointer(3, 1, GL_INT, 0, NULL);
-		glEnableVertexAttribArray (3);
-		free (bone_ids);
-	}
-
-	
-	std::cout << "Mesh Loaded" << std::endl;
-
-	return true;
-}
-
-glm::mat4 Lab3Model::convertAssimpMatrix (aiMatrix4x4 m) 
-{
-	return glm::mat4 (
-		m.a1, m.b1, m.c1, m.d1,
-		m.a2, m.b2, m.c2, m.d2,
-		m.a3, m.b3, m.c3, m.d3,
-		m.a4, m.b4, m.c4, m.d4
-		);
+	return to;
 }
 
 void Lab3Model::drawGate()
@@ -425,26 +403,42 @@ void Lab3Model::createGate()
 
 void Lab3Model::timeKeyControl()
 {
-
-
-
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_R ) == GLFW_PRESS){
 		thirdCamera = true;
+		thirdCamera_2 = false;
+		humanSkeleton->cModel = true;
+		humanSkeleton->hModel = false;
+// 		humanSkeleton->cball = true;
+// 		humanSkeleton->hball = false;
+	}
+
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_V ) == GLFW_PRESS){
+		thirdCamera_2 = true;
+		thirdCamera = false;
+		humanSkeleton->hModel = true;
+		humanSkeleton->cModel = false;
+// 		humanSkeleton->cball = false;
+// 		humanSkeleton->hball = true;
 	}
 
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_G ) == GLFW_PRESS){
+		thirdCamera_2 = false;
+		thirdCamera = false;
 		followBallCamera = true;
 	}
 
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_F ) == GLFW_PRESS)
 	{
 		thirdCamera = false;
+		thirdCamera_2 = false;
 		followBallCamera = false;
 		//m_camera->setPosition(humanSkeleton->slerp(m_camera->position,glm::vec3(0,10,-20),0.1));
 	}
 
 	if (thirdCamera)
 	{
+		thirdCamera_2 = false;
+		followBallCamera = false;
 		// Move forward
 		if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_W ) == GLFW_PRESS){
 			if (!humanSkeleton->kick)
@@ -465,6 +459,10 @@ void Lab3Model::timeKeyControl()
 		if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_D ) == GLFW_PRESS){
 			if (!humanSkeleton->kick)
 			{
+// 				charRot += 0.5f;
+// 				glm::mat4 rots = glm::rotate(humanSkeleton->humanNode[0]->offset, charRot, m_camera->up);
+// 				humanSkeleton->humanNode[0]->localTransformation = rots;
+// 				m_camera->ViewMatrix = rots;
 				humanSkeleton->humanNode[0]->localTransformation[3][0] += 0.05;
 				humanSkeleton->walking = true;
 			}
@@ -473,6 +471,10 @@ void Lab3Model::timeKeyControl()
 		if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_A ) == GLFW_PRESS){
 			if (!humanSkeleton->kick)
 			{
+// 				charRot -= 0.5f;
+// 				glm::mat4 rots = glm::rotate(humanSkeleton->humanNode[0]->offset, charRot, m_camera->up);
+// 				humanSkeleton->humanNode[0]->localTransformation = rots;
+// 				m_camera->ViewMatrix = rots;
 				humanSkeleton->humanNode[0]->localTransformation[3][0] -= 0.05;
 				humanSkeleton->walking = true;
 			}
@@ -480,20 +482,28 @@ void Lab3Model::timeKeyControl()
 
 		//humanSkeleton->walking = false;
 		//humanSkeleton->humanNode[0]->localTransformation = glm::lookAt(humanSkeleton->humanNode[0]->pos,humanSkeleton->humanNode[0]->pos+m_camera->direction,m_camera->up);
-		m_camera->cameraUpdate(glm::vec3(humanSkeleton->humanNode[0]->pos.x, humanSkeleton->humanNode[0]->pos.y+3.0f, humanSkeleton->humanNode[0]->pos.z + 15.0f), humanSkeleton->humanNode[0]->pos);
+		//m_camera->cameraUpdate(glm::vec3(humanSkeleton->humanNode[0]->pos.x, humanSkeleton->humanNode[0]->pos.y+3.0f, humanSkeleton->humanNode[0]->pos.z + 15.0f), humanSkeleton->humanNode[0]->pos);
+		m_camera->cameraUpdate(glm::vec3(humanSkeleton->humanNode[0]->pos.x, humanSkeleton->humanNode[0]->pos.y+3.0f, humanSkeleton->humanNode[0]->pos.z + 15.0f), 
+			glm::vec3(humanSkeleton->humanNode[0]->globalTransformation[3][0], humanSkeleton->humanNode[0]->globalTransformation[3][1], humanSkeleton->humanNode[0]->globalTransformation[3][2]));
+	}
+
+	if (thirdCamera_2)
+	{
+		thirdCamera = false;
+		followBallCamera = false;
+
+
+		glm::mat4 temp = convertAssimpMatrix(m_mesh->rootTransform);
+		m_camera->cameraUpdate(glm::vec3(temp[3][0]-3, temp[3][1]+10.0f, temp[3][2]+18.0f), glm::vec3(temp[3][0], temp[3][1]+6.0f, temp[3][2]));
 	}
 
 	if (followBallCamera)
 	{
+		thirdCamera = false;
+		thirdCamera_2 = false;
 		//humanSkeleton->humanNode[0]->localTransformation = glm::lookAt(humanSkeleton->humanNode[0]->pos,humanSkeleton->humanNode[0]->pos+m_camera->direction,m_camera->up);
 		m_camera->cameraUpdate(glm::vec3(humanSkeleton->armTargetPos.x, humanSkeleton->armTargetPos.y+3.0f, humanSkeleton->armTargetPos.z + 15.0f), humanSkeleton->armTargetPos);
 	}
-
-// 	glm::quat ro = glm::angleAxis(1.0f, m_camera->up);
-//  	glm::mat4 rot =  glm::rotate()
-// 	glm::quat ro = glm::toQuat(m_camera->getViewMatrix());
-
-	//humanSkeleton->humanNode[0]->localTransformation = glm::lookAt(humanSkeleton->humanNode[0]->pos, humanSkeleton->humanNode[0]->pos-m_camera->direction, m_camera->up);
 }
 
 void Lab3Model::initLoaderShaders()

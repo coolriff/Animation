@@ -37,9 +37,14 @@ public:
 	glm::vec3 humanNodePos[15];
 	glm::vec3 actionDegree[15];
 
+
+	glm::vec3 cModelPos;
+	glm::vec3 hModelPos;
+
+	glm::mat4 hModelMat;
+
 	float deltaTime;
 	float dt;
-	float deltaT;
 	bool timeFlag;
 	bool action_1;
 	bool action_2;
@@ -49,6 +54,24 @@ public:
 	bool flyingBall;
 	bool walking;
 	bool ballAnimation;
+	bool kickStateReady;
+	bool state1;
+	bool state2;
+	bool state3;
+
+	bool cModel;
+	bool hModel;
+
+	bool cball;
+	bool hball;
+
+	bool hAnimation;
+
+	float deltaY;
+	float deltaX;
+	float deltaZ;
+	float deltaT;
+	float ballToFloor;
 
 	void createHumanNode();
 	void drawHumanMesh(GLuint shaderProgramID);

@@ -50,6 +50,9 @@ public:
 	void BoneTransform(float TimeInSeconds, vector<Matrix4f>& Transforms);
 	aiNode* getRootNode();
 
+	Matrix4f rootTransform;
+	Matrix4f m_GlobalInverseTransform;
+
 private:
 
 	struct BoneInfo
@@ -152,8 +155,8 @@ private:
 	map<string,GLuint> m_BoneMapping; // maps a bone name to its index
 	GLuint m_NumBones;
 	vector<BoneInfo> m_BoneInfo;
-	Matrix4f m_GlobalInverseTransform;
-	
+
+
 	const aiScene* m_pScene;
 	Assimp::Importer m_Importer;
 

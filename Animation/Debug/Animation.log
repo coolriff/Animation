@@ -279,18 +279,22 @@ c:\animation\dependancies\imagemagick-6\magick++\stl.h(1867): warning C4251: 'Ma
               _Traits=std::char_traits<char>,
               _Alloc=std::allocator<char>
           ]
-c:\animation\animation\lab3model.cpp(22): warning C4244: '=' : conversion from '__int64' to 'float', possible loss of data
-c:\animation\animation\lab3model.cpp(401): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\lab3model.cpp(404): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\lab3model.cpp(407): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\lab3model.cpp(410): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\lab3model.cpp(413): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\lab3model.cpp(416): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\lab3model.cpp(419): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\lab3model.cpp(422): warning C4305: 'argument' : truncation from 'double' to 'const float'
-c:\animation\animation\lab3model.cpp(452): warning C4305: '-=' : truncation from 'double' to 'float'
-c:\animation\animation\lab3model.cpp(460): warning C4305: '+=' : truncation from 'double' to 'float'
-c:\animation\animation\lab3model.cpp(468): warning C4305: '+=' : truncation from 'double' to 'float'
-c:\animation\animation\lab3model.cpp(476): warning C4305: '-=' : truncation from 'double' to 'float'
+c:\animation\animation\lab3model.cpp(32): warning C4244: '=' : conversion from '__int64' to 'float', possible loss of data
+c:\animation\animation\lab3model.cpp(168): warning C4305: '+=' : truncation from 'double' to 'float'
+c:\animation\animation\lab3model.cpp(182): warning C4305: '-=' : truncation from 'double' to 'float'
+c:\animation\animation\lab3model.cpp(195): warning C4305: '+=' : truncation from 'double' to 'float'
+c:\animation\animation\lab3model.cpp(207): warning C4305: '-=' : truncation from 'double' to 'float'
+c:\animation\animation\lab3model.cpp(379): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab3model.cpp(382): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab3model.cpp(385): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab3model.cpp(388): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab3model.cpp(391): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab3model.cpp(394): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab3model.cpp(397): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab3model.cpp(400): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\animation\lab3model.cpp(446): warning C4305: '-=' : truncation from 'double' to 'float'
+c:\animation\animation\lab3model.cpp(454): warning C4305: '+=' : truncation from 'double' to 'float'
+c:\animation\animation\lab3model.cpp(466): warning C4305: '+=' : truncation from 'double' to 'float'
+c:\animation\animation\lab3model.cpp(478): warning C4305: '-=' : truncation from 'double' to 'float'
   GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   Animation.vcxproj -> C:\Animation\Debug\Animation.exe

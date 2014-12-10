@@ -42,24 +42,38 @@ public:
 
 	Mesh* m_mesh;
 	SkinningTechnique* m_effect;
+	
+
+	Mesh* football_mesh;
+	SkinningTechnique* football_effect;
+
+	Mesh* floor_mesh;
+	SkinningTechnique* floor_effect;
 
 	GLuint vao;
 	Assimp::Importer importer;
 	glm::mat4 bone_offset_mats;
+
+	float conterAni;
+
 	int point_count;
 	int bone_count;
+	glm::vec3 animationPos;
+	glm::vec3 targetPos;
 
 	bool thirdCamera;
+	bool thirdCamera_2;
+	bool animationState;
 	bool followBallCamera;
 	bool drawCircleCamera;
 	float startTime;
+	float charRot;
 	void timeKeyControl();
 	void drawGate();
 	void createGate();
 	void run(void);
 	void initShaders();
-	bool load_mesh (std::string file_name, GLuint* vao, int* point_count, glm::mat4* bone_offset_mats, int* bone_count);
-	glm::mat4 convertAssimpMatrix (aiMatrix4x4 m);
+	glm::mat4 convertAssimpMatrix (Matrix4f m);
 
 	void initLoaderShaders();
 	float GetRunningTime();
