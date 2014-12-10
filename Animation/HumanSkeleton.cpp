@@ -48,7 +48,7 @@ HumanSkeleton::~HumanSkeleton(void)
 
 void HumanSkeleton::createHumanNode()
 {
-	humanNode[0] = bone->createBone(0,glm::vec3(0,6.5,0));		humanNode[0]->bName = "Torso";
+	humanNode[0] = bone->createBone(0,glm::vec3(-5,6.5,0));		humanNode[0]->bName = "Torso";
 	humanNode[1] = bone->createBone(1,glm::vec3(0,1,0));		humanNode[1]->bName = "Head";
 	humanNode[2] = bone->createBone(2,glm::vec3(-1.2,0,0));		humanNode[2]->bName = "Left-upper-arm";
 	humanNode[3] = bone->createBone(3,glm::vec3(0,-1.5,0));		humanNode[3]->bName = "Left-lower-arm";
@@ -400,7 +400,6 @@ void HumanSkeleton::keyControl(GLuint shaderProgramID)
 				deltaY = 1.0f;
 				state2 = false;
 				ballAnimation = false;
-
 			}
 		}
 	}

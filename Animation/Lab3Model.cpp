@@ -33,6 +33,9 @@ Lab3Model::Lab3Model(void)
 
 	targetPos = glm::vec3(0,0,0);
 	conterAni = 0.0f;
+
+	timeFlag = false;
+	deltaTime = 0.0f;
 }
 
 
@@ -97,9 +100,15 @@ void Lab3Model::run(void)
 
 	createGate();
 
-
 	plane = new Cylinder(100, 50, 50, glm::vec4(0.2, 0.6, 0.3, 1.0), glm::vec4(0.2, 0.6, 0.3, 1.0), 2);
 	plane->generateObjectBuffer(m_shader_loader->GetProgramID());
+
+	stag[0] = new Cylinder(3, 0.5, 0.5, glm::vec4(0.2, 0.6, 0.3, 1.0), glm::vec4(0.2, 0.6, 0.3, 1.0), 2);
+	stag[0]->generateObjectBuffer(m_shader_loader->GetProgramID());
+
+	stag[1] = new Cylinder(2, 1, 0, glm::vec4(0.2, 0.6, 0.3, 1.0), glm::vec4(0.2, 0.6, 0.3, 1.0), 2);
+	stag[1]->generateObjectBuffer(m_shader_loader->GetProgramID());
+	
 
 	do{
 		m_setup->preDraw();
@@ -159,60 +168,50 @@ void Lab3Model::run(void)
 // 			m_mesh->Update(modelLoaderLoc,animationMan);
 // 			m_mesh->Render();
 // 		}
-		glm::mat4 modelTrans2;
+		glm::mat4 animationMat;
 
 		vector<Matrix4f> Transforms;	
 
-		if(glfwGetKey(m_setup->getWindow(), GLFW_KEY_UP) == GLFW_PRESS)
+		if (thirdCamera_2)
 		{
-			targetPos.z +=0.1;
-
-			float RunningTime = this->GetRunningTime();
-			//modelTrans2 = glm::rotate(modelTrans2,-glm::degrees(sin(fpsCam->horizontalAngle)),fpsCam->up);
-
-			m_mesh->BoneTransform(RunningTime,Transforms);
-
-			for (GLuint i = 0 ; i < Transforms.size() ; i++) 
+			if(glfwGetKey(m_setup->getWindow(), GLFW_KEY_W) == GLFW_PRESS)
 			{
-				m_effect->SetBoneTransform(i, Transforms[i]);
+				targetPos.z -=0.1;
+				animationMat = glm::translate(animationMat,targetPos);
+				animationMat = glm::rotate(animationMat,180.0f, glm::vec3(0,1,0));
+				animationMat = glm::scale(animationMat,glm::vec3(0.05f,0.05f,0.05f));
+				m_mesh->Update(modelLoaderLoc,animationMat);
+				m_mesh->Render();
+			}
+			if(glfwGetKey(m_setup->getWindow(), GLFW_KEY_S) == GLFW_PRESS)
+			{
+				targetPos.z +=0.1;
+				animationMat = glm::translate(animationMat,targetPos);
+				animationMat = glm::rotate(animationMat,180.0f, glm::vec3(0,1,0));
+				animationMat = glm::scale(animationMat,glm::vec3(0.05f,0.05f,0.05f));
+				m_mesh->Update(modelLoaderLoc,animationMat);
+				m_mesh->Render();
+			}
+			if(glfwGetKey(m_setup->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
+			{
+				targetPos.x -=0.1;
+				animationMat = glm::translate(animationMat,targetPos);
+				animationMat = glm::rotate(animationMat,180.0f, glm::vec3(0,1,0));
+				animationMat = glm::scale(animationMat,glm::vec3(0.05f,0.05f,0.05f));
+				m_mesh->Update(modelLoaderLoc,animationMat);
+				m_mesh->Render();
+			}
+			if(glfwGetKey(m_setup->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
+			{
+				targetPos.x +=0.1;
+				animationMat = glm::translate(animationMat,targetPos);
+				animationMat = glm::rotate(animationMat,180.0f, glm::vec3(0,1,0));
+				animationMat = glm::scale(animationMat,glm::vec3(0.05f,0.05f,0.05f));
+				m_mesh->Update(modelLoaderLoc,animationMat);
+				m_mesh->Render();
 			}
 		}
-		else if(glfwGetKey(m_setup->getWindow(), GLFW_KEY_DOWN) == GLFW_PRESS)
-		{
-			targetPos.z -=0.1;
-
-			float RunningTime = this->GetRunningTime();
-
-			m_mesh->BoneTransform(RunningTime,Transforms);
-
-			for (GLuint i = 0 ; i < Transforms.size() ; i++) 
-			{
-				m_effect->SetBoneTransform(i, Transforms[i]);
-			}	
-		}
-		else if(glfwGetKey(m_setup->getWindow(), GLFW_KEY_LEFT) == GLFW_PRESS)
-		{
-			targetPos.x +=0.1;
-			float RunningTime = this->GetRunningTime();
-
-			m_mesh->BoneTransform(RunningTime,Transforms);
-
-			for (GLuint i = 0 ; i < Transforms.size() ; i++) 
-			{
-				m_effect->SetBoneTransform(i, Transforms[i]);
-			}	
-		}
-		else if(glfwGetKey(m_setup->getWindow(), GLFW_KEY_RIGHT) == GLFW_PRESS)
-		{
-			targetPos.x -=0.1;
-			float RunningTime = this->GetRunningTime();
-			m_mesh->BoneTransform(RunningTime,Transforms);
-
-			for (GLuint i = 0 ; i < Transforms.size() ; i++) 
-			{
-				m_effect->SetBoneTransform(i, Transforms[i]);
-			}	
-		}
+		
 
 		if (humanSkeleton->hAnimation)
 		{
@@ -241,14 +240,14 @@ void Lab3Model::run(void)
 			}	
 		}
 
-		modelTrans2 = glm::translate(modelTrans2,targetPos);
-		modelTrans2 = glm::rotate(convertAssimpMatrix(m_mesh->m_GlobalInverseTransform),180.0f, glm::vec3(0,1,0));
-		modelTrans2 = glm::scale(modelTrans2,glm::vec3(0.05f,0.05f,0.05f));
+		animationMat = glm::translate(animationMat,targetPos);
+		animationMat = glm::rotate(animationMat,180.0f, glm::vec3(0,1,0));
+		animationMat = glm::scale(animationMat,glm::vec3(0.05f,0.05f,0.05f));
 
-		m_mesh->Update(modelLoaderLoc,modelTrans2);
+		m_mesh->Update(modelLoaderLoc,animationMat);
 		m_mesh->Render();
 
-		humanSkeleton->hModelMat = convertAssimpMatrix(m_mesh->rootTransform);
+		humanSkeleton->hModelMat = animationMat;
 
 
 
@@ -270,12 +269,10 @@ void Lab3Model::run(void)
 
 		m_camera->handleMVP(modelLoaderLoc, viewLoaderLoc, projLoaderLoc);
 
-// 		glm::mat4 planeMat4 = glm::translate(glm::mat4(1),glm::vec3(0,0,0));
-// 		planeMat4 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));
-// 		plane->update(planeMat4, m_shader_loader->GetProgramID());
-// 		plane->draw();
+
 
 		drawGate();
+		staging();
 
 		humanSkeleton->keyControl(m_shader_loader->GetProgramID());
 		humanSkeleton->updateBallPos(m_shader_loader->GetProgramID());
@@ -493,7 +490,7 @@ void Lab3Model::timeKeyControl()
 		followBallCamera = false;
 
 
-		glm::mat4 temp = convertAssimpMatrix(m_mesh->rootTransform);
+		glm::mat4 temp = humanSkeleton->hModelMat;
 		m_camera->cameraUpdate(glm::vec3(temp[3][0]-3, temp[3][1]+10.0f, temp[3][2]+18.0f), glm::vec3(temp[3][0], temp[3][1]+6.0f, temp[3][2]));
 	}
 
@@ -522,4 +519,53 @@ void Lab3Model::initLoaderShaders()
 float Lab3Model::GetRunningTime()
 {
 	return (float)((double) GetCurrentTimeMillis() - startTime) / 1000.0f;
+}
+
+void Lab3Model::staging()
+{
+	if(!timeFlag)
+	{
+		deltaTime += 0.3f;
+		if (deltaTime > 10)
+		{
+			timeFlag = true;
+		}
+	}
+
+	if (timeFlag)
+	{
+		deltaTime -= 0.3f;
+		if (deltaTime < 0)
+		{
+			timeFlag = false;
+
+		}
+	}
+
+	if (thirdCamera)
+	{
+		glm::mat4 stag1 = glm::translate(glm::mat4(1),glm::vec3(humanSkeleton->cModelPos.x,humanSkeleton->cModelPos.y+11+deltaTime,humanSkeleton->cModelPos.z+3));
+		/*		stag1 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));*/
+		stag[0]->update(stag1, m_shader_loader->GetProgramID());
+		stag[0]->draw();
+
+		glm::mat4 stag2 = glm::translate(glm::mat4(1),glm::vec3(humanSkeleton->cModelPos.x,humanSkeleton->cModelPos.y+9+deltaTime,humanSkeleton->cModelPos.z+3));
+		/*		stag1 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));*/
+		stag[1]->update(stag2, m_shader_loader->GetProgramID());
+		stag[1]->draw();
+	}
+	if (thirdCamera_2)
+	{
+		glm::mat4 stag1 = glm::translate(glm::mat4(1),glm::vec3(humanSkeleton->hModelPos.x,humanSkeleton->hModelPos.y+12+deltaTime,humanSkeleton->hModelPos.z));
+		/*		stag1 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));*/
+		stag[0]->update(stag1, m_shader_loader->GetProgramID());
+		stag[0]->draw();
+
+		glm::mat4 stag2 = glm::translate(glm::mat4(1),glm::vec3(humanSkeleton->hModelPos.x,humanSkeleton->hModelPos.y+10+deltaTime,humanSkeleton->hModelPos.z));
+		/*		stag1 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));*/
+		stag[1]->update(stag2, m_shader_loader->GetProgramID());
+		stag[1]->draw();
+	}
+
+
 }

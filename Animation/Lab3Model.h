@@ -38,6 +38,7 @@ public:
 	HumanSkeleton* humanSkeleton;
 	Cylinder* plane;
 	Cylinder* gate[8];
+	Cylinder* stag[2];
 	ArmSkeleton* armSkeleton;
 
 	Mesh* m_mesh;
@@ -68,6 +69,8 @@ public:
 	bool drawCircleCamera;
 	float startTime;
 	float charRot;
+	bool timeFlag;
+	float deltaTime;
 	void timeKeyControl();
 	void drawGate();
 	void createGate();
@@ -77,5 +80,6 @@ public:
 
 	void initLoaderShaders();
 	float GetRunningTime();
+	void staging();
 };
 

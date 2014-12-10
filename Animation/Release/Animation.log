@@ -1,32 +1,302 @@
-﻿  HumanSkeleton.cpp
+﻿  Lab3Model.cpp
 c:\animation\animation\Cylinder.h(33): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\Cylinder.h(45): warning C4018: '<' : signed/unsigned mismatch
 c:\animation\animation\Cylinder.h(55): warning C4018: '<' : signed/unsigned mismatch
-HumanSkeleton.cpp(115): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(124): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(470): warning C4305: 'argument' : truncation from 'double' to 'float'
-HumanSkeleton.cpp(537): warning C4305: 'argument' : truncation from 'double' to 'float'
-HumanSkeleton.cpp(610): warning C4305: 'argument' : truncation from 'double' to 'float'
-HumanSkeleton.cpp(830): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(832): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(834): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(838): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(840): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(842): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(846): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(848): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(850): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(854): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(856): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(858): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(862): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(864): warning C4305: 'argument' : truncation from 'double' to 'const float'
-HumanSkeleton.cpp(866): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(456): warning C4251: 'Magick::DrawableBezier::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::DrawableBezier'
+          with
+          [
+              _Ty=Magick::Coordinate
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(498): warning C4251: 'Magick::DrawablePushClipPath::_id' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::DrawablePushClipPath'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(526): warning C4251: 'Magick::DrawableClipPath::_id' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::DrawableClipPath'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(959): warning C4251: 'Magick::DrawableFont::_font' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::DrawableFont'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(960): warning C4251: 'Magick::DrawableFont::_family' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::DrawableFont'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(1128): warning C4251: 'Magick::DrawablePath::_path' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::DrawablePath'
+          with
+          [
+              _Ty=Magick::VPath
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(1217): warning C4251: 'Magick::DrawablePolygon::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::DrawablePolygon'
+          with
+          [
+              _Ty=Magick::Coordinate
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(1237): warning C4251: 'Magick::DrawablePolyline::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::DrawablePolyline'
+          with
+          [
+              _Ty=Magick::Coordinate
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(1321): warning C4251: 'Magick::DrawablePushPattern::_id' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::DrawablePushPattern'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(1923): warning C4251: 'Magick::DrawableText::_text' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::DrawableText'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(1924): warning C4251: 'Magick::DrawableText::_encoding' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::DrawableText'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2255): warning C4251: 'Magick::PathArcAbs::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathArcAbs'
+          with
+          [
+              _Ty=Magick::PathArcArgs
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2277): warning C4251: 'Magick::PathArcRel::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathArcRel'
+          with
+          [
+              _Ty=Magick::PathArcArgs
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2428): warning C4251: 'Magick::PathCurvetoAbs::_args' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathCurvetoAbs'
+          with
+          [
+              _Ty=Magick::PathCurvetoArgs
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2451): warning C4251: 'Magick::PathCurvetoRel::_args' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathCurvetoRel'
+          with
+          [
+              _Ty=Magick::PathCurvetoArgs
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2475): warning C4251: 'Magick::PathSmoothCurvetoAbs::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathSmoothCurvetoAbs'
+          with
+          [
+              _Ty=Magick::Coordinate
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2500): warning C4251: 'Magick::PathSmoothCurvetoRel::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathSmoothCurvetoRel'
+          with
+          [
+              _Ty=Magick::Coordinate
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2609): warning C4251: 'Magick::PathQuadraticCurvetoAbs::_args' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathQuadraticCurvetoAbs'
+          with
+          [
+              _Ty=Magick::PathQuadraticCurvetoArgs
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2633): warning C4251: 'Magick::PathQuadraticCurvetoRel::_args' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathQuadraticCurvetoRel'
+          with
+          [
+              _Ty=Magick::PathQuadraticCurvetoArgs
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2657): warning C4251: 'Magick::PathSmoothQuadraticCurvetoAbs::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathSmoothQuadraticCurvetoAbs'
+          with
+          [
+              _Ty=Magick::Coordinate
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2681): warning C4251: 'Magick::PathSmoothQuadraticCurvetoRel::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathSmoothQuadraticCurvetoRel'
+          with
+          [
+              _Ty=Magick::Coordinate
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2709): warning C4251: 'Magick::PathLinetoAbs::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathLinetoAbs'
+          with
+          [
+              _Ty=Magick::Coordinate
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2733): warning C4251: 'Magick::PathLinetoRel::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathLinetoRel'
+          with
+          [
+              _Ty=Magick::Coordinate
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2875): warning C4251: 'Magick::PathMovetoAbs::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathMovetoAbs'
+          with
+          [
+              _Ty=Magick::Coordinate
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Drawable.h(2899): warning C4251: 'Magick::PathMovetoRel::_coordinates' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::PathMovetoRel'
+          with
+          [
+              _Ty=Magick::Coordinate
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Exception.h(31): warning C4251: 'Magick::Exception::_what' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::Exception'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/CoderInfo.h(65): warning C4251: 'Magick::CoderInfo::_name' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::CoderInfo'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/CoderInfo.h(66): warning C4251: 'Magick::CoderInfo::_description' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::CoderInfo'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Montage.h(90): warning C4251: 'Magick::Montage::_fileName' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::Montage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Montage.h(92): warning C4251: 'Magick::Montage::_font' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::Montage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Montage.h(95): warning C4251: 'Magick::Montage::_label' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::Montage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Montage.h(99): warning C4251: 'Magick::Montage::_texture' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::Montage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+c:\animation\dependancies\imagemagick-6\Magick++/Montage.h(101): warning C4251: 'Magick::Montage::_title' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::Montage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(134): warning C4251: 'Magick::annotateImage::_text' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::annotateImage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(213): warning C4251: 'Magick::cdlImage::_cdl' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::cdlImage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(273): warning C4251: 'Magick::commentImage::_comment' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::commentImage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(385): warning C4251: 'Magick::drawImage::_drawableList' : class 'std::list<_Ty>' needs to have dll-interface to be used by clients of class 'Magick::drawImage'
+          with
+          [
+              _Ty=Magick::Drawable
+          ]
+C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(651): warning C4251: 'Magick::labelImage::_label' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::labelImage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(1299): warning C4251: 'Magick::backgroundTextureImage::_backgroundTexture' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::backgroundTextureImage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(1474): warning C4251: 'Magick::fileNameImage::_fileName' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::fileNameImage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(1498): warning C4251: 'Magick::fontImage::_font' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::fontImage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(1558): warning C4251: 'Magick::magickImage::_magick' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::magickImage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(1817): warning C4251: 'Magick::tileNameImage::_tileName' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::tileNameImage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(1854): warning C4251: 'Magick::viewImage::_view' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::viewImage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(1867): warning C4251: 'Magick::x11DisplayImage::_display' : class 'std::basic_string<_Elem,_Traits,_Alloc>' needs to have dll-interface to be used by clients of class 'Magick::x11DisplayImage'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Alloc=std::allocator<char>
+          ]
+Lab3Model.cpp(32): warning C4244: '=' : conversion from '__int64' to 'float', possible loss of data
+Lab3Model.cpp(179): warning C4305: '-=' : truncation from 'double' to 'float'
+Lab3Model.cpp(188): warning C4305: '+=' : truncation from 'double' to 'float'
+Lab3Model.cpp(197): warning C4305: '-=' : truncation from 'double' to 'float'
+Lab3Model.cpp(206): warning C4305: '+=' : truncation from 'double' to 'float'
+Lab3Model.cpp(376): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(379): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(382): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(385): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(388): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(391): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(394): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(397): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(443): warning C4305: '-=' : truncation from 'double' to 'float'
+Lab3Model.cpp(451): warning C4305: '+=' : truncation from 'double' to 'float'
+Lab3Model.cpp(463): warning C4305: '+=' : truncation from 'double' to 'float'
+Lab3Model.cpp(475): warning C4305: '-=' : truncation from 'double' to 'float'
   GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  GLM: angleAxis function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  GLM: pitch function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  GLM: yaw function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  GLM: roll function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   Generating code
 c:\animation\animation\mesh.cpp(109): warning C4715: 'Mesh::InitFromScene' : not all control paths return a value
   Finished generating code
