@@ -36,6 +36,8 @@ Lab3Model::Lab3Model(void)
 
 	timeFlag = false;
 	deltaTime = 0.0f;
+	cameraPath = true;
+	camTime = 0.01f;
 }
 
 
@@ -249,9 +251,6 @@ void Lab3Model::run(void)
 
 		humanSkeleton->hModelMat = animationMat;
 
-
-
-
 		//floor
 		glm::mat4 floors = glm::translate(floors,glm::vec3(0,0,-50));
 		floors = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));
@@ -266,6 +265,19 @@ void Lab3Model::run(void)
 		football_mesh->Render();
 
 		timeKeyControl();
+
+		if (cameraPath)
+		{	
+			camTime+=0.01f;
+			if(camTime >= 3)
+			{
+				camTime = 0;
+				cameraPath = false;
+			}
+			pathPos = humanSkeleton->interpolateCubic(camTime,glm::vec3(-100,50,-100),glm::vec3(100,50,-100),
+				glm::vec3(100,50,100),glm::vec3(-100,50,100));
+			m_camera->cameraUpdate(pathPos, glm::vec3(0,20,0));
+		}
 
 		m_camera->handleMVP(modelLoaderLoc, viewLoaderLoc, projLoaderLoc);
 
@@ -424,6 +436,15 @@ void Lab3Model::timeKeyControl()
 		followBallCamera = true;
 	}
 
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_V ) == GLFW_PRESS){
+		thirdCamera_2 = true;
+		thirdCamera = false;
+		humanSkeleton->hModel = true;
+		humanSkeleton->cModel = false;
+		// 		humanSkeleton->cball = false;
+		// 		humanSkeleton->hball = true;
+	}
+
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_F ) == GLFW_PRESS)
 	{
 		thirdCamera = false;
@@ -523,17 +544,14 @@ float Lab3Model::GetRunningTime()
 
 void Lab3Model::staging()
 {
-	if(!timeFlag)
-	{
+	if(!timeFlag){
 		deltaTime += 0.3f;
 		if (deltaTime > 10)
 		{
 			timeFlag = true;
 		}
 	}
-
-	if (timeFlag)
-	{
+	if (timeFlag){
 		deltaTime -= 0.3f;
 		if (deltaTime < 0)
 		{
@@ -545,27 +563,22 @@ void Lab3Model::staging()
 	if (thirdCamera)
 	{
 		glm::mat4 stag1 = glm::translate(glm::mat4(1),glm::vec3(humanSkeleton->cModelPos.x,humanSkeleton->cModelPos.y+11+deltaTime,humanSkeleton->cModelPos.z+3));
-		/*		stag1 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));*/
 		stag[0]->update(stag1, m_shader_loader->GetProgramID());
 		stag[0]->draw();
 
 		glm::mat4 stag2 = glm::translate(glm::mat4(1),glm::vec3(humanSkeleton->cModelPos.x,humanSkeleton->cModelPos.y+9+deltaTime,humanSkeleton->cModelPos.z+3));
-		/*		stag1 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));*/
 		stag[1]->update(stag2, m_shader_loader->GetProgramID());
 		stag[1]->draw();
 	}
+
 	if (thirdCamera_2)
 	{
 		glm::mat4 stag1 = glm::translate(glm::mat4(1),glm::vec3(humanSkeleton->hModelPos.x,humanSkeleton->hModelPos.y+12+deltaTime,humanSkeleton->hModelPos.z));
-		/*		stag1 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));*/
 		stag[0]->update(stag1, m_shader_loader->GetProgramID());
 		stag[0]->draw();
 
 		glm::mat4 stag2 = glm::translate(glm::mat4(1),glm::vec3(humanSkeleton->hModelPos.x,humanSkeleton->hModelPos.y+10+deltaTime,humanSkeleton->hModelPos.z));
-		/*		stag1 = glm::rotate(glm::mat4(1), 90.0f, glm::vec3(-1,0,0));*/
 		stag[1]->update(stag2, m_shader_loader->GetProgramID());
 		stag[1]->draw();
 	}
-
-
 }

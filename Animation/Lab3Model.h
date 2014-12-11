@@ -61,6 +61,7 @@ public:
 	int bone_count;
 	glm::vec3 animationPos;
 	glm::vec3 targetPos;
+	glm::vec3 pathPos;
 
 	bool thirdCamera;
 	bool thirdCamera_2;
@@ -71,6 +72,8 @@ public:
 	float charRot;
 	bool timeFlag;
 	float deltaTime;
+	bool cameraPath;
+	float camTime;
 	void timeKeyControl();
 	void drawGate();
 	void createGate();

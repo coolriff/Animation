@@ -280,22 +280,22 @@ C:\Animation\Dependancies\ImageMagick-6\Magick++/STL.h(1867): warning C4251: 'Ma
               _Alloc=std::allocator<char>
           ]
 Lab3Model.cpp(32): warning C4244: '=' : conversion from '__int64' to 'float', possible loss of data
-Lab3Model.cpp(179): warning C4305: '-=' : truncation from 'double' to 'float'
-Lab3Model.cpp(188): warning C4305: '+=' : truncation from 'double' to 'float'
-Lab3Model.cpp(197): warning C4305: '-=' : truncation from 'double' to 'float'
-Lab3Model.cpp(206): warning C4305: '+=' : truncation from 'double' to 'float'
-Lab3Model.cpp(376): warning C4305: 'argument' : truncation from 'double' to 'const float'
-Lab3Model.cpp(379): warning C4305: 'argument' : truncation from 'double' to 'const float'
-Lab3Model.cpp(382): warning C4305: 'argument' : truncation from 'double' to 'const float'
-Lab3Model.cpp(385): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(181): warning C4305: '-=' : truncation from 'double' to 'float'
+Lab3Model.cpp(190): warning C4305: '+=' : truncation from 'double' to 'float'
+Lab3Model.cpp(199): warning C4305: '-=' : truncation from 'double' to 'float'
+Lab3Model.cpp(208): warning C4305: '+=' : truncation from 'double' to 'float'
 Lab3Model.cpp(388): warning C4305: 'argument' : truncation from 'double' to 'const float'
 Lab3Model.cpp(391): warning C4305: 'argument' : truncation from 'double' to 'const float'
 Lab3Model.cpp(394): warning C4305: 'argument' : truncation from 'double' to 'const float'
 Lab3Model.cpp(397): warning C4305: 'argument' : truncation from 'double' to 'const float'
-Lab3Model.cpp(443): warning C4305: '-=' : truncation from 'double' to 'float'
-Lab3Model.cpp(451): warning C4305: '+=' : truncation from 'double' to 'float'
-Lab3Model.cpp(463): warning C4305: '+=' : truncation from 'double' to 'float'
-Lab3Model.cpp(475): warning C4305: '-=' : truncation from 'double' to 'float'
+Lab3Model.cpp(400): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(403): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(406): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(409): warning C4305: 'argument' : truncation from 'double' to 'const float'
+Lab3Model.cpp(464): warning C4305: '-=' : truncation from 'double' to 'float'
+Lab3Model.cpp(472): warning C4305: '+=' : truncation from 'double' to 'float'
+Lab3Model.cpp(484): warning C4305: '+=' : truncation from 'double' to 'float'
+Lab3Model.cpp(496): warning C4305: '-=' : truncation from 'double' to 'float'
   GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   Generating code
 c:\animation\animation\mesh.cpp(109): warning C4715: 'Mesh::InitFromScene' : not all control paths return a value
