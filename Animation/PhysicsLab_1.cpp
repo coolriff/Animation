@@ -75,6 +75,9 @@ PhysicsLab_1::PhysicsLab_1(void)
 	blackhole = glm::vec3(0,0,0);
 	gravity = glm::vec3(0.0f,-9.81f, 0.0f);
 	stopButton = false;
+	waveFountain = false;
+	rotationSpeed = 10.0f;
+	waveFountainAngle = glm::vec3(5.0f, 10.0f, 0.0f);
 }
 
 
@@ -165,6 +168,17 @@ void PhysicsLab_1::run(void)
 			}
 		}
 
+		if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_C ) == GLFW_PRESS){
+			if (waveFountain == false)
+			{
+				waveFountain = true;
+			}
+			else
+			{
+				waveFountain = false;
+			}
+		}
+
 		if (stopButton)
 		{
 			delta = 0;
@@ -222,21 +236,49 @@ void PhysicsLab_1::run(void)
 // 			ParticlesContainer[particleIndex].pos.y = 0.15f*cosf((float)time*2.5f);
 // 			ParticlesContainer[particleIndex].pos.z = 1*0.25f*cosf((float)time*2.5f);
 
+			if (waveFountain)
+			{
+				rotationSpeed -= delta;
+				if (rotationSpeed < 0)
+				{
+					rotationSpeed = 10;
+				}
 
-			// Very bad way to generate a random direction; 
-			// See for instance http://stackoverflow.com/questions/5408276/python-uniform-spherical-distribution instead,
-			// combined with some user-controlled parameters (main direction, spread, etc)
-			glm::vec3 randomdir = glm::vec3(
-				(rand()%2000 - 1000.0f)/1000.0f,
-				(rand()%2000 - 1000.0f)/1000.0f,
-				(rand()%2000 - 1000.0f)/1000.0f
-				);
+				if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_7 ) == GLFW_PRESS){
+					waveFountainAngle.x += 0.005;
+				}
+				if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_8 ) == GLFW_PRESS){
+					waveFountainAngle.x -= 0.005;
+				}
+
+				if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_9 ) == GLFW_PRESS){
+					waveFountainAngle.y += 0.005;
+				}
+				if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_0 ) == GLFW_PRESS){
+					waveFountainAngle.y -= 0.005;
+				}
+
+				maindir = glm::rotateY(waveFountainAngle,(float)(360*rotationSpeed/10));
+				ParticlesContainer[particleIndex].velocity = maindir;
+			}
+			else
+			{
+				glm::vec3 randomdir = glm::vec3(
+					(rand()%2000 - 1000.0f)/1000.0f,
+					(rand()%2000 - 1000.0f)/1000.0f,
+					(rand()%2000 - 1000.0f)/1000.0f
+					);
+
+				ParticlesContainer[particleIndex].velocity = maindir + randomdir*spread * glm::vec3(1.0f,1.0f,1.0f);
+
+			}
+
 
 			timeKeyControl();
 
-			ParticlesContainer[particleIndex].velocity = maindir + randomdir*spread * glm::vec3(1.0f,1.0f,1.0f);
+			//ParticlesContainer[particleIndex].velocity = maindir + randomdir*spread * glm::vec3(1.0f,1.0f,1.0f);
 
-			//ParticlesContainer[particleIndex].speed = maindir + randomdir * glm::vec3(0.0f,10.45f,0.0f);
+
 
 
 			// Very bad way to generate a random color
@@ -295,7 +337,11 @@ void PhysicsLab_1::run(void)
 					float dis = calcDistance(p.pos, blackhole);
 					if (dis < 10)
 					{
-						//p.force += -0.5f * p.velocity;
+						p.force = glm::vec3(0);
+						p.velocity = glm::vec3(0);
+						p.r = 1;
+						p.g = 1;
+						p.b = 1;
 						p.pos = slerp(p.pos, blackhole, delta);
 					}
 					else

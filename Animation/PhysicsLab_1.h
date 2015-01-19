@@ -35,12 +35,15 @@ public:
 	float ySpeed;
 	float rx,ry,rz;
 	float spread;
+	float rotationSpeed;
 	int ParticlesCount;
 	glm::vec3 maindir;
 	glm::vec3 blackhole;
 	glm::vec3 gravity;
+	glm::vec3 waveFountainAngle;
 	TwBar *bar;
 	bool stopButton;
+	bool waveFountain;
 
 	void run(void);
 	void initShaders();
