@@ -1,22 +1,25 @@
-﻿Build started 1/19/2015 5:08:06 AM.
+﻿Build started 1/19/2015 4:06:36 PM.
      1>Project "C:\Animation\Animation\Animation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\Dependancies\AntTweakBar\include /I"..\Dependancies\ImageMagick-6" /I..\Dependancies\assimp\include /I..\Dependancies\glm /I"..\Dependancies\glfw-3.0.4.bin.WIN32\include" /I"..\Dependancies\glew-1.11.0\include" /I..\Dependancies\soil\src /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /D _CRT_SECURE_NO_WARNINGS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt PhysicsLab_1.cpp
          PhysicsLab_1.cpp
-     1>PhysicsLab_1.cpp(241): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-     1>PhysicsLab_1.cpp(248): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>PhysicsLab_1.cpp(251): warning C4305: '-=' : truncation from 'double' to 'float'
-     1>PhysicsLab_1.cpp(255): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>PhysicsLab_1.cpp(258): warning C4305: '-=' : truncation from 'double' to 'float'
-     1>PhysicsLab_1.cpp(307): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-     1>PhysicsLab_1.cpp(308): warning C4244: '=' : conversion from 'float' to 'unsigned char', possible loss of data
-     1>PhysicsLab_1.cpp(319): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>PhysicsLab_1.cpp(336): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>PhysicsLab_1.cpp(345): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>PhysicsLab_1.cpp(628): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>PhysicsLab_1.cpp(633): warning C4305: '-=' : truncation from 'double' to 'float'
-     1>PhysicsLab_1.cpp(638): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>PhysicsLab_1.cpp(643): warning C4305: '-=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(242): warning C4018: '<' : signed/unsigned mismatch
+     1>PhysicsLab_1.cpp(271): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
+     1>PhysicsLab_1.cpp(278): warning C4305: '+=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(281): warning C4305: '-=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(285): warning C4305: '+=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(288): warning C4305: '-=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(342): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
+     1>PhysicsLab_1.cpp(343): warning C4244: '=' : conversion from 'float' to 'unsigned char', possible loss of data
+     1>PhysicsLab_1.cpp(349): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>PhysicsLab_1.cpp(366): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>PhysicsLab_1.cpp(396): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>PhysicsLab_1.cpp(405): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>PhysicsLab_1.cpp(470): warning C4305: '*=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(734): warning C4305: '+=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(739): warning C4305: '-=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(744): warning C4305: '+=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(749): warning C4305: '-=' : truncation from 'double' to 'float'
          GLM: rotateY function taking degrees as parameters is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
          GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
        Link:
@@ -59,4 +62,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.21
+Time Elapsed 00:00:02.10

@@ -1,4 +1,4 @@
-#include "PhysicsLab_1.h"
+﻿#include "PhysicsLab_1.h"
 
 
 #define FOURCC_DXT1 0x31545844 // Equivalent to "DXT1" in ASCII
@@ -6,28 +6,7 @@
 #define FOURCC_DXT5 0x35545844 // Equivalent to "DXT5" in ASCII
 #define M_PI 3.1415926535897932384626433832795f
 
-// CPU representation of a particle
-struct Particles
-{
 
-	glm::vec3 pos;
-	//glm::vec3 speed;
-	glm::vec3 velocity;
-	glm::vec3 force;
-
-	float mass;
-
-	unsigned char r,g,b,a; // Color
-	float size, angle, weight;
-	float life; // Remaining life of the particle. if <0 : dead and unused.
-	float cameradistance; // *Squared* distance to the camera. if dead : -1.0f
-
-	bool operator<(const Particles& that) const 
-	{
-		// Sort in reverse order : far particles drawn first.
-		return this->cameradistance > that.cameradistance;
-	}
-};
 
 const int MaxParticles = 1000000;
 Particles ParticlesContainer[MaxParticles];
@@ -78,6 +57,10 @@ PhysicsLab_1::PhysicsLab_1(void)
 	waveFountain = false;
 	rotationSpeed = 10.0f;
 	waveFountainAngle = glm::vec3(5.0f, 10.0f, 0.0f);
+	waterfall = false;
+	centripetalForce = glm::vec3(30,-10, 0);
+	centripetal = false;
+	gravityOn = true;
 }
 
 
@@ -179,11 +162,43 @@ void PhysicsLab_1::run(void)
 			}
 		}
 
+		if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_X ) == GLFW_PRESS){
+			if (waterfall == false)
+			{
+				waterfall = true;
+			}
+			else
+			{
+				waterfall = false;
+			}
+		}
+
+		if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_Z ) == GLFW_PRESS){
+			if (centripetal == false)
+			{
+				centripetal = true;
+			}
+			else
+			{
+				centripetal = false;
+			}
+		}
+
+		if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_Q ) == GLFW_PRESS){
+			if (gravityOn == false)
+			{
+				gravityOn = true;
+			}
+			else
+			{
+				gravityOn = false;
+			}
+		}
+
 		if (stopButton)
 		{
 			delta = 0;
 		}
-
 
 //		m_camera->computeMatricesFromInputs();
 // 		GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
@@ -217,8 +232,20 @@ void PhysicsLab_1::run(void)
 		{
 			int particleIndex = FindUnusedParticle();
 			ParticlesContainer[particleIndex].life = 25.0f; // This particle will live 5 seconds.
-			ParticlesContainer[particleIndex].pos = glm::vec3(0,5,-20.0f);
 
+
+			if (waterfall)
+			{
+				for (size_t i = 0; i < newparticles; ++i)
+				{
+					double ang = glm::linearRand(0.0, M_PI*2.0);
+					ParticlesContainer[particleIndex].pos = glm::vec3(0,10.f,-20.0f) + glm::vec3(1.5f*sin(ang), 0.0, 1.5f*cos(ang));
+				}
+			}
+			else
+			{
+				ParticlesContainer[particleIndex].pos = glm::vec3(0,5.0f,-20.0f);
+			}
 
 // 			for (size_t i = 0; i < newparticles; ++i)
 // 			{
@@ -261,6 +288,14 @@ void PhysicsLab_1::run(void)
 				maindir = glm::rotateY(waveFountainAngle,(float)(360*rotationSpeed/10));
 				ParticlesContainer[particleIndex].velocity = maindir;
 			}
+			else if (waterfall)
+			{
+				ParticlesContainer[particleIndex].velocity = glm::vec3(2.0f,0.0f,0.0f);
+			}
+// 			if (centripetal)
+// 			{
+// 				ParticlesContainer[particleIndex].velocity = glm::vec3(0.0f,0.0f,0.0f);
+// 			}
 			else
 			{
 				glm::vec3 randomdir = glm::vec3(
@@ -270,13 +305,10 @@ void PhysicsLab_1::run(void)
 					);
 
 				ParticlesContainer[particleIndex].velocity = maindir + randomdir*spread * glm::vec3(1.0f,1.0f,1.0f);
-
 			}
 
 
 			timeKeyControl();
-
-			//ParticlesContainer[particleIndex].velocity = maindir + randomdir*spread * glm::vec3(1.0f,1.0f,1.0f);
 
 
 
@@ -309,14 +341,38 @@ void PhysicsLab_1::run(void)
 				if (p.life > 0.0f)
 				{
 					//p update
-					p.pos += p.velocity * (float)delta + (p.force/1.0f * (float)delta * (float)delta)/2.0f;
-					p.velocity += (p.force/1.0f) * (float)delta;
-					p.force = glm::vec3(0);
+
+					//RK4
+					RungeKutta4(p, delta);
+
+					//Euler
+// 					p.pos += p.velocity * (float)delta + (p.force/1.0f * (float)delta * (float)delta)/2.0f;
+// 					p.velocity += (p.force/1.0f) * (float)delta;
+// 					p.force = glm::vec3(0);
 
 					// Simulate simple physics : gravity only, no collisions
 					
 					//p.speed += glm::vec3(0.0f,-9.81f, 0.0f) * (float)delta * 0.5f;
-					p.velocity += timeKeyControlGravity(delta);
+
+					if (waterfall)
+					{
+						p.velocity += glm::vec3(2.0f, 0.0f, 0.0f) * (float)delta * 0.5f;
+					}
+					else
+					{
+						p.velocity += timeKeyControlGravity(delta);
+					}
+
+					if (!gravityOn)
+					{
+						gravity = glm::vec3(0);
+						p.velocity = glm::rotate(p.velocity, (float)(90 * delta), p.pos);
+					}
+					else
+					{
+						gravity = glm::vec3(0.0f,-9.81f, 0.0f);
+					}
+
 
 // 					glm::vec3 randomdir = glm::vec3(
 // 						(rand()%2000 - 1000.0f)/1000.0f,
@@ -324,7 +380,8 @@ void PhysicsLab_1::run(void)
 // 						(rand()%2000 - 1000.0f)/1000.0f
 // 						);
 
-					p.velocity = glm::rotate(p.velocity, (float)(180 * delta), p.velocity);
+					//自己旋转
+					//p.velocity = glm::rotate(p.velocity, (float)(180 * delta), p.velocity);
 
 // 					float diss = calcDistance(p.pos, glm::vec3(0,10,0));
 // 					p.pos = glm::vec3(0,10,0)/diss*10.0f; 
@@ -337,12 +394,12 @@ void PhysicsLab_1::run(void)
 					float dis = calcDistance(p.pos, blackhole);
 					if (dis < 10)
 					{
-						p.force = glm::vec3(0);
-						p.velocity = glm::vec3(0);
+// 						p.force = glm::vec3(0);
+// 						p.velocity = glm::vec3(0);
 						p.r = 1;
 						p.g = 1;
 						p.b = 1;
-						p.pos = slerp(p.pos, blackhole, delta);
+						p.pos = slerp(p.pos, blackhole, delta*2);
 					}
 					else
 					{
@@ -362,12 +419,58 @@ void PhysicsLab_1::run(void)
 // 						p.pos.y = 0;
 // 						p.speed.y *= -0.75;
 // 					} 
-
-					if (p.pos.y < 0)
+					if (waterfall)
 					{
-						p.pos.y = 0;
-						p.velocity.y *= -0.75;
+						if (p.pos.x > 10 && p.pos.x < 20)
+						{
+							p.velocity.y -= 0.5f;
+						}
+						if (p.pos.y < -10)
+						{
+							p.velocity.y *= 0;
+						}
+
+						p.r = rand() % 150;
+						p.g = rand() % 150;
+						p.b = 255;
+
+						if (p.pos.x > 30)
+						{
+							glm::vec3 temp = glm::normalize(centripetalForce - p.pos);
+							glm::vec3 roundForce = glm::dot(p.velocity, p.velocity)/9 * temp;
+
+							p.force = roundForce;
+
+						}
+// 						if (p.pos.y < 10 )
+// 						{
+// 							p.velocity.y *= 0;
+// 						}
+
+
 					} 
+					else
+					{
+
+						if (centripetal)
+						{
+							glm::vec3 temp = glm::normalize(centripetalForce - p.pos);
+							glm::vec3 roundForce = glm::dot(p.velocity, p.velocity)/9 * temp;
+
+							p.force = roundForce;
+						}
+						else
+						{
+							if (p.pos.y < 0)
+							{
+								p.pos.y = 0;
+								p.velocity.y *= -0.55;
+							} 
+						}
+
+					}
+
+
 
 
 
@@ -625,23 +728,23 @@ GLuint PhysicsLab_1::loadDDS(const char * imagepath)
 void PhysicsLab_1::timeKeyControl()
 {
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_LEFT ) == GLFW_PRESS){
-		rz += 0.005;
+		rz += 0.00001;
 		maindir = glm::rotate(maindir,rz,glm::vec3(0,0,1));
 	}
 
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_RIGHT ) == GLFW_PRESS){
-		rz -= 0.005;
-		maindir = glm::rotate(maindir,rz,glm::vec3(0,0,1));
+		rz -= 0.00001;
+		maindir = glm::rotate(maindir,rz,glm::vec3(0,0,-1));
 	}
 
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_UP ) == GLFW_PRESS){
-		rx += 0.005;
+		rx += 0.00001;
 		maindir = glm::rotate(maindir,rx,glm::vec3(1,0,0));
 	}
 
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_DOWN ) == GLFW_PRESS){
-		rx -= 0.005;
-		maindir = glm::rotate(maindir,rx,glm::vec3(1,0,0));
+		rx -= 0.00001;
+		maindir = glm::rotate(maindir,rx,glm::vec3(-1,0,0));
 	}
 
 	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_O ) == GLFW_PRESS){
@@ -652,6 +755,31 @@ void PhysicsLab_1::timeKeyControl()
 		spread -= 0.0001f;
 	}
 
+
+	//Centripetal force
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_1 ) == GLFW_PRESS){
+		centripetalForce.x += 0.001f;
+	}
+
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_2 ) == GLFW_PRESS){
+		centripetalForce.x -= 0.001f;
+	}
+
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_3 ) == GLFW_PRESS){
+		centripetalForce.y += 0.001f;
+	}
+
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_4 ) == GLFW_PRESS){
+		centripetalForce.y -= 0.001f;
+	}
+
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_5 ) == GLFW_PRESS){
+		centripetalForce.z += 0.001f;
+	}
+
+	if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_6 ) == GLFW_PRESS){
+		centripetalForce.z -= 0.001f;
+	}
 
 }
 
@@ -712,8 +840,6 @@ void PhysicsLab_1::timeKeyControlBlackhole(float delta)
 
 glm::vec3 PhysicsLab_1::slerp (glm::vec3 p1, glm::vec3 p2, float t)
 {
-	//(1 - t)p1 + tp2
-
 	glm::vec3 mDest; 
 	mDest.x = ((1 - t) * p1.x) + (t * p2.x);
 	mDest.y = ((1 - t) * p1.y) + (t * p2.y);
@@ -732,24 +858,28 @@ void PhysicsLab_1::initTweakBar()
 
 	TwAddVarRO(bar, "Spread", TW_TYPE_FLOAT, &spread, " label='Spread(O,P): '");
 
+	TwAddVarRO(bar, "centripetal", TW_TYPE_BOOL8, &centripetal, " label='Centripetal(Z): '");
+	TwAddVarRO(bar, "waterfall", TW_TYPE_BOOL8, &waterfall, " label='Waterfall(X): '");
+	TwAddVarRO(bar, "waveFountain", TW_TYPE_BOOL8, &waveFountain, " label='WaveFountain(C): '");
+	TwAddVarRO(bar, "gravityOn", TW_TYPE_BOOL8, &gravityOn, " label='GravityOn(Q): '");
+	TwAddVarRO(bar, "stopButton", TW_TYPE_BOOL8, &stopButton, " label='StopButton(Space): '");
 
-// 	TwAddVarRO(bar, "Fountain X", TW_TYPE_FLOAT, &ParticlesContainer.pos.x, "group ='Fountain' label='Fountain.X: '");
-// 	TwAddVarRO(bar, "Fountain Y", TW_TYPE_FLOAT, &ParticlesContainer[particleIndex].pos.y, "group ='Fountain' label='Fountain.Y: '");
-// 	TwAddVarRO(bar, "Fountain Z", TW_TYPE_FLOAT, &ParticlesContainer[particleIndex].pos.z, "group ='Fountain' label='Fountain.Z: '");
+	TwAddVarRO(bar, "Point1 X", TW_TYPE_FLOAT, &blackhole.x, "group ='Blackhole' label='X(R,T):'");
+	TwAddVarRO(bar, "Point1 Y", TW_TYPE_FLOAT, &blackhole.y, "group ='Blackhole' label='Y(F,G):'");
+	TwAddVarRO(bar, "Point1 Z", TW_TYPE_FLOAT, &blackhole.z, "group ='Blackhole' label='Z(V,B):'");
 
-	TwAddVarRO(bar, "Gravity X", TW_TYPE_FLOAT, &gravity.x, "group ='Gravity' label='Gravity.X: '");
-	TwAddVarRO(bar, "Gravity Y", TW_TYPE_FLOAT, &gravity.y, "group ='Gravity' label='Gravity.Y: '");
-	TwAddVarRO(bar, "Gravity Z", TW_TYPE_FLOAT, &gravity.z, "group ='Gravity' label='Gravity.Z: '");
-
-	TwAddVarRO(bar, "Point1 X", TW_TYPE_FLOAT, &blackhole.x, "group ='Blackhole' label='Blackhole.X:'");
-	TwAddVarRO(bar, "Point1 Y", TW_TYPE_FLOAT, &blackhole.y, "group ='Blackhole' label='Blackhole.Y:'");
-	TwAddVarRO(bar, "Point1 Z", TW_TYPE_FLOAT, &blackhole.z, "group ='Blackhole' label='Blackhole.Z:'");
+	TwAddVarRO(bar, "waveFountainAngle X", TW_TYPE_FLOAT, &waveFountainAngle.x, "group ='WaveFountainAngle' label='X(7,8): '");
+	TwAddVarRO(bar, "waveFountainAngle Y", TW_TYPE_FLOAT, &waveFountainAngle.y, "group ='WaveFountainAngle' label='Y(9,0): '");
+	TwAddVarRO(bar, "waveFountainAngle Z", TW_TYPE_FLOAT, &waveFountainAngle.z, "group ='WaveFountainAngle' label='Z(): '");
  
-//  	glfwSetMouseButtonCallback(m_setup->getWindow(),(GLFWmousebuttonfun)TwEventMouseButtonGLFW);
-//  	glfwSetCursorPosCallback(m_setup->getWindow(),(GLFWcursorposfun)TwEventMousePosGLFW);
-//  	glfwSetScrollCallback(m_setup->getWindow(),(GLFWscrollfun)TwEventMouseWheelGLFW);
-//  	glfwSetKeyCallback(m_setup->getWindow(),(GLFWkeyfun)TwEventKeyGLFW);
-//  	glfwSetCharCallback(m_setup->getWindow(),(GLFWcharfun)TwEventCharGLFW);
+	TwAddVarRO(bar, "centripetalForce X", TW_TYPE_FLOAT, &centripetalForce.x, "group ='CentripetalForce' label='X(1,2): '");
+	TwAddVarRO(bar, "centripetalForce Y", TW_TYPE_FLOAT, &centripetalForce.y, "group ='CentripetalForce' label='Y(3,4): '");
+	TwAddVarRO(bar, "centripetalForce Z", TW_TYPE_FLOAT, &centripetalForce.z, "group ='CentripetalForce' label='Z(5,6): '");
+
+	TwAddVarRO(bar, "Gravity X", TW_TYPE_FLOAT, &gravity.x, "group ='Gravity' label='X(Y,U): '");
+	TwAddVarRO(bar, "Gravity Y", TW_TYPE_FLOAT, &gravity.y, "group ='Gravity' label='Y(H,J): '");
+	TwAddVarRO(bar, "Gravity Z", TW_TYPE_FLOAT, &gravity.z, "group ='Gravity' label='Z(N,M): '");
+
 }
 
 
@@ -757,4 +887,22 @@ float PhysicsLab_1::calcDistance(glm::vec3 pos1, glm::vec3 pos2)
 {
 	float dis = glm::distance(pos1, pos2);
 	return dis;
+}
+
+void PhysicsLab_1::RungeKutta4(Particles& p, float delta) {
+	
+	glm::vec3 ax1 = p.pos;
+	glm::vec3 av1 = p.velocity;
+
+	glm::vec3 ax2 = p.pos + 0.5f * av1 * delta;
+	glm::vec3 av2 = av1 + 0.5f * p.force * delta; // there is 0.5 
+
+	glm::vec3 ax3 = ax1 + 0.5f * av2 * delta;
+	glm::vec3 av3 = av1 + 0.5f * p.force * delta; 
+
+	glm::vec3 ax4 = ax1 + av3 * delta;
+	glm::vec3 av4 = av1 + p.force * delta; 
+
+	p.pos +=  (delta / 6) * (av1 + 2.0f * av2 + 2.0f * av3 + av4);
+	p.velocity += p.force * delta;
 }
