@@ -1,18 +1,19 @@
-﻿Build started 1/19/2015 2:54:03 AM.
+﻿Build started 1/19/2015 4:03:35 AM.
      1>Project "C:\Animation\Animation\Animation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\Dependancies\AntTweakBar\include /I"..\Dependancies\ImageMagick-6" /I..\Dependancies\assimp\include /I..\Dependancies\glm /I"..\Dependancies\glfw-3.0.4.bin.WIN32\include" /I"..\Dependancies\glew-1.11.0\include" /I..\Dependancies\soil\src /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /D _CRT_SECURE_NO_WARNINGS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt PhysicsLab_1.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\Dependancies\AntTweakBar\include /I"..\Dependancies\ImageMagick-6" /I..\Dependancies\assimp\include /I..\Dependancies\glm /I"..\Dependancies\glfw-3.0.4.bin.WIN32\include" /I"..\Dependancies\glew-1.11.0\include" /I..\Dependancies\soil\src /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /D _CRT_SECURE_NO_WARNINGS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt PhysicsLab_1.cpp main.cpp
          PhysicsLab_1.cpp
-     1>PhysicsLab_1.cpp(247): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-     1>PhysicsLab_1.cpp(248): warning C4244: '=' : conversion from 'float' to 'unsigned char', possible loss of data
-     1>PhysicsLab_1.cpp(255): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>PhysicsLab_1.cpp(272): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>PhysicsLab_1.cpp(276): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>PhysicsLab_1.cpp(555): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>PhysicsLab_1.cpp(560): warning C4305: '-=' : truncation from 'double' to 'float'
-     1>PhysicsLab_1.cpp(565): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>PhysicsLab_1.cpp(570): warning C4305: '-=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(265): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
+     1>PhysicsLab_1.cpp(266): warning C4244: '=' : conversion from 'float' to 'unsigned char', possible loss of data
+     1>PhysicsLab_1.cpp(277): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>PhysicsLab_1.cpp(294): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>PhysicsLab_1.cpp(299): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>PhysicsLab_1.cpp(582): warning C4305: '+=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(587): warning C4305: '-=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(592): warning C4305: '+=' : truncation from 'double' to 'float'
+     1>PhysicsLab_1.cpp(597): warning C4305: '-=' : truncation from 'double' to 'float'
          GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+         main.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Animation\Release\Animation.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:..\Dependancies\AntTweakBar\lib /LIBPATH:"..\Dependancies\ImageMagick-6\lib" /LIBPATH:..\Dependancies\assimp\lib /LIBPATH:"..\Dependancies\glfw-3.0.4.bin.WIN32\lib-msvc110" /LIBPATH:"..\Dependancies\glew-1.11.0\lib\Release\Win32" /LIBPATH:..\Dependancies\soil\lib glew32.lib glfw3.lib opengl32.lib assimp.lib CORE_RL_Magick++_.lib SOIL.lib soil2.lib AntTweakBar.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Animation\Release\Animation.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Animation\Release\Animation.lib" /MACHINE:X86 /SAFESEH Release\ArmSkeleton.obj
          Release\Bone.obj
@@ -53,4 +54,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:05.00
+Time Elapsed 00:00:06.57

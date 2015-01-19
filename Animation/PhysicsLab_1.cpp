@@ -11,7 +11,7 @@ struct Particles
 {
 
 	glm::vec3 pos;
-	glm::vec3 speed;
+	//glm::vec3 speed;
 	glm::vec3 velocity;
 	glm::vec3 force;
 
@@ -74,6 +74,7 @@ PhysicsLab_1::PhysicsLab_1(void)
 	rx = ry = rz = 0.0f;
 	blackhole = glm::vec3(0,0,0);
 	gravity = glm::vec3(0.0f,-9.81f, 0.0f);
+	stopButton = false;
 }
 
 
@@ -153,6 +154,23 @@ void PhysicsLab_1::run(void)
 		double delta = currentTime - lastTime;
 		lastTime = currentTime;
 
+		if (glfwGetKey( m_setup->getWindow(), GLFW_KEY_SPACE ) == GLFW_PRESS){
+			if (stopButton == false)
+			{
+				stopButton = true;
+			}
+			else
+			{
+				stopButton = false;
+			}
+		}
+
+		if (stopButton)
+		{
+			delta = 0;
+		}
+
+
 //		m_camera->computeMatricesFromInputs();
 // 		GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
 // 		GLuint viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
@@ -216,7 +234,7 @@ void PhysicsLab_1::run(void)
 
 			timeKeyControl();
 
-			ParticlesContainer[particleIndex].speed = maindir + randomdir*spread * glm::vec3(1.0f,1.0f,1.0f);
+			ParticlesContainer[particleIndex].velocity = maindir + randomdir*spread * glm::vec3(1.0f,1.0f,1.0f);
 
 			//ParticlesContainer[particleIndex].speed = maindir + randomdir * glm::vec3(0.0f,10.45f,0.0f);
 
@@ -248,11 +266,15 @@ void PhysicsLab_1::run(void)
 				p.a = (p.life * 10.0f);
 				if (p.life > 0.0f)
 				{
+					//p update
+					p.pos += p.velocity * (float)delta + (p.force/1.0f * (float)delta * (float)delta)/2.0f;
+					p.velocity += (p.force/1.0f) * (float)delta;
+					p.force = glm::vec3(0);
 
 					// Simulate simple physics : gravity only, no collisions
 					
 					//p.speed += glm::vec3(0.0f,-9.81f, 0.0f) * (float)delta * 0.5f;
-					p.speed += timeKeyControlGravity(delta);
+					p.velocity += timeKeyControlGravity(delta);
 
 // 					glm::vec3 randomdir = glm::vec3(
 // 						(rand()%2000 - 1000.0f)/1000.0f,
@@ -260,12 +282,12 @@ void PhysicsLab_1::run(void)
 // 						(rand()%2000 - 1000.0f)/1000.0f
 // 						);
 
-					p.speed = glm::rotate(p.speed, (float)(180 * delta), p.speed);
+					p.velocity = glm::rotate(p.velocity, (float)(180 * delta), p.velocity);
 
 // 					float diss = calcDistance(p.pos, glm::vec3(0,10,0));
 // 					p.pos = glm::vec3(0,10,0)/diss*10.0f; 
 
-					p.pos += p.speed * (float)delta;
+
 
 
 
@@ -273,7 +295,12 @@ void PhysicsLab_1::run(void)
 					float dis = calcDistance(p.pos, blackhole);
 					if (dis < 10)
 					{
+						//p.force += -0.5f * p.velocity;
 						p.pos = slerp(p.pos, blackhole, delta);
+					}
+					else
+					{
+						p.pos += p.velocity * (float)delta;
 					}
 // 					if (dis < 0.5f)
 // 					{
@@ -293,7 +320,7 @@ void PhysicsLab_1::run(void)
 					if (p.pos.y < 0)
 					{
 						p.pos.y = 0;
-						p.speed.y *= -0.75;
+						p.velocity.y *= -0.75;
 					} 
 
 

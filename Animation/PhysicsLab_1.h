@@ -40,6 +40,7 @@ public:
 	glm::vec3 blackhole;
 	glm::vec3 gravity;
 	TwBar *bar;
+	bool stopButton;
 
 	void run(void);
 	void initShaders();
