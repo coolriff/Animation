@@ -1,7 +1,8 @@
 //#include "Lab1.h"
 //#include "Lab2.h"
 //#include "Lab3.h"
-#include "Lab3Model.h"
+//#include "Lab3Model.h"
+#include "PhysicsLab_1.h"
 
 
 int main( int argc, char** argv )
@@ -16,8 +17,13 @@ int main( int argc, char** argv )
 // 	lab3->run();
 // 	return 0;
 
-	Lab3Model* lab3Model = new Lab3Model();
-	lab3Model->run();
+// 	Lab3Model* lab3Model = new Lab3Model();
+// 	lab3Model->run();
+// 	return 0;
+
+	PhysicsLab_1* physicsLab_1 = new PhysicsLab_1();
+	physicsLab_1->run();
+
 	return 0;
 }
 
@@ -51,6 +57,5 @@ bind the buffer -- glGenBuffers -- glBufferDate(size of the buffer)
 load the geometry -- glBufferSubDate(geometry)
 load the colors if any -- glBufferSubDate(color)
 load the normals -- glBufferSubDate(color)
-
 */
 

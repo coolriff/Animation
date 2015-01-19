@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Physics Lab1">
+      <UniqueIdentifier>{6509710c-3ae7-4702-bc14-d0834336b825}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -78,6 +81,21 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PhysicsLab_1.cpp">
+      <Filter>Physics Lab1</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Physics Lab1</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Physics Lab1</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentLoader.cpp">
+      <Filter>Physics Lab1</Filter>
+    </ClCompile>
+    <ClCompile Include="FountainEffect.cpp">
+      <Filter>Physics Lab1</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="diffuse.ps">
@@ -90,6 +108,18 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="skinning.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Particles.ps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Particles.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Particle.fragmentshader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Particle.vertexshader">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -165,6 +195,21 @@
     </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsLab_1.h">
+      <Filter>Physics Lab1</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Physics Lab1</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Physics Lab1</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentLoader.h">
+      <Filter>Physics Lab1</Filter>
+    </ClInclude>
+    <ClInclude Include="FountainEffect.h">
+      <Filter>Physics Lab1</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
