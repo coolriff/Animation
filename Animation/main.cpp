@@ -2,7 +2,8 @@
 //#include "Lab2.h"
 //#include "Lab3.h"
 //#include "Lab3Model.h"
-#include "PhysicsLab_1.h"
+//#include "PhysicsLab_1.h"
+#include "PhysicsLab_2.h"
 
 
 int main( int argc, char** argv )
@@ -21,8 +22,11 @@ int main( int argc, char** argv )
 // 	lab3Model->run();
 // 	return 0;
 
-	PhysicsLab_1* physicsLab_1 = new PhysicsLab_1();
-	physicsLab_1->run();
+// 	PhysicsLab_1* physicsLab_1 = new PhysicsLab_1();
+// 	physicsLab_1->run();
+
+	PhysicsLab_2* physicsLab_2 = new PhysicsLab_2();
+	physicsLab_2->run();
 
 	return 0;
 }

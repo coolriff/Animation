@@ -53,13 +53,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\Dependancies\soil\src;..\Dependancies\SOIL2;..\Dependancies\ImageMagick-6;..\Dependancies\assimp\include;..\Dependancies\glm;..\Dependancies\glfw-3.0.4.bin.WIN32\include;..\Dependancies\glew-1.11.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependancies\AntTweakBar\include;..\Dependancies\soil\src;..\Dependancies\SOIL2;..\Dependancies\ImageMagick-6;..\Dependancies\assimp\include;..\Dependancies\glm;..\Dependancies\glfw-3.0.4.bin.WIN32\include;..\Dependancies\glew-1.11.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Dependancies\soil\lib;..\Dependancies\ImageMagick-6\lib;..\Dependancies\assimp\lib;..\Dependancies\glfw-3.0.4.bin.WIN32\lib-msvc110;..\Dependancies\glew-1.11.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;assimp.lib;CORE_DB_Magick++_.lib;SOIL.lib;soil2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Dependancies\AntTweakBar\lib;..\Dependancies\soil\lib;..\Dependancies\ImageMagick-6\lib;..\Dependancies\assimp\lib;..\Dependancies\glfw-3.0.4.bin.WIN32\lib-msvc110;..\Dependancies\glew-1.11.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;assimp.lib;CORE_DB_Magick++_.lib;SOIL.lib;soil2.lib;AntTweakBar.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -105,7 +105,9 @@
     <ClCompile Include="ogldev_util.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="PhysicsLabCamera.cpp" />
     <ClCompile Include="PhysicsLab_1.cpp" />
+    <ClCompile Include="PhysicsLab_2.cpp" />
     <ClCompile Include="Setup.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skeleton.cpp" />
@@ -145,7 +147,9 @@
     <ClInclude Include="ogldev_util.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="PhysicsLabCamera.h" />
     <ClInclude Include="PhysicsLab_1.h" />
+    <ClInclude Include="PhysicsLab_2.h" />
     <ClInclude Include="Setup.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skeleton.h" />

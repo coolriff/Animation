@@ -16,6 +16,9 @@
     <Filter Include="Physics Lab1">
       <UniqueIdentifier>{6509710c-3ae7-4702-bc14-d0834336b825}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics Lab2">
+      <UniqueIdentifier>{b8f181ea-aa6d-462b-b197-9c5d932a2577}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -95,6 +98,12 @@
     </ClCompile>
     <ClCompile Include="FountainEffect.cpp">
       <Filter>Physics Lab1</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsLab_2.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsLabCamera.cpp">
+      <Filter>Physics Lab2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +219,12 @@
     </ClInclude>
     <ClInclude Include="FountainEffect.h">
       <Filter>Physics Lab1</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsLab_2.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsLabCamera.h">
+      <Filter>Physics Lab2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
