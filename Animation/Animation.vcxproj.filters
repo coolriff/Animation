@@ -105,6 +105,12 @@
     <ClCompile Include="PhysicsLabCamera.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
+    <ClCompile Include="RigidBody.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="diffuse.ps">
@@ -224,6 +230,12 @@
       <Filter>Physics Lab2</Filter>
     </ClInclude>
     <ClInclude Include="PhysicsLabCamera.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
   </ItemGroup>

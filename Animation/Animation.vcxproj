@@ -86,6 +86,7 @@
   <ItemGroup>
     <ClCompile Include="ArmSkeleton.cpp" />
     <ClCompile Include="Bone.cpp" />
+    <ClCompile Include="Box.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ContentLoader.cpp" />
     <ClCompile Include="FountainEffect.cpp" />
@@ -108,6 +109,7 @@
     <ClCompile Include="PhysicsLabCamera.cpp" />
     <ClCompile Include="PhysicsLab_1.cpp" />
     <ClCompile Include="PhysicsLab_2.cpp" />
+    <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="Setup.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skeleton.cpp" />
@@ -126,6 +128,7 @@
   <ItemGroup>
     <ClInclude Include="ArmSkeleton.h" />
     <ClInclude Include="Bone.h" />
+    <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ContentLoader.h" />
     <ClInclude Include="Cylinder.h" />
@@ -150,6 +153,7 @@
     <ClInclude Include="PhysicsLabCamera.h" />
     <ClInclude Include="PhysicsLab_1.h" />
     <ClInclude Include="PhysicsLab_2.h" />
+    <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Setup.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skeleton.h" />

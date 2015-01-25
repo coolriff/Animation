@@ -36,6 +36,30 @@ GLuint ObjectBuffer::GenerateVBO(GLfloat vertices[], GLfloat colors[])
 	return vbo;
 }
 
+GLuint ObjectBuffer::GenerateVBO(const std::vector<glm::vec3> & vertices, GLfloat colors[])
+{
+	// Create the "remember all"
+	glGenVertexArrays(1,&vao);
+	glBindVertexArray(vao);
+
+	GLuint vSize = vertices.size() * sizeof(glm::vec3);
+
+	// buffer will contain an array of vertices
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	// Create the buffer, but do not load anything yet
+	glBufferData(GL_ARRAY_BUFFER, numVertices*7*sizeof(GLfloat), NULL, GL_STATIC_DRAW);
+
+	// load the vertex points
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vSize, (const GLvoid*)(&vertices[0]));
+
+	// Load the colors right after vertex
+	glBufferSubData (GL_ARRAY_BUFFER, numVertices*3*sizeof(GLfloat), numVertices*4*sizeof(GLfloat), colors);
+
+	return vbo;
+}
+
 void ObjectBuffer::LinkBufferToShader(GLuint shaderProgramID)
 {
 	// find the location of the variables that we will be using in the shader program

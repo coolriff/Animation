@@ -1,5 +1,90 @@
 #include "PhysicsLab_2.h"
 
+#define WINDOW_WIDTH 1440
+#define WINDOW_HIGH 1080
+
+// #define WINDOW_WIDTH 800
+// #define WINDOW_HIGH 600
+#define MAX 36
+
+glm::vec3 vertices[] = {
+	glm::vec3(-1.0f,-1.0f,-1.0f),
+	glm::vec3(-1.0f,-1.0f, 1.0f),
+	glm::vec3(-1.0f, 1.0f, 1.0f),
+	glm::vec3(1.0f, 1.0f,-1.0f),
+	glm::vec3(-1.0f,-1.0f,-1.0f),
+	glm::vec3(-1.0f, 1.0f,-1.0f),
+	glm::vec3(1.0f,-1.0f, 1.0f),
+	glm::vec3(-1.0f,-1.0f,-1.0f),
+	glm::vec3(1.0f,-1.0f,-1.0f),
+	glm::vec3(1.0f, 1.0f,-1.0f),
+	glm::vec3(1.0f,-1.0f,-1.0f),
+	glm::vec3(-1.0f,-1.0f,-1.0f),
+	glm::vec3(-1.0f,-1.0f,-1.0f),
+	glm::vec3(-1.0f, 1.0f, 1.0f),
+	glm::vec3(-1.0f, 1.0f,-1.0f),
+	glm::vec3(1.0f,-1.0f, 1.0f),
+	glm::vec3(-1.0f,-1.0f, 1.0f),
+	glm::vec3(-1.0f,-1.0f,-1.0f),
+	glm::vec3(-1.0f, 1.0f, 1.0f),
+	glm::vec3(-1.0f,-1.0f, 1.0f),
+	glm::vec3(1.0f,-1.0f, 1.0f),
+	glm::vec3(1.0f, 1.0f, 1.0f),
+	glm::vec3(1.0f,-1.0f,-1.0f),
+	glm::vec3(1.0f, 1.0f,-1.0f),
+	glm::vec3(1.0f,-1.0f,-1.0f),
+	glm::vec3(1.0f, 1.0f, 1.0f),
+	glm::vec3(1.0f,-1.0f, 1.0f),
+	glm::vec3(1.0f, 1.0f, 1.0f),
+	glm::vec3(1.0f, 1.0f,-1.0f),
+	glm::vec3(-1.0f, 1.0f,-1.0f),
+	glm::vec3(1.0f, 1.0f, 1.0f),
+	glm::vec3(-1.0f, 1.0f,-1.0f),
+	glm::vec3(-1.0f, 1.0f, 1.0f),
+	glm::vec3(1.0f, 1.0f, 1.0f),
+	glm::vec3(-1.0f, 1.0f, 1.0f),
+	glm::vec3(1.0f,-1.0f, 1.0f)
+};
+
+// Create a color array that identifies the colors of each vertex (format R, G, B, A)
+GLfloat colors[] = {
+	0.583f,  0.771f,  0.014f,  1.0f,
+	0.609f,  0.115f,  0.436f,  1.0f,
+	0.327f,  0.483f,  0.844f,  1.0f,
+	0.822f,  0.569f,  0.201f,  1.0f,
+	0.435f,  0.602f,  0.223f,  1.0f,
+	0.310f,  0.747f,  0.185f,  1.0f,
+	0.597f,  0.770f,  0.761f,  1.0f,
+	0.559f,  0.436f,  0.730f,  1.0f,
+	0.359f,  0.583f,  0.152f,  1.0f,
+	0.483f,  0.596f,  0.789f,  1.0f,
+	0.559f,  0.861f,  0.639f,  1.0f,
+	0.195f,  0.548f,  0.859f,  1.0f,
+	0.014f,  0.184f,  0.576f,  1.0f,
+	0.771f,  0.328f,  0.970f,  1.0f,
+	0.406f,  0.615f,  0.116f,  1.0f,
+	0.676f,  0.977f,  0.133f,  1.0f,
+	0.971f,  0.572f,  0.833f,  1.0f,
+	0.140f,  0.616f,  0.489f,  1.0f,
+	0.997f,  0.513f,  0.064f,  1.0f,
+	0.945f,  0.719f,  0.592f,  1.0f,
+	0.543f,  0.021f,  0.978f,  1.0f,
+	0.279f,  0.317f,  0.505f,  1.0f,
+	0.167f,  0.620f,  0.077f,  1.0f,
+	0.347f,  0.857f,  0.137f,  1.0f,
+	0.055f,  0.953f,  0.042f,  1.0f,
+	0.714f,  0.505f,  0.345f,  1.0f,
+	0.783f,  0.290f,  0.734f,  1.0f,
+	0.722f,  0.645f,  0.174f,  1.0f,
+	0.302f,  0.455f,  0.848f,  1.0f,
+	0.225f,  0.587f,  0.040f,  1.0f,
+	0.517f,  0.713f,  0.338f,  1.0f,
+	0.053f,  0.959f,  0.120f,  1.0f,
+	0.393f,  0.621f,  0.362f,  1.0f,
+	0.673f,  0.211f,  0.457f,  1.0f,
+	0.820f,  0.883f,  0.371f,  1.0f,
+	0.982f,  0.099f,  0.879f,  1.0f
+};
 
 //typedef void (* GLFWmousebuttonfun)(GLFWwindow*,int,int,int);
 void MouseButtonCB( GLFWwindow*,int button ,int action ,int mods)
@@ -32,6 +117,7 @@ PhysicsLab_2::PhysicsLab_2(void)
 	m_shader = new Shader();
 	m_objectBuffer = new ObjectBuffer(36);
 	m_physicsLabCamera = new PhysicsLabCamera();
+	box = new Box(glm::vec3(0,0,0), glm::quat());
 }
 
 
@@ -50,90 +136,32 @@ void PhysicsLab_2::run(void)
 	initTweakBar();
 
 	// Create 3 vertices that make up a triangle that fits on the viewport 
-	GLfloat vertices[] = {
-		-1.0f,-1.0f,-1.0f,
-		-1.0f,-1.0f, 1.0f,
-		-1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f,-1.0f,
-		-1.0f,-1.0f,-1.0f,
-		-1.0f, 1.0f,-1.0f,
-		1.0f,-1.0f, 1.0f,
-		-1.0f,-1.0f,-1.0f,
-		1.0f,-1.0f,-1.0f,
-		1.0f, 1.0f,-1.0f,
-		1.0f,-1.0f,-1.0f,
-		-1.0f,-1.0f,-1.0f,
-		-1.0f,-1.0f,-1.0f,
-		-1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f,-1.0f,
-		1.0f,-1.0f, 1.0f,
-		-1.0f,-1.0f, 1.0f,
-		-1.0f,-1.0f,-1.0f,
-		-1.0f, 1.0f, 1.0f,
-		-1.0f,-1.0f, 1.0f,
-		1.0f,-1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f,-1.0f,-1.0f,
-		1.0f, 1.0f,-1.0f,
-		1.0f,-1.0f,-1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f,-1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f,-1.0f,
-		-1.0f, 1.0f,-1.0f,
-		1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f,-1.0f,
-		-1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f, 1.0f,
-		1.0f,-1.0f, 1.0f
-	};
-
-	// Create a color array that identifies the colors of each vertex (format R, G, B, A)
-	GLfloat colors[] = {
-		0.583f,  0.771f,  0.014f,  1.0f,
-		0.609f,  0.115f,  0.436f,  1.0f,
-		0.327f,  0.483f,  0.844f,  1.0f,
-		0.822f,  0.569f,  0.201f,  1.0f,
-		0.435f,  0.602f,  0.223f,  1.0f,
-		0.310f,  0.747f,  0.185f,  1.0f,
-		0.597f,  0.770f,  0.761f,  1.0f,
-		0.559f,  0.436f,  0.730f,  1.0f,
-		0.359f,  0.583f,  0.152f,  1.0f,
-		0.483f,  0.596f,  0.789f,  1.0f,
-		0.559f,  0.861f,  0.639f,  1.0f,
-		0.195f,  0.548f,  0.859f,  1.0f,
-		0.014f,  0.184f,  0.576f,  1.0f,
-		0.771f,  0.328f,  0.970f,  1.0f,
-		0.406f,  0.615f,  0.116f,  1.0f,
-		0.676f,  0.977f,  0.133f,  1.0f,
-		0.971f,  0.572f,  0.833f,  1.0f,
-		0.140f,  0.616f,  0.489f,  1.0f,
-		0.997f,  0.513f,  0.064f,  1.0f,
-		0.945f,  0.719f,  0.592f,  1.0f,
-		0.543f,  0.021f,  0.978f,  1.0f,
-		0.279f,  0.317f,  0.505f,  1.0f,
-		0.167f,  0.620f,  0.077f,  1.0f,
-		0.347f,  0.857f,  0.137f,  1.0f,
-		0.055f,  0.953f,  0.042f,  1.0f,
-		0.714f,  0.505f,  0.345f,  1.0f,
-		0.783f,  0.290f,  0.734f,  1.0f,
-		0.722f,  0.645f,  0.174f,  1.0f,
-		0.302f,  0.455f,  0.848f,  1.0f,
-		0.225f,  0.587f,  0.040f,  1.0f,
-		0.517f,  0.713f,  0.338f,  1.0f,
-		0.053f,  0.959f,  0.120f,  1.0f,
-		0.393f,  0.621f,  0.362f,  1.0f,
-		0.673f,  0.211f,  0.457f,  1.0f,
-		0.820f,  0.883f,  0.371f,  1.0f,
-		0.982f,  0.099f,  0.879f,  1.0f
-	};
 
 
-	m_objectBuffer->GenerateVBO(vertices,colors);
+
+
+	printf("Total Points for box object %d",box->points.size());
+
+	std::vector<glm::vec3> box_InitVertices;
+
+	for (int i=0; i<36; i++)
+	{
+		box_InitVertices.push_back(glm::vec3(vertices[i].x, vertices[i].y, vertices[i].z));
+	}
+
+	m_objectBuffer->GenerateVBO(box_InitVertices,colors);
 	m_objectBuffer->LinkBufferToShader(m_shader->GetProgramID());
 
+	double lastTime = glfwGetTime();
+
+
+
 	do{
+
+		double currentTime = glfwGetTime();
+		double delta = currentTime - lastTime;
+		lastTime = currentTime;
+
 		preDraw();
 
 		glUseProgram(m_shader->GetProgramID());
@@ -146,10 +174,15 @@ void PhysicsLab_2::run(void)
 
 		m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
 
+		keyControl();
+		box->Update(delta);
+		update(box->GetTransformationMatrix(),m_shader->GetProgramID());
+
+		updateVertices();
+
+		//draw
 		glBindVertexArray(m_objectBuffer->vao);
-
 		glDrawArrays(GL_TRIANGLES, 0, 12*3);
-
 		glBindVertexArray(0);
 
 		TwDraw();
@@ -165,6 +198,40 @@ void PhysicsLab_2::run(void)
 
 	TwTerminate();
 	glfwTerminate();
+}
+
+
+void PhysicsLab_2::updateVertices()
+{
+	for(int i = 0; i < MAX; i++)
+	{
+		bp[i] = glm::vec3(vertices[i]) * box->GetOrientation() + box->GetPosition();
+	}
+
+	std::vector<glm::vec3> box_vertices;
+
+	for (int i=0; i<36; i++)
+	{
+		box_vertices.push_back(glm::vec3(bp[i].x, bp[i].y, bp[i].z));
+	}
+
+	box->SetPoints(box_vertices);
+
+	for (int i=0; i<box->points.size(); i++)
+	{
+		boxPos[i] = box->points.at(i);
+	}
+}
+
+void PhysicsLab_2::rotateBody(float x, float y, float z)
+{
+ 	glm::quat q(glm::vec3(x, y, z));
+ 	box->SetOrientation(box->GetOrientation() * q);
+}
+
+void PhysicsLab_2::translateBody(float x, float y, float z)
+{
+	box->SetLinearMomentum(12.0f * glm::vec3(x,y,z) * box->GetMass());
 }
 
 
@@ -195,7 +262,7 @@ void PhysicsLab_2::setupGlfwGlew()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
-	window = glfwCreateWindow( 1024, 768, "Lab 02", NULL, NULL);
+	window = glfwCreateWindow( WINDOW_WIDTH, WINDOW_HIGH, "Lab 02", NULL, NULL);
 
 	if( window == NULL ){
 		fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
@@ -211,7 +278,7 @@ void PhysicsLab_2::setupGlfwGlew()
 	}
 
 	TwInit(TW_OPENGL_CORE, NULL);
-	TwWindowSize(1024,768);
+	TwWindowSize(WINDOW_WIDTH,WINDOW_HIGH);
 
 	/* Set GLFW event callbacks */
 	// - Directly redirect GLFW mouse button events to AntTweakBar
@@ -227,7 +294,7 @@ void PhysicsLab_2::setupGlfwGlew()
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 	// 	glfwGetWindowSize(window, &width, &height);
-	glfwSetCursorPos(window, 1024/2, 768/2);
+	glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HIGH/2);
 
 
 	glEnable(GL_DEPTH_TEST);
@@ -255,11 +322,24 @@ GLFWwindow* PhysicsLab_2::getWindow()
 
 void PhysicsLab_2::initTweakBar()
 {
+	TwBar * bar;
+	bar = TwNewBar("Simulation");
+	TwDefine(" Simulation size='300 400' ");
+	//TwDefine(" Simulation resizable=false ");
+	//TwDefine(" Simulation position='0 0' ");
 
+	//TwSetParam(bar, NULL, "refresh", TW_PARAM_CSTRING, 1, "0.1");
 
-	bar = TwNewBar("Simulation Info: ");
-	TwSetParam(bar, NULL, "refresh", TW_PARAM_CSTRING, 1, "0.1");
  	TwAddVarRO(bar, "Camera", TW_TYPE_DIR3F, &m_physicsLabCamera->position, " label='Camera Pos: '");
+
+	TwAddVarRO(bar, "boxPoint0", TW_TYPE_DIR3F, &boxPos[0], " label='p0: '");
+	TwAddVarRO(bar, "boxPoint1", TW_TYPE_DIR3F, &boxPos[1], " label='p1: '");
+	TwAddVarRO(bar, "boxPoint2", TW_TYPE_DIR3F, &boxPos[2], " label='p2: '");
+	TwAddVarRO(bar, "boxPoint3", TW_TYPE_DIR3F, &boxPos[3], " label='p3: '");
+	TwAddVarRO(bar, "boxPoint4", TW_TYPE_DIR3F, &boxPos[4], " label='p4: '");
+	TwAddVarRO(bar, "boxPoint5", TW_TYPE_DIR3F, &boxPos[5], " label='p5: '");
+	TwAddVarRO(bar, "boxPoint6", TW_TYPE_DIR3F, &boxPos[6], " label='p6: '");
+	TwAddVarRO(bar, "boxPoint7", TW_TYPE_DIR3F, &boxPos[7], " label='p7: '");
  
 // 	TwAddVarRO(bar, "Spread", TW_TYPE_FLOAT, &spread, " label='Spread(O,P): '");
 // 
@@ -284,5 +364,68 @@ void PhysicsLab_2::initTweakBar()
 // 	TwAddVarRO(bar, "Gravity X", TW_TYPE_FLOAT, &gravity.x, "group ='Gravity' label='X(Y,U): '");
 // 	TwAddVarRO(bar, "Gravity Y", TW_TYPE_FLOAT, &gravity.y, "group ='Gravity' label='Y(H,J): '");
 // 	TwAddVarRO(bar, "Gravity Z", TW_TYPE_FLOAT, &gravity.z, "group ='Gravity' label='Z(N,M): '");
+
+}
+
+void PhysicsLab_2::update(glm::mat4 ModelMatrix, GLuint shaderProgramID)
+{
+	GLuint modelLoc = glGetUniformLocation(shaderProgramID, "model");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &ModelMatrix[0][0]);
+}
+
+void PhysicsLab_2::keyControl()
+{
+	//rot
+	if (glfwGetKey(window, GLFW_KEY_Y ) == GLFW_PRESS){
+		rotateBody(-0.1f, 0.0f, 0.0f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_U ) == GLFW_PRESS){
+		rotateBody(0.1f, 0.0f, 0.0f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_H ) == GLFW_PRESS){
+		rotateBody(0.0f, -0.1f, 0.0f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_J ) == GLFW_PRESS){
+		rotateBody(0.0f, 0.1f, 0.0f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_N ) == GLFW_PRESS){
+		rotateBody(0.0f, 0.0f, -0.1f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_M ) == GLFW_PRESS){
+		rotateBody(0.0f, 0.0f, 0.1f);
+	}
+
+	//transfer
+	if (glfwGetKey(window, GLFW_KEY_R ) == GLFW_PRESS){
+		translateBody(-0.1f, 0.0f, 0.0f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_T ) == GLFW_PRESS){
+		translateBody(0.1f, 0.0f, 0.0f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_F ) == GLFW_PRESS){
+		translateBody(0.0f, -0.1f, 0.0f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_G ) == GLFW_PRESS){
+		translateBody(0.0f, 0.1f, 0.0f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_V ) == GLFW_PRESS){
+		translateBody(0.0f, 0.0f, -0.1f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_B ) == GLFW_PRESS){
+		translateBody(0.0f, 0.0f, 0.1f);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_1 ) == GLFW_PRESS){
+		box->SetAngularMomentum(glm::vec3(1,0,0));
+	}
+	if (glfwGetKey(window, GLFW_KEY_2 ) == GLFW_PRESS){
+		box->SetAngularMomentum(glm::vec3(0,1,0));
+	}
+	if (glfwGetKey(window, GLFW_KEY_3 ) == GLFW_PRESS){
+		box->SetAngularMomentum(glm::vec3(0,0,1));
+	}
+	if (glfwGetKey(window, GLFW_KEY_4 ) == GLFW_PRESS){
+		box->SetAngularMomentum(glm::vec3(0,0,0));
+	}
 
 }
