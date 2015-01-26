@@ -86,7 +86,7 @@
   <ItemGroup>
     <ClCompile Include="ArmSkeleton.cpp" />
     <ClCompile Include="Bone.cpp" />
-    <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ContentLoader.cpp" />
     <ClCompile Include="FountainEffect.cpp" />
@@ -114,6 +114,7 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="skinning_technique.cpp" />
+    <ClCompile Include="Spring.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="diffuse.ps" />
@@ -128,7 +129,7 @@
   <ItemGroup>
     <ClInclude Include="ArmSkeleton.h" />
     <ClInclude Include="Bone.h" />
-    <ClInclude Include="Box.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ContentLoader.h" />
     <ClInclude Include="Cylinder.h" />
@@ -158,6 +159,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="skinning_technique.h" />
+    <ClInclude Include="Spring.h" />
     <ClInclude Include="technique.h" />
   </ItemGroup>
   <ItemGroup>

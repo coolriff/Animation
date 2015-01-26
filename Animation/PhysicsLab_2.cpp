@@ -1,10 +1,10 @@
 #include "PhysicsLab_2.h"
 
-#define WINDOW_WIDTH 1440
-#define WINDOW_HIGH 1080
+// #define WINDOW_WIDTH 1440
+// #define WINDOW_HIGH 1080
 
-// #define WINDOW_WIDTH 800
-// #define WINDOW_HIGH 600
+#define WINDOW_WIDTH 1200
+#define WINDOW_HIGH 900
 #define MAX 36
 
 glm::vec3 vertices[] = {
@@ -117,10 +117,12 @@ PhysicsLab_2::PhysicsLab_2(void)
 	m_shader = new Shader();
 	m_objectBuffer = new ObjectBuffer(36);
 	m_physicsLabCamera = new PhysicsLabCamera();
-	box = new Box(glm::vec3(0,0,0), glm::quat());
+	cube = new Cube(glm::vec3(0,0,0), glm::quat());
 	centre_of_mess = glm::vec3(0,0,0);
 	stopTime = false;
 	useForce = false;
+	applyForcePoint = glm::vec3(0,0,0);
+	applyForceF = glm::vec3(0,0,0); 
 }
 
 
@@ -143,7 +145,7 @@ void PhysicsLab_2::run(void)
 
 
 
-	printf("Total Points for box object %d",box->points.size());
+	printf("Total Points for box object %d", cube->m_points.size());
 
 	std::vector<glm::vec3> box_InitVertices;
 
@@ -183,15 +185,15 @@ void PhysicsLab_2::run(void)
 		m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
 
 		keyControl();
-		box->Update(delta);
-		update(box->GetTransformationMatrix(),m_shader->GetProgramID());
+		cube->Update(delta);
+		update(cube->GetTransformationMatrix(),m_shader->GetProgramID());
 
 		updateVertices();
 		centreOfMess();
 
 		if (useForce)
 		{
-			box->ApplyForce(box->GetPosition(),glm::vec3(0,-9.81f,0));
+			cube->ApplyForce(cube->GetPosition(),glm::vec3(0,-9.81f,0));
 		}
 
 
@@ -226,6 +228,8 @@ void PhysicsLab_2::inertialTensor()
 void PhysicsLab_2::centreOfMess()
 {
 	//Centroid of a 3D shell described by 3 vertex facets
+	//http://paulbourke.net/geometry/polygonmesh/
+
 	float area[MAX];
 
 	glm::vec3 r[MAX];
@@ -252,7 +256,7 @@ void PhysicsLab_2::updateVertices()
 {
 	for(int i = 0; i < MAX; i++)
 	{
-		bp[i] = glm::vec3(vertices[i]) * box->GetOrientation() + box->GetPosition();
+		bp[i] = glm::vec3(vertices[i]) * cube->GetOrientation() + cube->GetPosition();
 	}
 
 	std::vector<glm::vec3> box_vertices;
@@ -262,23 +266,23 @@ void PhysicsLab_2::updateVertices()
 		box_vertices.push_back(glm::vec3(bp[i].x, bp[i].y, bp[i].z));
 	}
 
-	box->SetPoints(box_vertices);
+	cube->SetPoints(box_vertices);
 
-	for (int i=0; i<box->points.size(); i++)
+	for (int i=0; i<cube->m_points.size(); i++)
 	{
-		boxPos[i] = box->points.at(i);
+		boxPos[i] = cube->m_points.at(i);
 	}
 }
 
 void PhysicsLab_2::rotateBody(float x, float y, float z)
 {
  	glm::quat q(glm::vec3(x, y, z));
- 	box->SetOrientation(box->GetOrientation() * q);
+ 	cube->SetOrientation(cube->GetOrientation() * q);
 }
 
 void PhysicsLab_2::translateBody(float x, float y, float z)
 {
-	box->SetLinearMomentum(12.0f * glm::vec3(x,y,z) * box->GetMass());
+	cube->SetLinearMomentum(12.0f * glm::vec3(x,y,z) * cube->GetMass());
 }
 
 
@@ -388,6 +392,9 @@ void PhysicsLab_2::initTweakBar()
 	TwAddVarRO(bar, "boxPoint6", TW_TYPE_DIR3F, &boxPos[6], " label='p6: '");
 	TwAddVarRO(bar, "boxPoint7", TW_TYPE_DIR3F, &boxPos[7], " label='p7: '");
 	TwAddVarRO(bar, "cmass", TW_TYPE_DIR3F, &centre_of_mess, " label='centre of mess: '");
+	TwAddVarRW(bar, "force", TW_TYPE_DIR3F, &applyForcePoint, " label='Force Pos: '");
+	TwAddVarRW(bar, "forceD", TW_TYPE_DIR3F, &applyForceF, " label='Force Dir: '");
+
  
 // 	TwAddVarRO(bar, "Spread", TW_TYPE_FLOAT, &spread, " label='Spread(O,P): '");
 // 
@@ -464,16 +471,25 @@ void PhysicsLab_2::keyControl()
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_1 ) == GLFW_PRESS){
-		box->SetAngularMomentum(glm::vec3(1,0,0));
+		cube->SetAngularMomentum(glm::vec3(1,0,0));
 	}
 	if (glfwGetKey(window, GLFW_KEY_2 ) == GLFW_PRESS){
-		box->SetAngularMomentum(glm::vec3(0,1,0));
+		cube->SetAngularMomentum(glm::vec3(0,1,0));
 	}
 	if (glfwGetKey(window, GLFW_KEY_3 ) == GLFW_PRESS){
-		box->SetAngularMomentum(glm::vec3(0,0,1));
+		cube->SetAngularMomentum(glm::vec3(0,0,1));
 	}
 	if (glfwGetKey(window, GLFW_KEY_4 ) == GLFW_PRESS){
-		box->SetAngularMomentum(glm::vec3(0,0,0));
+		cube->SetAngularMomentum(glm::vec3(0,0,0));
+	}
+
+	
+	if (glfwGetKey(window, GLFW_KEY_Z ) == GLFW_PRESS){
+		cube->SetAngularMomentum(applyForcePoint);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_X ) == GLFW_PRESS){
+		cube->ApplyForce(applyForcePoint,applyForceF);
 	}
 
 	//dt

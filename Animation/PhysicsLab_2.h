@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "Box.h"
+#include "Cube.h"
 
 
 
@@ -22,13 +22,21 @@ public:
 	Shader* m_shader;
 	ObjectBuffer* m_objectBuffer;
 	PhysicsLabCamera* m_physicsLabCamera;
-	Box* box;
+	Cube* cube;
 
 	glm::mat4 M;
 	glm::vec3 bp[36];
 	glm::vec3 boxPos[8];
 	glm::vec3 centre_of_mess;
+	glm::vec3 applyForcePoint;
+	glm::vec3 applyForceF;
 
+	glm::vec3 springBeginPos;
+	glm::vec3 springEndPos;
+
+	float springConstant;
+	float springLength;
+	float springFrictionConstant;
 
 	bool stopTime;
 	bool useForce;

@@ -108,7 +108,10 @@
     <ClCompile Include="RigidBody.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
-    <ClCompile Include="Box.cpp">
+    <ClCompile Include="Spring.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
   </ItemGroup>
@@ -235,7 +238,10 @@
     <ClInclude Include="RigidBody.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
-    <ClInclude Include="Box.h">
+    <ClInclude Include="Spring.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
   </ItemGroup>

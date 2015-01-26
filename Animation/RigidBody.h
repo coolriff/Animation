@@ -14,17 +14,17 @@ class RigidBody
 public:
 	RigidBody(glm::vec3 &p = glm::vec3(), glm::quat &o = glm::quat(), glm::vec3 &s = glm::vec3(1,1,1));
 
-	glm::vec3 position;
-	glm::quat orientation;
-	glm::vec3 scale;
-	glm::vec3 linearMomentum;
-	glm::vec3 angularMomentum;
-	glm::vec3 force;
-	glm::vec3 torque;
-	glm::mat3 inverseI;
-	std::vector<glm::vec3> points;
+	glm::vec3 m_position;
+	glm::quat m_orientation;
+	glm::vec3 m_scale;
+	glm::vec3 m_linearMomentum;
+	glm::vec3 m_angularMomentum;
+	glm::vec3 m_force;
+	glm::vec3 m_torque;
+	glm::mat3 m_inverseI;
+	std::vector<glm::vec3> m_points;
 
-	float massInverse;
+	float m_massInverse;
 
 	void Update(float deltaTime);
 
@@ -32,28 +32,28 @@ public:
 
 	void SetPoints(const std::vector<glm::vec3> & vertices);
 
-	glm::vec3 GetPosition() const { return position; }
-	glm::quat GetOrientation() const { return orientation; }
-	glm::vec3 GetScale() const { return scale; }
-	float GetMassInverse() const { return massInverse; } 
+	glm::vec3 GetPosition() const { return m_position; }
+	glm::quat GetOrientation() const { return m_orientation; }
+	glm::vec3 GetScale() const { return m_scale; }
+	float GetMassInverse() const { return m_massInverse; } 
 	glm::mat3 GetInertiaInverse() const;
-	float GetMass() const { return (massInverse != 0.0f) ? 1.0f/massInverse : FLT_MAX; }
-	glm::vec3 GetLinearMomentum() const { return linearMomentum; }
-	glm::vec3 GetLinearVelocity() const { return linearMomentum * massInverse; }
-	glm::vec3 GetAngularMomentum() const { return angularMomentum; }
-	glm::vec3 GetAngularVelocity() const { return GetInertiaInverse() * angularMomentum; }
-	glm::vec3 GetForce() const { return force; }
-	glm::vec3 GetTorque() const { return torque; }
+	float GetMass() const { return (m_massInverse != 0.0f) ? 1.0f/m_massInverse : FLT_MAX; }
+	glm::vec3 GetLinearMomentum() const { return m_linearMomentum; }
+	glm::vec3 GetLinearVelocity() const { return m_linearMomentum * m_massInverse; }
+	glm::vec3 GetAngularMomentum() const { return m_angularMomentum; }
+	glm::vec3 GetAngularVelocity() const { return GetInertiaInverse() * m_angularMomentum; }
+	glm::vec3 GetForce() const { return m_force; }
+	glm::vec3 GetTorque() const { return m_torque; }
 
-	void SetPosition(const glm::vec3 &p) { position = p; }
-	void SetOrientation(const glm::quat &o) { orientation = o; }
-	void SetScale(const glm::vec3 &s) { scale = s; }
-	void SetLinearMomentum(const glm::vec3 &lm) { linearMomentum = lm; }
-	void SetAngularMomentum(const glm::vec3 &am) { angularMomentum = am; }
-	void SetForce(const glm::vec3 &f) { force = f; }
-	void SetTorque(const glm::vec3 &t) { torque = t; }
+	void SetPosition(const glm::vec3 &p) { m_position = p; }
+	void SetOrientation(const glm::quat &o) { m_orientation = o; }
+	void SetScale(const glm::vec3 &s) { m_scale = s; }
+	void SetLinearMomentum(const glm::vec3 &lm) { m_linearMomentum = lm; }
+	void SetAngularMomentum(const glm::vec3 &am) { m_angularMomentum = am; }
+	void SetForce(const glm::vec3 &f) { m_force = f; }
+	void SetTorque(const glm::vec3 &t) { m_torque = t; }
 
-	void ApplyGravity(const float g) { if(massInverse > 0) force += glm::vec3(0, 1.0f/massInverse, 0) * g; }
+	void ApplyGravity(const float g) { if(m_massInverse > 0) m_force += glm::vec3(0, 1.0f/m_massInverse, 0) * g; }
 	void ApplyForce(const glm::vec3 &point, const glm::vec3 &f);
 };
 
