@@ -27,6 +27,11 @@ public:
 	glm::mat4 M;
 	glm::vec3 bp[36];
 	glm::vec3 boxPos[8];
+	glm::vec3 centre_of_mess;
+
+
+	bool stopTime;
+	bool useForce;
 
 	void run(void);
 	void initShaders();
@@ -40,5 +45,7 @@ public:
 	void update(glm::mat4 ModelMatrix, GLuint shaderProgramID);
 	void translateBody(float x, float y, float z);
 	void updateVertices();
+	void centreOfMess();
+	void inertialTensor();
 };
 

@@ -46,10 +46,10 @@ glm::mat3 RigidBody::GetInertiaInverse() const
 void RigidBody::SetPoints(const std::vector<glm::vec3> & vertices)
 {
 	points.clear();
-	for(unsigned int i=0; i<vertices.size(); ++i)
+	for(int i=0; i<vertices.size(); ++i)
 	{
 		bool flag = false;
-		for(unsigned int j=0; j<points.size(); ++j)
+		for(int j=0; j<points.size(); ++j)
 		{
 			if(vertices[i] == points[j])
 			{

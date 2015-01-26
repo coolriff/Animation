@@ -118,6 +118,9 @@ PhysicsLab_2::PhysicsLab_2(void)
 	m_objectBuffer = new ObjectBuffer(36);
 	m_physicsLabCamera = new PhysicsLabCamera();
 	box = new Box(glm::vec3(0,0,0), glm::quat());
+	centre_of_mess = glm::vec3(0,0,0);
+	stopTime = false;
+	useForce = false;
 }
 
 
@@ -162,6 +165,11 @@ void PhysicsLab_2::run(void)
 		double delta = currentTime - lastTime;
 		lastTime = currentTime;
 
+		if (stopTime)
+		{
+			delta = 0;
+		}
+
 		preDraw();
 
 		glUseProgram(m_shader->GetProgramID());
@@ -179,6 +187,13 @@ void PhysicsLab_2::run(void)
 		update(box->GetTransformationMatrix(),m_shader->GetProgramID());
 
 		updateVertices();
+		centreOfMess();
+
+		if (useForce)
+		{
+			box->ApplyForce(box->GetPosition(),glm::vec3(0,-9.81f,0));
+		}
+
 
 		//draw
 		glBindVertexArray(m_objectBuffer->vao);
@@ -199,6 +214,38 @@ void PhysicsLab_2::run(void)
 	TwTerminate();
 	glfwTerminate();
 }
+
+
+
+void PhysicsLab_2::inertialTensor()
+{
+
+}
+
+
+void PhysicsLab_2::centreOfMess()
+{
+	//Centroid of a 3D shell described by 3 vertex facets
+	float area[MAX];
+
+	glm::vec3 r[MAX];
+	glm::vec3 up;
+	glm::vec3 down;
+
+	for (int i=0; i<MAX; i+=3)
+	{
+		glm::vec3 v1 = bp[i];
+		glm::vec3 v2 = bp[i+1];
+		glm::vec3 v3 = bp[i+2];
+
+		r[i] = (v1 + v2 + v3) / 3.0f;
+		area[i] = glm::length(glm::cross(v2-v1,v3-v1));
+		up += r[i] * area[i];
+		down += area[i];
+	}
+	centre_of_mess = up/down;
+}
+
 
 
 void PhysicsLab_2::updateVertices()
@@ -340,6 +387,7 @@ void PhysicsLab_2::initTweakBar()
 	TwAddVarRO(bar, "boxPoint5", TW_TYPE_DIR3F, &boxPos[5], " label='p5: '");
 	TwAddVarRO(bar, "boxPoint6", TW_TYPE_DIR3F, &boxPos[6], " label='p6: '");
 	TwAddVarRO(bar, "boxPoint7", TW_TYPE_DIR3F, &boxPos[7], " label='p7: '");
+	TwAddVarRO(bar, "cmass", TW_TYPE_DIR3F, &centre_of_mess, " label='centre of mess: '");
  
 // 	TwAddVarRO(bar, "Spread", TW_TYPE_FLOAT, &spread, " label='Spread(O,P): '");
 // 
@@ -428,4 +476,29 @@ void PhysicsLab_2::keyControl()
 		box->SetAngularMomentum(glm::vec3(0,0,0));
 	}
 
+	//dt
+	if (glfwGetKey(window, GLFW_KEY_SPACE ) == GLFW_PRESS){
+		if (stopTime == false)
+		{
+			stopTime = true;
+		}
+		else
+		{
+			stopTime = false;
+		}
+	}
+
+	// use force
+	if (glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS){
+		if (useForce == false)
+		{
+			useForce = true;
+		}
+		else
+		{
+			useForce = false;
+		}
+	}
+
 }
+
