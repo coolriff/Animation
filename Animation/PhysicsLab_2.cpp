@@ -7,85 +7,6 @@
 #define WINDOW_HIGH 900
 #define MAX 36
 
-glm::vec3 vertices[] = {
-	glm::vec3(-1.0f,-1.0f,-1.0f),//1
-	glm::vec3(-1.0f,-1.0f, 1.0f),//2
-	glm::vec3(-1.0f, 1.0f, 1.0f),//3
-	glm::vec3(1.0f, 1.0f,-1.0f),//4
-	glm::vec3(-1.0f,-1.0f,-1.0f),//1
-	glm::vec3(-1.0f, 1.0f,-1.0f),//5
-	glm::vec3(1.0f,-1.0f, 1.0f),//6
-	glm::vec3(-1.0f,-1.0f,-1.0f),//1
-	glm::vec3(1.0f,-1.0f,-1.0f),//7
-	glm::vec3(1.0f, 1.0f,-1.0f),//4
-	glm::vec3(1.0f,-1.0f,-1.0f),//7
-	glm::vec3(-1.0f,-1.0f,-1.0f),//1
-	glm::vec3(-1.0f,-1.0f,-1.0f),//1
-	glm::vec3(-1.0f, 1.0f, 1.0f),//3
-	glm::vec3(-1.0f, 1.0f,-1.0f),//5
-	glm::vec3(1.0f,-1.0f, 1.0f),//6
-	glm::vec3(-1.0f,-1.0f, 1.0f),//2
-	glm::vec3(-1.0f,-1.0f,-1.0f),//1
-	glm::vec3(-1.0f, 1.0f, 1.0f),//3
-	glm::vec3(-1.0f,-1.0f, 1.0f),//2
-	glm::vec3(1.0f,-1.0f, 1.0f),//6
-	glm::vec3(1.0f, 1.0f, 1.0f),//8
-	glm::vec3(1.0f,-1.0f,-1.0f),//7
-	glm::vec3(1.0f, 1.0f,-1.0f),//4
-	glm::vec3(1.0f,-1.0f,-1.0f),//7
-	glm::vec3(1.0f, 1.0f, 1.0f),//8
-	glm::vec3(1.0f,-1.0f, 1.0f),//6
-	glm::vec3(1.0f, 1.0f, 1.0f),//8
-	glm::vec3(1.0f, 1.0f,-1.0f),//4
-	glm::vec3(-1.0f, 1.0f,-1.0f),//5
-	glm::vec3(1.0f, 1.0f, 1.0f),//8
-	glm::vec3(-1.0f, 1.0f,-1.0f),//5
-	glm::vec3(-1.0f, 1.0f, 1.0f),//3
-	glm::vec3(1.0f, 1.0f, 1.0f),//8
-	glm::vec3(-1.0f, 1.0f, 1.0f),//3
-	glm::vec3(1.0f,-1.0f, 1.0f)//6
-};
-
-// Create a color array that identifies the colors of each vertex (format R, G, B, A)
-GLfloat colors[] = {
-	0.583f,  0.771f,  0.014f,  1.0f,//1
-	0.609f,  0.115f,  0.436f,  1.0f,//2
-	0.327f,  0.483f,  0.844f,  1.0f,//3
-	0.822f,  0.569f,  0.201f,  1.0f,//4
-	0.583f,  0.771f,  0.014f,  1.0f,//1
-	0.310f,  0.747f,  0.185f,  1.0f,//5
-	0.597f,  0.770f,  0.761f,  1.0f,//6
-	0.583f,  0.771f,  0.014f,  1.0f,//1
-	0.359f,  0.583f,  0.152f,  1.0f,//7
-	0.822f,  0.569f,  0.201f,  1.0f,//4
-	0.359f,  0.583f,  0.152f,  1.0f,//7
-	0.583f,  0.771f,  0.014f,  1.0f,//1
-	0.583f,  0.771f,  0.014f,  1.0f,//1
-	0.327f,  0.483f,  0.844f,  1.0f,//3
-	0.310f,  0.747f,  0.185f,  1.0f,//5
-	0.597f,  0.770f,  0.761f,  1.0f,//6
-	0.609f,  0.115f,  0.436f,  1.0f,//2
-	0.583f,  0.771f,  0.014f,  1.0f,//1
-	0.327f,  0.483f,  0.844f,  1.0f,//3
-	0.609f,  0.115f,  0.436f,  1.0f,//2
-	0.597f,  0.770f,  0.761f,  1.0f,//6
-	0.279f,  0.317f,  0.505f,  1.0f,//8
-	0.359f,  0.583f,  0.152f,  1.0f,//7
-	0.822f,  0.569f,  0.201f,  1.0f,//4
-	0.359f,  0.583f,  0.152f,  1.0f,//7
-	0.279f,  0.317f,  0.505f,  1.0f,//8
-	0.597f,  0.770f,  0.761f,  1.0f,//6
-	0.279f,  0.317f,  0.505f,  1.0f,//8
-	0.822f,  0.569f,  0.201f,  1.0f,//4
-	0.310f,  0.747f,  0.185f,  1.0f,//5
-	0.279f,  0.317f,  0.505f,  1.0f,//8
-	0.310f,  0.747f,  0.185f,  1.0f,//5
-	0.327f,  0.483f,  0.844f,  1.0f,//3
-	0.279f,  0.317f,  0.505f,  1.0f,//8
-	0.327f,  0.483f,  0.844f,  1.0f,//3
-	0.982f,  0.099f,  0.879f,  1.0f//6
-};
-
 //typedef void (* GLFWmousebuttonfun)(GLFWwindow*,int,int,int);
 void MouseButtonCB( GLFWwindow*,int button ,int action ,int mods)
 {
@@ -115,7 +36,10 @@ void MouseScrollCB(  GLFWwindow* window, double x , double y )
 PhysicsLab_2::PhysicsLab_2(void)
 {
 	m_shader = new Shader();
-	m_objectBuffer = new ObjectBuffer(36);
+	too_shader = new Shader();
+	b_shader = new Shader();
+	m_objectBuffer = new ObjectBuffer();
+	m_objectBuffer2 = new ObjectBuffer();
 	m_physicsLabCamera = new PhysicsLabCamera();
 	cube = new Cube(glm::vec3(0,0,0), glm::quat());
 	centre_of_mess = glm::vec3(0,0,0);
@@ -123,6 +47,13 @@ PhysicsLab_2::PhysicsLab_2(void)
 	useForce = false;
 	applyForcePoint = glm::vec3(0,0,0);
 	applyForceF = glm::vec3(0,0,0); 
+	tooShader = false;
+	stdShader = true;
+	bShader = false;
+	shaderType = STANDARD;
+	createMesh = new CreateMesh();
+	createMesh2 = new CreateMesh();
+	//sphere = new Sphere();
 }
 
 
@@ -140,29 +71,29 @@ void PhysicsLab_2::run(void)
 	initShaders();
 	initTweakBar();
 
-	// Create 3 vertices that make up a triangle that fits on the viewport 
+	directionalLightDirection = glm::vec3(0, 0, -1);
 
+	
 
+	createMesh->createCubeMesh();
+	m_objectBuffer->GenerateVBO(createMesh->vertices,createMesh->colors,createMesh->normals);
+	m_objectBuffer->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
+	m_objectBuffer->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+	m_objectBuffer->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
 
+	createMesh2->createSphereMesh(15);
+	m_objectBuffer2->GenerateVBO(createMesh2->vertices,createMesh2->colors,createMesh2->normals);
+	m_objectBuffer2->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
+	m_objectBuffer2->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+	m_objectBuffer2->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
 
 	printf("Total Points for box object %d", cube->m_points.size());
-
-	std::vector<glm::vec3> box_InitVertices;
-
-	for (int i=0; i<36; i++)
-	{
-		box_InitVertices.push_back(glm::vec3(vertices[i].x, vertices[i].y, vertices[i].z));
-	}
-
-	m_objectBuffer->GenerateVBO(box_InitVertices,colors);
-	m_objectBuffer->LinkBufferToShader(m_shader->GetProgramID());
 
 	double lastTime = glfwGetTime();
 
 
 
 	do{
-
 		double currentTime = glfwGetTime();
 		double delta = currentTime - lastTime;
 		lastTime = currentTime;
@@ -174,20 +105,76 @@ void PhysicsLab_2::run(void)
 
 		preDraw();
 
-		glUseProgram(m_shader->GetProgramID());
 
-		m_physicsLabCamera->computeMatricesFromInputs(window);
+		if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
+			shaderType = STANDARD;
+			stdShader = true;
+			tooShader = false;
+			bShader = false;
+		}
+		if (glfwGetKey(window, GLFW_KEY_9 ) == GLFW_PRESS){
+			shaderType = CARTOON;
+			stdShader = false;
+			tooShader = true;
+			bShader = false;
+		}
+		if (glfwGetKey(window, GLFW_KEY_0 ) == GLFW_PRESS){
+			shaderType = WHATEVER;
+			stdShader = false;
+			tooShader = false;
+			bShader = true;
+		}
 
-		GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
-		GLuint viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
-		GLuint projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
 
-		m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+		switch (shaderType)
+		{
+		case PhysicsLab_2::STANDARD:
+			glUseProgram(m_shader->GetProgramID());
+			break;
+		case PhysicsLab_2::CARTOON:
+			glUseProgram(too_shader->GetProgramID());
+			break;
+		case PhysicsLab_2::WHATEVER:
+			glUseProgram(b_shader->GetProgramID());
+			break;
+		}
+
+		if (shaderType == STANDARD)
+		{
+			m_physicsLabCamera->computeMatricesFromInputs(window);
+			GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
+			GLuint viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
+			GLuint projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
+			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+			update(cube->GetTransformationMatrix(),m_shader->GetProgramID());
+		}
+
+		if (shaderType == CARTOON)
+		{
+			m_physicsLabCamera->computeMatricesFromInputs(window);
+			GLuint modelLoc = glGetUniformLocation(too_shader->GetProgramID(), "model");
+			GLuint viewLoc = glGetUniformLocation(too_shader->GetProgramID(), "view");
+			GLuint projLoc = glGetUniformLocation(too_shader->GetProgramID(), "projection");
+			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+			update(cube->GetTransformationMatrix(),too_shader->GetProgramID());
+			too_shader->SetDirectionalLight(directionalLightDirection);
+		}
+
+		if (shaderType == WHATEVER)
+		{
+			m_physicsLabCamera->computeMatricesFromInputs(window);
+			GLuint modelLoc = glGetUniformLocation(b_shader->GetProgramID(), "model");
+			GLuint viewLoc = glGetUniformLocation(b_shader->GetProgramID(), "view");
+			GLuint projLoc = glGetUniformLocation(b_shader->GetProgramID(), "projection");
+			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+			update(cube->GetTransformationMatrix(),b_shader->GetProgramID());
+			b_shader->SetDirectionalLight(directionalLightDirection);
+		}
+
 
 		keyControl();
 		cube->Update(delta);
-		update(cube->GetTransformationMatrix(),m_shader->GetProgramID());
-
+		
 		updateVertices();
 		centreOfMess();
 
@@ -196,11 +183,12 @@ void PhysicsLab_2::run(void)
 			cube->ApplyForce(cube->GetPosition(),glm::vec3(0,-9.81f,0));
 		}
 
-
-		//draw
+		//draw cube
 		glBindVertexArray(m_objectBuffer->vao);
-		glDrawArrays(GL_TRIANGLES, 0, 12*3);
+		glDrawArrays(GL_TRIANGLES, 0, createMesh->vertices.size());
 		glBindVertexArray(0);
+
+
 
 		TwDraw();
 
@@ -254,9 +242,10 @@ void PhysicsLab_2::centreOfMess()
 
 void PhysicsLab_2::updateVertices()
 {
-	for(int i = 0; i < MAX; i++)
+	for(int i = 0; i < createMesh->vertices.size(); i++)
 	{
-		bp[i] = glm::vec3(vertices[i]) * cube->GetOrientation() + cube->GetPosition();
+		glm::vec3 t = createMesh->vertices.at(i);
+		bp[i] = t * cube->GetOrientation() + cube->GetPosition();
 	}
 
 	std::vector<glm::vec3> box_vertices;
@@ -289,14 +278,34 @@ void PhysicsLab_2::translateBody(float x, float y, float z)
 void PhysicsLab_2::initShaders()
 {
 	std::string vertexShaderSourceCode,fragmentShaderSourceCode;
-	m_shader->readShaderFile("diffuse.vs",vertexShaderSourceCode);
-	m_shader->readShaderFile("diffuse.ps",fragmentShaderSourceCode);
+	m_shader->readShaderFile("default.vs",vertexShaderSourceCode);
+	m_shader->readShaderFile("default.ps",fragmentShaderSourceCode);
 	GLuint vertexShaderID = m_shader->makeShader(vertexShaderSourceCode.c_str(), GL_VERTEX_SHADER);
 	GLuint fragmentShaderID = m_shader->makeShader(fragmentShaderSourceCode.c_str(), GL_FRAGMENT_SHADER);
 	m_shader->makeShaderProgram(vertexShaderID,fragmentShaderID);
 	printf("vertexShaderID is %d\n",vertexShaderID);
 	printf("fragmentShaderID is %d\n",fragmentShaderID);
 	printf("shaderProgramID is %d\n",m_shader->GetProgramID());
+
+	std::string vertexShaderSourceCode_2,fragmentShaderSourceCode_2;
+	too_shader->readShaderFile("too.vs",vertexShaderSourceCode_2);
+	too_shader->readShaderFile("too.ps",fragmentShaderSourceCode_2);
+	GLuint vertexShaderID_2 = too_shader->makeShader(vertexShaderSourceCode_2.c_str(), GL_VERTEX_SHADER);
+	GLuint fragmentShaderID_2 = too_shader->makeShader(fragmentShaderSourceCode_2.c_str(), GL_FRAGMENT_SHADER);
+	too_shader->makeShaderProgram(vertexShaderID_2,fragmentShaderID_2);
+	printf("vertexShaderID is %d\n",vertexShaderID_2);
+	printf("fragmentShaderID is %d\n",fragmentShaderID_2);
+	printf("shaderProgramID is %d\n",too_shader->GetProgramID());
+
+	std::string vertexShaderSourceCode_3,fragmentShaderSourceCode_3;
+	b_shader->readShaderFile("BlinnPhong.vs",vertexShaderSourceCode_3);
+	b_shader->readShaderFile("BlinnPhong.ps",fragmentShaderSourceCode_3);
+	GLuint vertexShaderID_3 = b_shader->makeShader(vertexShaderSourceCode_3.c_str(), GL_VERTEX_SHADER);
+	GLuint fragmentShaderID_3 = b_shader->makeShader(fragmentShaderSourceCode_3.c_str(), GL_FRAGMENT_SHADER);
+	b_shader->makeShaderProgram(vertexShaderID_3,fragmentShaderID_3);
+	printf("vertexShaderID is %d\n",vertexShaderID_3);
+	printf("fragmentShaderID is %d\n",fragmentShaderID_3);
+	printf("shaderProgramID is %d\n",b_shader->GetProgramID());
 }
 
 void PhysicsLab_2::setupGlfwGlew()
@@ -376,10 +385,11 @@ void PhysicsLab_2::initTweakBar()
 	TwBar * bar;
 	bar = TwNewBar("Simulation");
 	TwDefine(" Simulation size='300 400' ");
-	//TwDefine(" Simulation resizable=false ");
-	//TwDefine(" Simulation position='0 0' ");
 
-	//TwSetParam(bar, NULL, "refresh", TW_PARAM_CSTRING, 1, "0.1");
+	TwAddVarRO(bar, "std", TW_TYPE_BOOL8, &stdShader, " label='Default(8) '");
+	TwAddVarRO(bar, "Too", TW_TYPE_BOOL8, &tooShader, " label='Cartoon(9) '");
+	TwAddVarRO(bar, "bs", TW_TYPE_BOOL8, &bShader, " label='BlinnPhong(0) '");
+	TwAddVarRW(bar, "l1", TW_TYPE_DIR3F, &directionalLightDirection, " label='Dir: '");
 
  	TwAddVarRO(bar, "Camera", TW_TYPE_DIR3F, &m_physicsLabCamera->position, " label='Camera Pos: '");
 
@@ -394,32 +404,6 @@ void PhysicsLab_2::initTweakBar()
 	TwAddVarRO(bar, "cmass", TW_TYPE_DIR3F, &centre_of_mess, " label='centre of mess: '");
 	TwAddVarRW(bar, "force", TW_TYPE_DIR3F, &applyForcePoint, " label='Force Pos: '");
 	TwAddVarRW(bar, "forceD", TW_TYPE_DIR3F, &applyForceF, " label='Force Dir: '");
-
- 
-// 	TwAddVarRO(bar, "Spread", TW_TYPE_FLOAT, &spread, " label='Spread(O,P): '");
-// 
-// 	TwAddVarRO(bar, "centripetal", TW_TYPE_BOOL8, &centripetal, " label='Centripetal(Z): '");
-// 	TwAddVarRO(bar, "waterfall", TW_TYPE_BOOL8, &waterfall, " label='Waterfall(X): '");
-// 	TwAddVarRO(bar, "waveFountain", TW_TYPE_BOOL8, &waveFountain, " label='WaveFountain(C): '");
-// 	TwAddVarRO(bar, "gravityOn", TW_TYPE_BOOL8, &gravityOn, " label='GravityOn(Q): '");
-// 	TwAddVarRO(bar, "stopButton", TW_TYPE_BOOL8, &stopButton, " label='StopButton(Space): '");
-// 
-// 	TwAddVarRO(bar, "Point1 X", TW_TYPE_FLOAT, &blackhole.x, "group ='Blackhole' label='X(R,T):'");
-// 	TwAddVarRO(bar, "Point1 Y", TW_TYPE_FLOAT, &blackhole.y, "group ='Blackhole' label='Y(F,G):'");
-// 	TwAddVarRO(bar, "Point1 Z", TW_TYPE_FLOAT, &blackhole.z, "group ='Blackhole' label='Z(V,B):'");
-// 
-// 	TwAddVarRO(bar, "waveFountainAngle X", TW_TYPE_FLOAT, &waveFountainAngle.x, "group ='WaveFountainAngle' label='X(7,8): '");
-// 	TwAddVarRO(bar, "waveFountainAngle Y", TW_TYPE_FLOAT, &waveFountainAngle.y, "group ='WaveFountainAngle' label='Y(9,0): '");
-// 	TwAddVarRO(bar, "waveFountainAngle Z", TW_TYPE_FLOAT, &waveFountainAngle.z, "group ='WaveFountainAngle' label='Z(): '");
-// 
-// 	TwAddVarRO(bar, "centripetalForce X", TW_TYPE_FLOAT, &centripetalForce.x, "group ='CentripetalForce' label='X(1,2): '");
-// 	TwAddVarRO(bar, "centripetalForce Y", TW_TYPE_FLOAT, &centripetalForce.y, "group ='CentripetalForce' label='Y(3,4): '");
-// 	TwAddVarRO(bar, "centripetalForce Z", TW_TYPE_FLOAT, &centripetalForce.z, "group ='CentripetalForce' label='Z(5,6): '");
-// 
-// 	TwAddVarRO(bar, "Gravity X", TW_TYPE_FLOAT, &gravity.x, "group ='Gravity' label='X(Y,U): '");
-// 	TwAddVarRO(bar, "Gravity Y", TW_TYPE_FLOAT, &gravity.y, "group ='Gravity' label='Y(H,J): '");
-// 	TwAddVarRO(bar, "Gravity Z", TW_TYPE_FLOAT, &gravity.z, "group ='Gravity' label='Z(N,M): '");
-
 }
 
 void PhysicsLab_2::update(glm::mat4 ModelMatrix, GLuint shaderProgramID)

@@ -8,7 +8,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "Cube.h"
-
+#include "CreateMesh.h"
+#include "Sphere.h"
 
 
 class PhysicsLab_2
@@ -19,10 +20,16 @@ public:
 
 	GLFWwindow* window;
 
+	CreateMesh* createMesh;
+	CreateMesh* createMesh2;
 	Shader* m_shader;
+	Shader* too_shader;
+	Shader* b_shader;
 	ObjectBuffer* m_objectBuffer;
+	ObjectBuffer* m_objectBuffer2;
 	PhysicsLabCamera* m_physicsLabCamera;
 	Cube* cube;
+	Sphere* sphere;
 
 	glm::mat4 M;
 	glm::vec3 bp[36];
@@ -34,12 +41,26 @@ public:
 	glm::vec3 springBeginPos;
 	glm::vec3 springEndPos;
 
+	float directionalLightIntensity;
+	glm::vec3 directionalLightDirection;
+
 	float springConstant;
 	float springLength;
 	float springFrictionConstant;
 
 	bool stopTime;
 	bool useForce;
+	bool tooShader;
+	bool stdShader;
+	bool bShader;
+
+	enum ShaderType {
+		STANDARD, 
+		CARTOON, 
+		WHATEVER
+	};
+
+	ShaderType shaderType;
 
 	void run(void);
 	void initShaders();

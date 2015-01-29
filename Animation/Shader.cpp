@@ -100,3 +100,10 @@ GLuint Shader::GetProgramID()
 {
 	return shaderProgramID;
 }
+
+void Shader::SetDirectionalLight(glm::vec3 direction)
+{
+	GLuint diffuseDirectionID = glGetUniformLocation(shaderProgramID, "diffuseDirection");
+
+	glUniform3f(diffuseDirectionID, direction.x,direction.y,direction.z);
+}

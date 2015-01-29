@@ -9,8 +9,6 @@
 // Macro for indexing vertex buffer
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-
-
 class ObjectBuffer
 {
 public:
@@ -22,8 +20,14 @@ public:
 	GLuint vao;
 	GLuint numVertices;
 
+	GLuint vSize;
+	GLuint nSize;
+	GLuint cSize;
+
 	GLuint GenerateVBO(GLfloat vertices[], GLfloat colors[]);
 	GLuint GenerateVBO(const std::vector<glm::vec3> & vertices, GLfloat colors[]);
+	GLuint GenerateVBO(const std::vector<glm::vec3> & vertices, const std::vector<glm::vec4> & colors , const std::vector<glm::vec3> & normals);
 	void LinkBufferToShader(GLuint shaderProgramID);
+	void LinkBufferToShaderWithNormal(GLuint shaderProgramID);
 };
 

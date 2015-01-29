@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <string> 
+#include "glm/glm.hpp"
 
 class Shader
 {
@@ -19,5 +20,7 @@ public:
 	GLuint makeShader(const char* shaderText, GLenum shaderType);
 	void makeShaderProgram(GLuint vertexShaderID, GLuint fragmentShaderID);
 	bool checkCompiledShaderID(GLuint fsAndVsShadersID);
+
+	void SetDirectionalLight(glm::vec3 direction);
 };
 
