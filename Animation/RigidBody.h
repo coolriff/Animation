@@ -22,9 +22,12 @@ public:
 	glm::vec3 m_force;
 	glm::vec3 m_torque;
 	glm::mat3 m_inverseI;
+	glm::vec3 centre_of_mess;
+	std::vector<glm::vec3> m_currentVerticesPosition;
 	std::vector<glm::vec3> m_points;
 
 	float m_massInverse;
+
 
 	void Update(float deltaTime);
 
@@ -55,6 +58,8 @@ public:
 
 	void ApplyGravity(const float g) { if(m_massInverse > 0) m_force += glm::vec3(0, 1.0f/m_massInverse, 0) * g; }
 	void ApplyForce(const glm::vec3 &point, const glm::vec3 &f);
+	void updateCurrentVertices(int verticesSize, std::vector<glm::vec3> & vertices);
+	void CalculateCentreOfMess(int verticesSize);
 };
 
 #endif

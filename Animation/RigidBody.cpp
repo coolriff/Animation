@@ -1,5 +1,5 @@
 #include "RigidBody.h"
-
+#define MAX 36
 
 RigidBody::RigidBody(glm::vec3 &p, glm::quat &o, glm::vec3 &s)
 {
@@ -69,4 +69,42 @@ void RigidBody::ApplyForce(const glm::vec3 &point, const glm::vec3 &f)
 {
 	m_force += f;
 	m_torque += glm::cross(point - m_position, f);
+}
+
+
+void RigidBody::updateCurrentVertices(int verticesSize, std::vector<glm::vec3> & vertices)
+{
+	m_currentVerticesPosition.clear();
+	for(int i = 0; i < verticesSize; i++)
+	{
+		glm::vec3 t = vertices.at(i);
+
+		m_currentVerticesPosition.push_back(t * m_orientation + m_position);
+	}
+	SetPoints(m_currentVerticesPosition);
+}
+
+void RigidBody::CalculateCentreOfMess(int verticesSize)
+{
+	//Centroid of a 3D shell described by 3 vertex facets
+	//http://paulbourke.net/geometry/polygonmesh/
+
+	float area[MAX];
+
+	glm::vec3 r[MAX];
+	glm::vec3 up;
+	glm::vec3 down;
+
+	for (int i=0; i<MAX; i+=3)
+	{
+		glm::vec3 v1 = m_currentVerticesPosition[i];
+		glm::vec3 v2 = m_currentVerticesPosition[i+1];
+		glm::vec3 v3 = m_currentVerticesPosition[i+2];
+
+		r[i] = (v1 + v2 + v3) / 3.0f;
+		area[i] = glm::length(glm::cross(v2-v1,v3-v1));
+		up += r[i] * area[i];
+		down += area[i];
+	}
+	centre_of_mess = up/down;
 }

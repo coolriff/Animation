@@ -31,6 +31,7 @@ public:
 	ObjectBuffer* m_objectBuffer2;
 	PhysicsLabCamera* m_physicsLabCamera;
 	Cube* cube;
+	Cube* cube2;
 	Sphere* sphere;
 	Cylinder* cylinder;
 
@@ -81,8 +82,9 @@ public:
 	void rotateBody(float x, float y, float z);
 	void update(glm::mat4 ModelMatrix, GLuint shaderProgramID);
 	void translateBody(float x, float y, float z);
-	void updateVertices();
 	void centreOfMess();
 	void inertialTensor();
+	void draw(GLuint vao, int size);
+	void update8VerticesOnCube();
 };
 
