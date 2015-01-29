@@ -161,6 +161,12 @@
     <None Include="BlinnPhong.ps">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Gooch.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Gooch.ps">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lab1.h">

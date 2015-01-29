@@ -7,7 +7,7 @@ class Sphere : public RigidBody
 {
 
 public:
-	Sphere(glm::vec3 &p = glm::vec3(), glm::quat &o = glm::quat(), float radius = 0.5f, float d = 1.0f);
+	Sphere(glm::vec3 &p = glm::vec3(), glm::quat &o = glm::quat(), glm::vec3 &s = glm::vec3(0.5f), float d = 1.0f);
 };
 
 #endif

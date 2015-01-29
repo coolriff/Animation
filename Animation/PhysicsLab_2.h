@@ -10,6 +10,8 @@
 #include "Cube.h"
 #include "CreateMesh.h"
 #include "Sphere.h"
+#include "Cylinder.h"
+
 
 
 class PhysicsLab_2
@@ -30,6 +32,7 @@ public:
 	PhysicsLabCamera* m_physicsLabCamera;
 	Cube* cube;
 	Sphere* sphere;
+	Cylinder* cylinder;
 
 	glm::mat4 M;
 	glm::vec3 bp[36];
@@ -37,6 +40,9 @@ public:
 	glm::vec3 centre_of_mess;
 	glm::vec3 applyForcePoint;
 	glm::vec3 applyForceF;
+
+	glm::vec3 cylinderPos;
+	Shader* cylinderShader;
 
 	glm::vec3 springBeginPos;
 	glm::vec3 springEndPos;
@@ -53,11 +59,13 @@ public:
 	bool tooShader;
 	bool stdShader;
 	bool bShader;
+	bool MMShader;
 
 	enum ShaderType {
 		STANDARD, 
 		CARTOON, 
-		WHATEVER
+		WHATEVER,
+		NUMBER4
 	};
 
 	ShaderType shaderType;

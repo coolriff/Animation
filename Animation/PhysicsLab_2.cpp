@@ -38,6 +38,7 @@ PhysicsLab_2::PhysicsLab_2(void)
 	m_shader = new Shader();
 	too_shader = new Shader();
 	b_shader = new Shader();
+	cylinderShader = new Shader();
 	m_objectBuffer = new ObjectBuffer();
 	m_objectBuffer2 = new ObjectBuffer();
 	m_physicsLabCamera = new PhysicsLabCamera();
@@ -50,10 +51,12 @@ PhysicsLab_2::PhysicsLab_2(void)
 	tooShader = false;
 	stdShader = true;
 	bShader = false;
+	MMShader = false;
 	shaderType = STANDARD;
 	createMesh = new CreateMesh();
 	createMesh2 = new CreateMesh();
-	//sphere = new Sphere();
+	cylinder = new Cylinder(2, 0.5, 0.5, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0),16);
+	cylinderPos = glm::vec3(-4,0,0);
 }
 
 
@@ -67,7 +70,6 @@ PhysicsLab_2::~PhysicsLab_2(void)
 void PhysicsLab_2::run(void)
 {
 	setupGlfwGlew();
-
 	initShaders();
 	initTweakBar();
 
@@ -80,12 +82,9 @@ void PhysicsLab_2::run(void)
 	m_objectBuffer->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
 	m_objectBuffer->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
 	m_objectBuffer->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
+	m_objectBuffer->LinkBufferToShaderWithNormal(cylinderShader->GetProgramID());
 
-	createMesh2->createSphereMesh(15);
-	m_objectBuffer2->GenerateVBO(createMesh2->vertices,createMesh2->colors,createMesh2->normals);
-	m_objectBuffer2->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
-	m_objectBuffer2->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
-	m_objectBuffer2->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
+	//cylinder->generateObjectBuffer(cylinderShader->GetProgramID());
 
 	printf("Total Points for box object %d", cube->m_points.size());
 
@@ -111,18 +110,28 @@ void PhysicsLab_2::run(void)
 			stdShader = true;
 			tooShader = false;
 			bShader = false;
+			MMShader = false;
 		}
 		if (glfwGetKey(window, GLFW_KEY_9 ) == GLFW_PRESS){
 			shaderType = CARTOON;
 			stdShader = false;
 			tooShader = true;
 			bShader = false;
+			MMShader = false;
 		}
 		if (glfwGetKey(window, GLFW_KEY_0 ) == GLFW_PRESS){
 			shaderType = WHATEVER;
 			stdShader = false;
 			tooShader = false;
 			bShader = true;
+			MMShader = false;
+		}
+		if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
+			shaderType = NUMBER4;
+			stdShader = false;
+			tooShader = false;
+			bShader = false;
+			MMShader = true;
 		}
 
 
@@ -137,6 +146,9 @@ void PhysicsLab_2::run(void)
 		case PhysicsLab_2::WHATEVER:
 			glUseProgram(b_shader->GetProgramID());
 			break;
+		case PhysicsLab_2::NUMBER4:
+			glUseProgram(cylinderShader->GetProgramID());
+			break;
 		}
 
 		if (shaderType == STANDARD)
@@ -147,6 +159,7 @@ void PhysicsLab_2::run(void)
 			GLuint projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
 			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
 			update(cube->GetTransformationMatrix(),m_shader->GetProgramID());
+			
 		}
 
 		if (shaderType == CARTOON)
@@ -171,10 +184,23 @@ void PhysicsLab_2::run(void)
 			b_shader->SetDirectionalLight(directionalLightDirection);
 		}
 
+		if (shaderType == NUMBER4)
+		{
+			m_physicsLabCamera->computeMatricesFromInputs(window);
+			GLuint modelLoc = glGetUniformLocation(cylinderShader->GetProgramID(), "model");
+			GLuint viewLoc = glGetUniformLocation(cylinderShader->GetProgramID(), "view");
+			GLuint projLoc = glGetUniformLocation(cylinderShader->GetProgramID(), "projection");
+			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+			update(cube->GetTransformationMatrix(),cylinderShader->GetProgramID());
+			cylinderShader->SetDirectionalLight(directionalLightDirection);
+		}
+
 
 		keyControl();
 		cube->Update(delta);
-		
+		//cylinder->update(glm::rotate(glm::translate(glm::mat4(1),glm::vec3(4,0,0)),1.0f,glm::vec3(1,0,0)), cylinderShader->GetProgramID());
+		//cylinder->update(glm::mat4(1), cylinderShader->GetProgramID());
+
 		updateVertices();
 		centreOfMess();
 
@@ -187,6 +213,8 @@ void PhysicsLab_2::run(void)
 		glBindVertexArray(m_objectBuffer->vao);
 		glDrawArrays(GL_TRIANGLES, 0, createMesh->vertices.size());
 		glBindVertexArray(0);
+
+		//cylinder->draw();
 
 
 
@@ -277,6 +305,7 @@ void PhysicsLab_2::translateBody(float x, float y, float z)
 
 void PhysicsLab_2::initShaders()
 {
+	//cube
 	std::string vertexShaderSourceCode,fragmentShaderSourceCode;
 	m_shader->readShaderFile("default.vs",vertexShaderSourceCode);
 	m_shader->readShaderFile("default.ps",fragmentShaderSourceCode);
@@ -306,6 +335,16 @@ void PhysicsLab_2::initShaders()
 	printf("vertexShaderID is %d\n",vertexShaderID_3);
 	printf("fragmentShaderID is %d\n",fragmentShaderID_3);
 	printf("shaderProgramID is %d\n",b_shader->GetProgramID());
+
+	std::string vertexShaderSourceCodeCy,fragmentShaderSourceCodeCy;
+	cylinderShader->readShaderFile("Gooch.vs",vertexShaderSourceCodeCy);
+	cylinderShader->readShaderFile("Gooch.ps",fragmentShaderSourceCodeCy);
+	GLuint vertexShaderIDCy = cylinderShader->makeShader(vertexShaderSourceCodeCy.c_str(), GL_VERTEX_SHADER);
+	GLuint fragmentShaderIDCy = cylinderShader->makeShader(fragmentShaderSourceCodeCy.c_str(), GL_FRAGMENT_SHADER);
+	cylinderShader->makeShaderProgram(vertexShaderIDCy,fragmentShaderIDCy);
+	printf("vertexShaderID is %d\n",vertexShaderIDCy);
+	printf("fragmentShaderID is %d\n",fragmentShaderIDCy);
+	printf("shaderProgramID is %d\n",cylinderShader->GetProgramID());
 }
 
 void PhysicsLab_2::setupGlfwGlew()
@@ -386,9 +425,11 @@ void PhysicsLab_2::initTweakBar()
 	bar = TwNewBar("Simulation");
 	TwDefine(" Simulation size='300 400' ");
 
+	TwAddVarRO(bar, "mm", TW_TYPE_BOOL8, &MMShader, " label='MM(7) '");
 	TwAddVarRO(bar, "std", TW_TYPE_BOOL8, &stdShader, " label='Default(8) '");
 	TwAddVarRO(bar, "Too", TW_TYPE_BOOL8, &tooShader, " label='Cartoon(9) '");
 	TwAddVarRO(bar, "bs", TW_TYPE_BOOL8, &bShader, " label='BlinnPhong(0) '");
+
 	TwAddVarRW(bar, "l1", TW_TYPE_DIR3F, &directionalLightDirection, " label='Dir: '");
 
  	TwAddVarRO(bar, "Camera", TW_TYPE_DIR3F, &m_physicsLabCamera->position, " label='Camera Pos: '");

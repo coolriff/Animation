@@ -124,6 +124,8 @@
     <None Include="default.vs" />
     <None Include="diffuse.ps" />
     <None Include="diffuse.vs" />
+    <None Include="Gooch.ps" />
+    <None Include="Gooch.vs" />
     <None Include="Particle.fragmentshader" />
     <None Include="Particle.vertexshader" />
     <None Include="Particles.ps" />
