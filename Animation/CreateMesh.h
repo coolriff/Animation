@@ -16,6 +16,7 @@ public:
 	std::vector<glm::vec3> normals;
 
 	void createCubeMesh();
+	void createBoundingSphereMesh(float radius, int resolution);
 	void createSphereMesh(int numSegments);
 
 };

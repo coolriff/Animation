@@ -58,6 +58,8 @@ PhysicsLab_2::PhysicsLab_2(void)
 	createMesh2 = new CreateMesh();
 	cylinder = new Cylinder(2, 0.5, 0.5, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0),16);
 	cylinderPos = glm::vec3(-4,0,0);
+	boundingSphere = new CreateMesh();
+	boundingSphereBuffer = new ObjectBuffer();
 }
 
 
@@ -93,6 +95,8 @@ void PhysicsLab_2::run(void)
 	m_objectBuffer2->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
 	m_objectBuffer2->LinkBufferToShaderWithNormal(cylinderShader->GetProgramID());
 
+
+
 	//cylinder->generateObjectBuffer(cylinderShader->GetProgramID());
 
 	printf("Total Points for box object %d", cube->m_points.size());
@@ -102,6 +106,10 @@ void PhysicsLab_2::run(void)
 
 
 	do{
+
+
+
+
 		double currentTime = glfwGetTime();
 		double delta = currentTime - lastTime;
 		lastTime = currentTime;
@@ -160,6 +168,8 @@ void PhysicsLab_2::run(void)
 			break;
 		}
 
+
+
 		if (shaderType == STANDARD)
 		{
 			m_physicsLabCamera->computeMatricesFromInputs(window);
@@ -171,6 +181,9 @@ void PhysicsLab_2::run(void)
 			draw(m_objectBuffer->vao,createMesh->vertices.size());
 			update(cube2->GetTransformationMatrix(),m_shader->GetProgramID());
 			draw(m_objectBuffer2->vao,createMesh2->vertices.size());		
+
+			update(cube->GetTransformationMatrix(),m_shader->GetProgramID());
+			drawLine(boundingSphereBuffer->vao,boundingSphere->vertices.size());	
 		}
 
 		if (shaderType == CARTOON)
@@ -215,7 +228,6 @@ void PhysicsLab_2::run(void)
 			cylinderShader->SetDirectionalLight(directionalLightDirection);
 		}
 
-
 		keyControl();
 
 		cube->Update(delta);
@@ -223,6 +235,15 @@ void PhysicsLab_2::run(void)
 		cube->CalculateCentreOfMess(MAX);
 
 		update8VerticesOnCube();
+
+		//get distance from centre mass to boundary point
+		if (!cube->distanceFromCentreMessToPoint)
+		{
+			cube->CalculateDistanceFromCentreOfMessToPoint();
+			boundingSphere->createBoundingSphereMesh(cube->distanceFromCentreMessToPoint,10);
+			boundingSphereBuffer->GenerateVBO(boundingSphere->vertices,boundingSphere->colors,boundingSphere->normals);
+			boundingSphereBuffer->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+		}
 
 		if (useForce)
 		{
@@ -393,7 +414,7 @@ void PhysicsLab_2::initTweakBar()
 
 	TwAddVarRW(bar, "l1", TW_TYPE_DIR3F, &directionalLightDirection, " label='Dir: '");
 
- 	TwAddVarRO(bar, "Camera", TW_TYPE_DIR3F, &m_physicsLabCamera->position, " label='Camera Pos: '");
+ 	TwAddVarRW(bar, "Camera", TW_TYPE_DIR3F, &m_physicsLabCamera->position, " label='Camera Pos: '");
 
 	TwAddVarRO(bar, "boxPoint0", TW_TYPE_DIR3F, &boxPos[0], " label='p0: '");
 	TwAddVarRO(bar, "boxPoint1", TW_TYPE_DIR3F, &boxPos[1], " label='p1: '");
@@ -510,4 +531,13 @@ void PhysicsLab_2::draw(GLuint vao, int size)
 	glDrawArrays(GL_TRIANGLES, 0, size);
 	glBindVertexArray(0);
 }
+
+void PhysicsLab_2::drawLine(GLuint vao, int size)
+{
+	glBindVertexArray(vao);
+	glDrawArrays(GL_LINE_STRIP, 0, size);
+	glBindVertexArray(0);
+}
+
+
 

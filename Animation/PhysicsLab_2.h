@@ -48,6 +48,9 @@ public:
 	glm::vec3 springBeginPos;
 	glm::vec3 springEndPos;
 
+	CreateMesh* boundingSphere;
+	ObjectBuffer* boundingSphereBuffer;
+
 	float directionalLightIntensity;
 	glm::vec3 directionalLightDirection;
 
@@ -86,5 +89,6 @@ public:
 	void inertialTensor();
 	void draw(GLuint vao, int size);
 	void update8VerticesOnCube();
+	void drawLine(GLuint vao, int size);
 };
 

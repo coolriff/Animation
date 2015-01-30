@@ -27,6 +27,7 @@ public:
 	std::vector<glm::vec3> m_points;
 
 	float m_massInverse;
+	float distanceFromCentreMessToPoint;
 
 
 	void Update(float deltaTime);
@@ -60,6 +61,7 @@ public:
 	void ApplyForce(const glm::vec3 &point, const glm::vec3 &f);
 	void updateCurrentVertices(int verticesSize, std::vector<glm::vec3> & vertices);
 	void CalculateCentreOfMess(int verticesSize);
+	void CalculateDistanceFromCentreOfMessToPoint(void);
 };
 
 #endif

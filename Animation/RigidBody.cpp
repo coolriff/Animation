@@ -10,6 +10,8 @@ RigidBody::RigidBody(glm::vec3 &p, glm::quat &o, glm::vec3 &s)
 	m_force = glm::vec3();
 	m_angularMomentum = glm::vec3();
 	m_torque = glm::vec3();
+	distanceFromCentreMessToPoint = NULL;
+
 }
 
 glm::mat4 RigidBody::GetTransformationMatrix()
@@ -107,4 +109,17 @@ void RigidBody::CalculateCentreOfMess(int verticesSize)
 		down += area[i];
 	}
 	centre_of_mess = up/down;
+}
+
+void RigidBody::CalculateDistanceFromCentreOfMessToPoint(void)
+{
+	glm::vec3 boundingPoint = m_points.at(0);
+
+	distanceFromCentreMessToPoint = glm::sqrt(
+		((centre_of_mess.x - boundingPoint.x) * (centre_of_mess.x - boundingPoint.x)) + 
+		((centre_of_mess.y - boundingPoint.y) * (centre_of_mess.y - boundingPoint.y)) + 
+		((centre_of_mess.z - boundingPoint.z) * (centre_of_mess.z - boundingPoint.z))
+		);
+
+	distanceFromCentreMessToPoint = glm::abs(distanceFromCentreMessToPoint);
 }
