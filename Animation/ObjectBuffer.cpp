@@ -127,3 +127,11 @@ void ObjectBuffer::LinkBufferToShaderWithNormal(GLuint shaderProgramID)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
+
+void ObjectBuffer::ChangeColors(const std::vector<glm::vec4> &newColor)
+{
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	glBufferSubData(GL_ARRAY_BUFFER, vSize, cSize, (const GLvoid*)(&newColor[0]));
+}

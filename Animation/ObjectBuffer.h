@@ -29,5 +29,6 @@ public:
 	GLuint GenerateVBO(const std::vector<glm::vec3> & vertices, const std::vector<glm::vec4> & colors , const std::vector<glm::vec3> & normals);
 	void LinkBufferToShader(GLuint shaderProgramID);
 	void LinkBufferToShaderWithNormal(GLuint shaderProgramID);
+	void ChangeColors( const std::vector<glm::vec4> &newColor);
 };
 

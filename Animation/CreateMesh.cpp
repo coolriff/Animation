@@ -216,6 +216,7 @@ void CreateMesh::createBoundingSphereMesh(float radius, int resolution)
 	for (int i=0; i<vertices.size(); i++ )
 	{
 		colors.push_back(glm::vec4(0.85f,  0.85f,  0.85f, 1.0f));
+		newColors.push_back(glm::vec4(1.0f,  0,  0, 1.0f));
 	}
 
 	for(unsigned int i=0; i<vertices.size(); i+=3)

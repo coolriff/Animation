@@ -78,8 +78,6 @@ void PhysicsLab_2::run(void)
 
 	directionalLightDirection = glm::vec3(0, 0, -1);
 
-	
-
 	createMesh->createCubeMesh();
 	m_objectBuffer->GenerateVBO(createMesh->vertices,createMesh->colors,createMesh->normals);
 	m_objectBuffer->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
@@ -243,6 +241,13 @@ void PhysicsLab_2::run(void)
 			boundingSphere->createBoundingSphereMesh(cube->distanceFromCentreMessToPoint,10);
 			boundingSphereBuffer->GenerateVBO(boundingSphere->vertices,boundingSphere->colors,boundingSphere->normals);
 			boundingSphereBuffer->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_5 ) == GLFW_PRESS){
+			boundingSphereBuffer->ChangeColors(boundingSphere->newColors);
+		}
+		if (glfwGetKey(window, GLFW_KEY_6 ) == GLFW_PRESS){
+			boundingSphereBuffer->ChangeColors(boundingSphere->colors);
 		}
 
 		if (useForce)
