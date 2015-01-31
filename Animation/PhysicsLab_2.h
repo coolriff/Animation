@@ -15,7 +15,7 @@
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
 #define MAX 36
-#define MAXOBJECT 20
+#define MAXOBJECT 40
 
 class PhysicsLab_2
 {
@@ -87,5 +87,7 @@ public:
 	void draw(GLuint vao, int size);
 	void update8VerticesOnCube();
 	void drawLine(GLuint vao, int size);
+	void updateInBox();
+	void distanceCheck();
 };
 

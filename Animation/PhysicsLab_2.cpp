@@ -77,9 +77,9 @@ void PhysicsLab_2::run(void)
 
 	for (int i=0; i<MAXOBJECT; i++)
 	{
-		float f1 = -10.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(10.0f-(-10.0f))));
-		float f2 = -10.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(10.0f-(-10.0f))));
-		float f3 = -10.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(10.0f-(-10.0f))));
+		float f1 = -7.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(7.0f-(-7.0f))));
+		float f2 = -7.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(7.0f-(-7.0f))));
+		float f3 = -7.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(7.0f-(-7.0f))));
 
 		cubes[i]->m_position = glm::vec3(f1,f2,f3);
 		cubes[i]->m_orientation = glm::quat();
@@ -180,6 +180,17 @@ void PhysicsLab_2::run(void)
 
 
 
+		updateInBox();
+		if (cubes[0]->distanceFromCentreMessToPoint)
+		{
+			for (int i=0; i<MAXOBJECT; i++)
+			{
+				boundingSphereBuffers[i]->ChangeColors(boundingSpheres[i]->colors);
+			}
+			distanceCheck();
+		}
+
+
 		if (shaderType == STANDARD)
 		{
 			m_physicsLabCamera->computeMatricesFromInputs(window);
@@ -272,10 +283,7 @@ void PhysicsLab_2::run(void)
 			}
 		}
 
-
-		update8VerticesOnCube();
-
-		//get distance from centre mass to boundary point
+		//check distance and change colors
 
 
 		if (glfwGetKey(window, GLFW_KEY_5 ) == GLFW_PRESS){
@@ -330,7 +338,7 @@ void PhysicsLab_2::rotateBody(float x, float y, float z)
 
 void PhysicsLab_2::translateBody(float x, float y, float z)
 {
-	//cube->SetLinearMomentum(12.0f * glm::vec3(x,y,z) * cube->GetMass());
+	cubes[0]->SetLinearMomentum(12.0f * glm::vec3(x,y,z) * cubes[0]->GetMass());
 }
 
 
@@ -544,20 +552,32 @@ void PhysicsLab_2::keyControl()
 // 		cube->SetAngularMomentum(applyForcePoint);
 // 	}
 // 
-// 	if (glfwGetKey(window, GLFW_KEY_X ) == GLFW_PRESS){
-// 		cube->ApplyForce(applyForcePoint,applyForceF);
-// 	}
+	if (glfwGetKey(window, GLFW_KEY_X ) == GLFW_PRESS)
+	{
+		
+		for (int i=0; i<MAXOBJECT; i++)
+		{
+			float p1 = -1.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.5f-(-1.5f))));
+			float p2 = -1.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.5f-(-1.5f))));
+			float p3 = -1.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.5f-(-1.5f))));
+
+			float f1 = -200.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(200.0f-(-200.0f))));
+			float f2 = -200.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(200.0f-(-200.0f))));
+			float f3 = -200.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(200.0f-(-200.0f))));
+
+			cubes[i]->ApplyForce(glm::vec3(p1,p2,p3),glm::vec3(f1,f2,f3));
+			cubes[i]->SetOrientation(cubes[i]->GetOrientation() * glm::quat(glm::vec3(p1,p2,p3)));
+			//cubes[i]->SetLinearMomentum(12.0f * glm::vec3(p1,p2,p3) * cubes[i]->GetMass());
+		}
+	}
 
 	//dt
-	if (glfwGetKey(window, GLFW_KEY_SPACE ) == GLFW_PRESS){
-		if (stopTime == false)
-		{
-			stopTime = true;
-		}
-		else
-		{
-			stopTime = false;
-		}
+	if (glfwGetKey(window, GLFW_KEY_P ) == GLFW_PRESS){
+		stopTime = true;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_O ) == GLFW_PRESS){
+		stopTime = false;
 	}
 
 	// use force
@@ -586,6 +606,66 @@ void PhysicsLab_2::drawLine(GLuint vao, int size)
 	glBindVertexArray(vao);
 	glDrawArrays(GL_LINE_STRIP, 0, size);
 	glBindVertexArray(0);
+}
+
+void PhysicsLab_2::updateInBox()
+{
+	for (int i=0; i<MAXOBJECT; i++)
+	{
+		if (cubes[i]->m_position.x < -8)
+		{
+			cubes[i]->m_linearMomentum.x *= -1.0f;
+		}
+		if (cubes[i]->m_position.x > 8)
+		{
+			cubes[i]->m_linearMomentum.x *= -1.0f;
+		}
+
+		if (cubes[i]->m_position.y < -8)
+		{
+			cubes[i]->m_linearMomentum.y *= -1.0f;
+		}
+		if (cubes[i]->m_position.y > 8)
+		{
+			cubes[i]->m_linearMomentum.y *= -1.0f;
+		}
+
+		if (cubes[i]->m_position.z < -8)
+		{
+			cubes[i]->m_linearMomentum.z *= -1.0f;
+		}
+		if (cubes[i]->m_position.z > 8)
+		{
+			cubes[i]->m_linearMomentum.z *= -1.0f;
+		}
+	}
+}
+
+void PhysicsLab_2::distanceCheck()
+{
+	for (int i=0; i<MAXOBJECT; i++)
+	{
+		for (int j=0; j<MAXOBJECT; j++)
+		{
+			if (i != j)
+			{
+				float dis = glm::sqrt(
+					((cubes[i]->centre_of_mess.x - cubes[j]->centre_of_mess.x) * (cubes[i]->centre_of_mess.x - cubes[j]->centre_of_mess.x)) + 
+					((cubes[i]->centre_of_mess.y - cubes[j]->centre_of_mess.y) * (cubes[i]->centre_of_mess.y - cubes[j]->centre_of_mess.y)) + 
+					((cubes[i]->centre_of_mess.z - cubes[j]->centre_of_mess.z) * (cubes[i]->centre_of_mess.z - cubes[j]->centre_of_mess.z))
+					);
+
+				dis = glm::abs(dis);
+
+				if (dis < (cubes[i]->distanceFromCentreMessToPoint + cubes[j]->distanceFromCentreMessToPoint))
+				{
+					boundingSphereBuffers[i]->ChangeColors(boundingSpheres[i]->newColors);
+					boundingSphereBuffers[j]->ChangeColors(boundingSpheres[j]->newColors);
+					//stopTime = true;
+				}
+			}
+		}
+	}
 }
 
 

@@ -8,7 +8,9 @@ layout (location = 4) in vec4 Weights;
 
 out vec2 TexCoord0;
 out vec3 Normal0;      
-out vec3 WorldPos0;                                                                                                                             
+out vec3 WorldPos0; 
+in vec4 vColor;
+out vec4 color;                                                                                                                            
 
 const int MAX_BONES = 100;
 
@@ -20,6 +22,7 @@ uniform mat4 gBones[MAX_BONES];
 
 void main()
 {       
+	color = vColor;
     mat4 BoneTransform = gBones[BoneIDs[0]] * Weights[0];
     BoneTransform     += gBones[BoneIDs[1]] * Weights[1];
     BoneTransform     += gBones[BoneIDs[2]] * Weights[2];

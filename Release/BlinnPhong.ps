@@ -1,0 +1,25 @@
+#version 330       
+
+uniform vec3 diffuseDirection;
+
+in vec3 fPosition;
+in vec4 fColor;
+in vec3 fNormal;
+
+void main() 
+{                     
+	float nDot = max(0.0, dot(normalize(fNormal), -diffuseDirection));
+
+	vec4 ambientC = vec4(vec3(0.5,0.5,0.5), 1.0f) * 0.8;
+	vec4 diffuseC = vec4(vec3(0.5,0.5,0.5), 1.0f) * 0.6 * nDot;	
+
+	if(nDot > 0.0f)
+	{
+		vec3 H = normalize(normalize(vec3(0,0,10) - fPosition) - diffuseDirection);
+		vec4 specularC = vec4(vec3(0.5,0.5,0.5), 1.0f) * 0.6 * max(0.0, pow(dot(normalize(fNormal), H), 0.5));
+
+		diffuseC += specularC;
+	}
+
+	gl_FragColor =  fColor * (ambientC + diffuseC);
+}

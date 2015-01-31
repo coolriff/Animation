@@ -1,0 +1,28 @@
+#version 330
+uniform vec3 diffuseDirection;
+
+in vec3 fPosition;
+in vec4 fColor;
+in vec3 fNormal;
+
+out vec4 resultingColor;
+
+void main()
+{
+	vec3 normalVector = normalize(o_normal);
+
+	vec3 lightVector = normalize(o_lightVector - fPosition);
+
+	float diffuseLighting = dot(lightVector, normalVector);
+
+	float interpolationValue = (1.0 + diffuseLighting)/2;
+
+	vec3 coolColorMod = vec3(0.62, 0.58, 1) +  vec3(1, 1, 1) * 0.25;
+
+	vec3 warmColorMod = vec3(1, 0.29, 0.29); + vec3(1, 1, 1) * 0.5;
+
+	vec3 colorOut = mix(coolColorMod, warmColorMod, diffuseLighting);
+
+
+    gl_FragColor  = vec4(min(kfinal, 1.0), 1.0);
+}

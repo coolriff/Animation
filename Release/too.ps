@@ -1,0 +1,22 @@
+#version 330
+
+uniform vec3 diffuseDirection;
+in vec4 fColor;
+in vec3 fNormal;
+
+void main() 
+{
+	float intensity = dot(normalize(fNormal), -diffuseDirection);
+	vec4 outputColor = vec4(1.0,1.0,1.0,1.0);
+
+	if (intensity > 0.95)
+		outputColor *= 1.0f;
+	else if (intensity > 0.5)
+		outputColor *= 0.6f;
+	else if (intensity > 0.25)
+		outputColor *= 0.4f;
+	else
+		outputColor *= 0.2f;
+
+	gl_FragColor = outputColor;
+}
