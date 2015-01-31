@@ -3,9 +3,7 @@
 // #define WINDOW_WIDTH 1440
 // #define WINDOW_HIGH 1080
 
-#define WINDOW_WIDTH 1200
-#define WINDOW_HIGH 900
-#define MAX 36
+
 
 //typedef void (* GLFWmousebuttonfun)(GLFWwindow*,int,int,int);
 void MouseButtonCB( GLFWwindow*,int button ,int action ,int mods)
@@ -38,13 +36,9 @@ PhysicsLab_2::PhysicsLab_2(void)
 	m_shader = new Shader();
 	too_shader = new Shader();
 	b_shader = new Shader();
-	cylinderShader = new Shader();
 	m_objectBuffer = new ObjectBuffer();
 	m_objectBuffer2 = new ObjectBuffer();
 	m_physicsLabCamera = new PhysicsLabCamera();
-	cube = new Cube(glm::vec3(0,0,0), glm::quat());
-	cube2 = new Cube(glm::vec3(0,3,0), glm::quat());
-	centre_of_mess = glm::vec3(0,0,0);
 	stopTime = false;
 	useForce = false;
 	applyForcePoint = glm::vec3(0,0,0);
@@ -54,12 +48,15 @@ PhysicsLab_2::PhysicsLab_2(void)
 	bShader = false;
 	MMShader = false;
 	shaderType = STANDARD;
-	createMesh = new CreateMesh();
-	createMesh2 = new CreateMesh();
-	cylinder = new Cylinder(2, 0.5, 0.5, glm::vec4(1.0, 0.1, 0.1, 1.0), glm::vec4(0.1, 0.1, 1.0, 1.0),16);
-	cylinderPos = glm::vec3(-4,0,0);
-	boundingSphere = new CreateMesh();
-	boundingSphereBuffer = new ObjectBuffer();
+
+	for (int i=0; i<MAXOBJECT; i++)
+	{
+		cubes[i] = new Cube();
+		cubesMesh[i] = new CreateMesh();
+		cubesBuffer[i] = new ObjectBuffer();
+		boundingSpheres[i] = new CreateMesh();
+		boundingSphereBuffers[i] = new ObjectBuffer();
+	}
 }
 
 
@@ -78,36 +75,51 @@ void PhysicsLab_2::run(void)
 
 	directionalLightDirection = glm::vec3(0, 0, -1);
 
-	createMesh->createCubeMesh();
-	m_objectBuffer->GenerateVBO(createMesh->vertices,createMesh->colors,createMesh->normals);
-	m_objectBuffer->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
-	m_objectBuffer->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
-	m_objectBuffer->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
-	m_objectBuffer->LinkBufferToShaderWithNormal(cylinderShader->GetProgramID());
+	for (int i=0; i<MAXOBJECT; i++)
+	{
+		float f1 = -10.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(10.0f-(-10.0f))));
+		float f2 = -10.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(10.0f-(-10.0f))));
+		float f3 = -10.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(10.0f-(-10.0f))));
 
+		cubes[i]->m_position = glm::vec3(f1,f2,f3);
+		cubes[i]->m_orientation = glm::quat();
+	}
 
-	createMesh2->createCubeMesh();
-	m_objectBuffer2->GenerateVBO(createMesh2->vertices,createMesh2->colors,createMesh2->normals);
-	m_objectBuffer2->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
-	m_objectBuffer2->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
-	m_objectBuffer2->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
-	m_objectBuffer2->LinkBufferToShaderWithNormal(cylinderShader->GetProgramID());
+	for (int i=0; i<MAXOBJECT; i++)
+	{
+		cubesMesh[i]->createCubeMesh();
+		cubesBuffer[i]->GenerateVBO(cubesMesh[i]->vertices, cubesMesh[i]->colors, cubesMesh[i]->normals);
+		cubesBuffer[i]->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+		cubesBuffer[i]->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
+		cubesBuffer[i]->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
+	}
+
+// 	createMesh->createCubeMesh();
+// 	m_objectBuffer->GenerateVBO(createMesh->vertices,createMesh->colors,createMesh->normals);
+// 	m_objectBuffer->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
+// 	m_objectBuffer->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+// 	m_objectBuffer->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
+// 	m_objectBuffer->LinkBufferToShaderWithNormal(cylinderShader->GetProgramID());
+// 
+// 
+// 	createMesh2->createCubeMesh();
+// 	m_objectBuffer2->GenerateVBO(createMesh2->vertices,createMesh2->colors,createMesh2->normals);
+// 	m_objectBuffer2->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
+// 	m_objectBuffer2->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+// 	m_objectBuffer2->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
+// 	m_objectBuffer2->LinkBufferToShaderWithNormal(cylinderShader->GetProgramID());
 
 
 
 	//cylinder->generateObjectBuffer(cylinderShader->GetProgramID());
 
-	printf("Total Points for box object %d", cube->m_points.size());
+	//printf("Total Points for box object %d", cube->m_points.size());
 
 	double lastTime = glfwGetTime();
 
 
 
 	do{
-
-
-
-
 		double currentTime = glfwGetTime();
 		double delta = currentTime - lastTime;
 		lastTime = currentTime;
@@ -162,7 +174,7 @@ void PhysicsLab_2::run(void)
 			glUseProgram(b_shader->GetProgramID());
 			break;
 		case PhysicsLab_2::NUMBER4:
-			glUseProgram(cylinderShader->GetProgramID());
+			//glUseProgram(cylinderShader->GetProgramID());
 			break;
 		}
 
@@ -175,13 +187,16 @@ void PhysicsLab_2::run(void)
 			GLuint viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
 			GLuint projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
 			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-			update(cube->GetTransformationMatrix(),m_shader->GetProgramID());
-			draw(m_objectBuffer->vao,createMesh->vertices.size());
-			update(cube2->GetTransformationMatrix(),m_shader->GetProgramID());
-			draw(m_objectBuffer2->vao,createMesh2->vertices.size());		
 
-			update(cube->GetTransformationMatrix(),m_shader->GetProgramID());
-			drawLine(boundingSphereBuffer->vao,boundingSphere->vertices.size());	
+			for (int i=0; i<MAXOBJECT; i++)
+			{
+				update(cubes[i]->GetTransformationMatrix(),m_shader->GetProgramID());
+				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
+
+				update(cubes[i]->GetTransformationMatrix(),m_shader->GetProgramID());
+				drawLine(boundingSphereBuffers[i]->vao, boundingSpheres[i]->vertices.size());
+			}
+
 		}
 
 		if (shaderType == CARTOON)
@@ -191,11 +206,17 @@ void PhysicsLab_2::run(void)
 			GLuint viewLoc = glGetUniformLocation(too_shader->GetProgramID(), "view");
 			GLuint projLoc = glGetUniformLocation(too_shader->GetProgramID(), "projection");
 			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-			update(cube->GetTransformationMatrix(),too_shader->GetProgramID());
-			draw(m_objectBuffer->vao,createMesh->vertices.size());
-			update(cube2->GetTransformationMatrix(),too_shader->GetProgramID());
-			draw(m_objectBuffer2->vao,createMesh2->vertices.size());	
+
 			too_shader->SetDirectionalLight(directionalLightDirection);
+
+			for (int i=0; i<MAXOBJECT; i++)
+			{
+				update(cubes[i]->GetTransformationMatrix(),m_shader->GetProgramID());
+				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
+
+				update(cubes[i]->GetTransformationMatrix(),m_shader->GetProgramID());
+				drawLine(boundingSphereBuffers[i]->vao, boundingSpheres[i]->vertices.size());
+			}
 		}
 
 		if (shaderType == WHATEVER)
@@ -205,54 +226,77 @@ void PhysicsLab_2::run(void)
 			GLuint viewLoc = glGetUniformLocation(b_shader->GetProgramID(), "view");
 			GLuint projLoc = glGetUniformLocation(b_shader->GetProgramID(), "projection");
 			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-			update(cube->GetTransformationMatrix(),b_shader->GetProgramID());
-			draw(m_objectBuffer->vao,createMesh->vertices.size());
-			update(cube2->GetTransformationMatrix(),b_shader->GetProgramID());
-			draw(m_objectBuffer2->vao,createMesh2->vertices.size());	
+
 			b_shader->SetDirectionalLight(directionalLightDirection);
+
+			for (int i=0; i<MAXOBJECT; i++)
+			{
+				update(cubes[i]->GetTransformationMatrix(),m_shader->GetProgramID());
+				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
+
+				update(cubes[i]->GetTransformationMatrix(),m_shader->GetProgramID());
+				drawLine(boundingSphereBuffers[i]->vao, boundingSpheres[i]->vertices.size());
+			}
 		}
 
 		if (shaderType == NUMBER4)
 		{
-			m_physicsLabCamera->computeMatricesFromInputs(window);
-			GLuint modelLoc = glGetUniformLocation(cylinderShader->GetProgramID(), "model");
-			GLuint viewLoc = glGetUniformLocation(cylinderShader->GetProgramID(), "view");
-			GLuint projLoc = glGetUniformLocation(cylinderShader->GetProgramID(), "projection");
-			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-			update(cube->GetTransformationMatrix(),cylinderShader->GetProgramID());
-			draw(m_objectBuffer->vao,createMesh->vertices.size());
-			update(cube2->GetTransformationMatrix(),cylinderShader->GetProgramID());
-			draw(m_objectBuffer2->vao,createMesh2->vertices.size());	
-			cylinderShader->SetDirectionalLight(directionalLightDirection);
+// 			m_physicsLabCamera->computeMatricesFromInputs(window);
+// 			GLuint modelLoc = glGetUniformLocation(cylinderShader->GetProgramID(), "model");
+// 			GLuint viewLoc = glGetUniformLocation(cylinderShader->GetProgramID(), "view");
+// 			GLuint projLoc = glGetUniformLocation(cylinderShader->GetProgramID(), "projection");
+// 			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+// 			update(cube->GetTransformationMatrix(),cylinderShader->GetProgramID());
+// 			draw(m_objectBuffer->vao,createMesh->vertices.size());
+// 			update(cube2->GetTransformationMatrix(),cylinderShader->GetProgramID());
+// 			draw(m_objectBuffer2->vao,createMesh2->vertices.size());	
+// 			cylinderShader->SetDirectionalLight(directionalLightDirection);
 		}
 
 		keyControl();
 
-		cube->Update(delta);
-		cube->updateCurrentVertices(MAX,createMesh->vertices);
-		cube->CalculateCentreOfMess(MAX);
+		for (int i=0; i<MAXOBJECT; i++)
+		{
+			cubes[i]->Update(delta);
+			cubes[i]->updateCurrentVertices(MAX,cubesMesh[i]->vertices);
+			cubes[i]->CalculateCentreOfMess(MAX);
+
+			if (!cubes[i]->distanceFromCentreMessToPoint)
+			{
+				cubes[i]->CalculateDistanceFromCentreOfMessToPoint();
+				boundingSpheres[i]->createBoundingSphereMesh(cubes[i]->distanceFromCentreMessToPoint, 10);
+				boundingSphereBuffers[i]->GenerateVBO(boundingSpheres[i]->vertices,boundingSpheres[i]->colors,boundingSpheres[i]->normals);
+				boundingSphereBuffers[i]->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+				boundingSphereBuffers[i]->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
+				boundingSphereBuffers[i]->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
+			}
+		}
+
 
 		update8VerticesOnCube();
 
 		//get distance from centre mass to boundary point
-		if (!cube->distanceFromCentreMessToPoint)
-		{
-			cube->CalculateDistanceFromCentreOfMessToPoint();
-			boundingSphere->createBoundingSphereMesh(cube->distanceFromCentreMessToPoint,10);
-			boundingSphereBuffer->GenerateVBO(boundingSphere->vertices,boundingSphere->colors,boundingSphere->normals);
-			boundingSphereBuffer->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
-		}
+
 
 		if (glfwGetKey(window, GLFW_KEY_5 ) == GLFW_PRESS){
-			boundingSphereBuffer->ChangeColors(boundingSphere->newColors);
+			for (int i=0; i<MAXOBJECT; i++)
+			{
+				boundingSphereBuffers[i]->ChangeColors(boundingSpheres[i]->newColors);
+			}
 		}
 		if (glfwGetKey(window, GLFW_KEY_6 ) == GLFW_PRESS){
-			boundingSphereBuffer->ChangeColors(boundingSphere->colors);
+			for (int i=0; i<MAXOBJECT; i++)
+			{
+				boundingSphereBuffers[i]->ChangeColors(boundingSpheres[i]->colors);
+			}
 		}
 
 		if (useForce)
 		{
-			cube->ApplyForce(cube->GetPosition(),glm::vec3(0,-9.81f,0));
+			for (int i=0; i<MAXOBJECT; i++)
+			{
+				cubes[i]->ApplyForce(cubes[i]->GetPosition(),glm::vec3(0,-9.81f,0));
+			}
 		}
 
 		TwDraw();
@@ -272,21 +316,21 @@ void PhysicsLab_2::run(void)
 
 void PhysicsLab_2::update8VerticesOnCube()
 {
-	for (int i=0; i<cube->m_points.size(); i++)
-	{
-		boxPos[i] = cube->m_points.at(i);
-	}
+// 	for (int i=0; i<cube->m_points.size(); i++)
+// 	{
+// 		boxPos[i] = cube->m_points.at(i);
+// 	}
 }
 
 void PhysicsLab_2::rotateBody(float x, float y, float z)
 {
  	glm::quat q(glm::vec3(x, y, z));
- 	cube->SetOrientation(cube->GetOrientation() * q);
+ 	//cube->SetOrientation(cube->GetOrientation() * q);
 }
 
 void PhysicsLab_2::translateBody(float x, float y, float z)
 {
-	cube->SetLinearMomentum(12.0f * glm::vec3(x,y,z) * cube->GetMass());
+	//cube->SetLinearMomentum(12.0f * glm::vec3(x,y,z) * cube->GetMass());
 }
 
 
@@ -323,15 +367,15 @@ void PhysicsLab_2::initShaders()
 	printf("fragmentShaderID is %d\n",fragmentShaderID_3);
 	printf("shaderProgramID is %d\n",b_shader->GetProgramID());
 
-	std::string vertexShaderSourceCodeCy,fragmentShaderSourceCodeCy;
-	cylinderShader->readShaderFile("Gooch.vs",vertexShaderSourceCodeCy);
-	cylinderShader->readShaderFile("Gooch.ps",fragmentShaderSourceCodeCy);
-	GLuint vertexShaderIDCy = cylinderShader->makeShader(vertexShaderSourceCodeCy.c_str(), GL_VERTEX_SHADER);
-	GLuint fragmentShaderIDCy = cylinderShader->makeShader(fragmentShaderSourceCodeCy.c_str(), GL_FRAGMENT_SHADER);
-	cylinderShader->makeShaderProgram(vertexShaderIDCy,fragmentShaderIDCy);
-	printf("vertexShaderID is %d\n",vertexShaderIDCy);
-	printf("fragmentShaderID is %d\n",fragmentShaderIDCy);
-	printf("shaderProgramID is %d\n",cylinderShader->GetProgramID());
+// 	std::string vertexShaderSourceCodeCy,fragmentShaderSourceCodeCy;
+// 	cylinderShader->readShaderFile("Gooch.vs",vertexShaderSourceCodeCy);
+// 	cylinderShader->readShaderFile("Gooch.ps",fragmentShaderSourceCodeCy);
+// 	GLuint vertexShaderIDCy = cylinderShader->makeShader(vertexShaderSourceCodeCy.c_str(), GL_VERTEX_SHADER);
+// 	GLuint fragmentShaderIDCy = cylinderShader->makeShader(fragmentShaderSourceCodeCy.c_str(), GL_FRAGMENT_SHADER);
+// 	cylinderShader->makeShaderProgram(vertexShaderIDCy,fragmentShaderIDCy);
+// 	printf("vertexShaderID is %d\n",vertexShaderIDCy);
+// 	printf("fragmentShaderID is %d\n",fragmentShaderIDCy);
+// 	printf("shaderProgramID is %d\n",cylinderShader->GetProgramID());
 }
 
 void PhysicsLab_2::setupGlfwGlew()
@@ -421,15 +465,15 @@ void PhysicsLab_2::initTweakBar()
 
  	TwAddVarRW(bar, "Camera", TW_TYPE_DIR3F, &m_physicsLabCamera->position, " label='Camera Pos: '");
 
-	TwAddVarRO(bar, "boxPoint0", TW_TYPE_DIR3F, &boxPos[0], " label='p0: '");
-	TwAddVarRO(bar, "boxPoint1", TW_TYPE_DIR3F, &boxPos[1], " label='p1: '");
-	TwAddVarRO(bar, "boxPoint2", TW_TYPE_DIR3F, &boxPos[2], " label='p2: '");
-	TwAddVarRO(bar, "boxPoint3", TW_TYPE_DIR3F, &boxPos[3], " label='p3: '");
-	TwAddVarRO(bar, "boxPoint4", TW_TYPE_DIR3F, &boxPos[4], " label='p4: '");
-	TwAddVarRO(bar, "boxPoint5", TW_TYPE_DIR3F, &boxPos[5], " label='p5: '");
-	TwAddVarRO(bar, "boxPoint6", TW_TYPE_DIR3F, &boxPos[6], " label='p6: '");
-	TwAddVarRO(bar, "boxPoint7", TW_TYPE_DIR3F, &boxPos[7], " label='p7: '");
-	TwAddVarRO(bar, "cmass", TW_TYPE_DIR3F, &cube->centre_of_mess, " label='centre of mess: '");
+// 	TwAddVarRO(bar, "boxPoint0", TW_TYPE_DIR3F, &boxPos[0], " label='p0: '");
+// 	TwAddVarRO(bar, "boxPoint1", TW_TYPE_DIR3F, &boxPos[1], " label='p1: '");
+// 	TwAddVarRO(bar, "boxPoint2", TW_TYPE_DIR3F, &boxPos[2], " label='p2: '");
+// 	TwAddVarRO(bar, "boxPoint3", TW_TYPE_DIR3F, &boxPos[3], " label='p3: '");
+// 	TwAddVarRO(bar, "boxPoint4", TW_TYPE_DIR3F, &boxPos[4], " label='p4: '");
+// 	TwAddVarRO(bar, "boxPoint5", TW_TYPE_DIR3F, &boxPos[5], " label='p5: '");
+// 	TwAddVarRO(bar, "boxPoint6", TW_TYPE_DIR3F, &boxPos[6], " label='p6: '");
+// 	TwAddVarRO(bar, "boxPoint7", TW_TYPE_DIR3F, &boxPos[7], " label='p7: '");
+// 	TwAddVarRO(bar, "cmass", TW_TYPE_DIR3F, &cube->centre_of_mess, " label='centre of mess: '");
 	TwAddVarRW(bar, "force", TW_TYPE_DIR3F, &applyForcePoint, " label='Force Pos: '");
 	TwAddVarRW(bar, "forceD", TW_TYPE_DIR3F, &applyForceF, " label='Force Dir: '");
 }
@@ -482,27 +526,27 @@ void PhysicsLab_2::keyControl()
 		translateBody(0.0f, 0.0f, 0.1f);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_1 ) == GLFW_PRESS){
-		cube->SetAngularMomentum(glm::vec3(1,0,0));
-	}
-	if (glfwGetKey(window, GLFW_KEY_2 ) == GLFW_PRESS){
-		cube->SetAngularMomentum(glm::vec3(0,1,0));
-	}
-	if (glfwGetKey(window, GLFW_KEY_3 ) == GLFW_PRESS){
-		cube->SetAngularMomentum(glm::vec3(0,0,1));
-	}
-	if (glfwGetKey(window, GLFW_KEY_4 ) == GLFW_PRESS){
-		cube->SetAngularMomentum(glm::vec3(0,0,0));
-	}
-
-	
-	if (glfwGetKey(window, GLFW_KEY_Z ) == GLFW_PRESS){
-		cube->SetAngularMomentum(applyForcePoint);
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_X ) == GLFW_PRESS){
-		cube->ApplyForce(applyForcePoint,applyForceF);
-	}
+// 	if (glfwGetKey(window, GLFW_KEY_1 ) == GLFW_PRESS){
+// 		cube->SetAngularMomentum(glm::vec3(1,0,0));
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_2 ) == GLFW_PRESS){
+// 		cube->SetAngularMomentum(glm::vec3(0,1,0));
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_3 ) == GLFW_PRESS){
+// 		cube->SetAngularMomentum(glm::vec3(0,0,1));
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_4 ) == GLFW_PRESS){
+// 		cube->SetAngularMomentum(glm::vec3(0,0,0));
+// 	}
+// 
+// 	
+// 	if (glfwGetKey(window, GLFW_KEY_Z ) == GLFW_PRESS){
+// 		cube->SetAngularMomentum(applyForcePoint);
+// 	}
+// 
+// 	if (glfwGetKey(window, GLFW_KEY_X ) == GLFW_PRESS){
+// 		cube->ApplyForce(applyForcePoint,applyForceF);
+// 	}
 
 	//dt
 	if (glfwGetKey(window, GLFW_KEY_SPACE ) == GLFW_PRESS){

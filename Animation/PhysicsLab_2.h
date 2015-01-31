@@ -12,7 +12,10 @@
 #include "Sphere.h"
 #include "Cylinder.h"
 
-
+#define WINDOW_WIDTH 1200
+#define WINDOW_HIGH 900
+#define MAX 36
+#define MAXOBJECT 20
 
 class PhysicsLab_2
 {
@@ -22,34 +25,28 @@ public:
 
 	GLFWwindow* window;
 
-	CreateMesh* createMesh;
-	CreateMesh* createMesh2;
+// 	std::vector<Cube*> cubes;
+// 	std::vector<CreateMesh*> cubesMesh;
+// 	std::vector<ObjectBuffer*> cubesBuffer;
+// 	std::vector<CreateMesh*> boundingSpheres;
+// 	std::vector<ObjectBuffer*> boundingSphereBuffers;
+
+	Cube* cubes[MAXOBJECT];
+	CreateMesh* cubesMesh[MAXOBJECT];
+	ObjectBuffer* cubesBuffer[MAXOBJECT];
+	CreateMesh* boundingSpheres[MAXOBJECT];
+	ObjectBuffer* boundingSphereBuffers[MAXOBJECT];
+
 	Shader* m_shader;
 	Shader* too_shader;
 	Shader* b_shader;
 	ObjectBuffer* m_objectBuffer;
 	ObjectBuffer* m_objectBuffer2;
 	PhysicsLabCamera* m_physicsLabCamera;
-	Cube* cube;
-	Cube* cube2;
-	Sphere* sphere;
-	Cylinder* cylinder;
 
 	glm::mat4 M;
-	glm::vec3 bp[36];
-	glm::vec3 boxPos[8];
-	glm::vec3 centre_of_mess;
 	glm::vec3 applyForcePoint;
 	glm::vec3 applyForceF;
-
-	glm::vec3 cylinderPos;
-	Shader* cylinderShader;
-
-	glm::vec3 springBeginPos;
-	glm::vec3 springEndPos;
-
-	CreateMesh* boundingSphere;
-	ObjectBuffer* boundingSphereBuffer;
 
 	float directionalLightIntensity;
 	glm::vec3 directionalLightDirection;
