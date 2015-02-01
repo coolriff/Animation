@@ -105,11 +105,7 @@ void PhysicsLab_2::run(void)
 		AABBBuffers[i]->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
 	}
 
-
-
 	double lastTime = glfwGetTime();
-
-
 
 	do{
 		double currentTime = glfwGetTime();
@@ -172,7 +168,7 @@ void PhysicsLab_2::run(void)
 
 		updateInBox();
 
-		//20%
+		//ball detecction
 		if (shaderType == STANDARD)
 		{
 			m_physicsLabCamera->computeMatricesFromInputs(window);
@@ -203,6 +199,7 @@ void PhysicsLab_2::run(void)
 
 		}
 
+		//AABB without SWEEP AND PRUNE
 		if (shaderType == CARTOON)
 		{
 			m_physicsLabCamera->computeMatricesFromInputs(window);
@@ -213,16 +210,28 @@ void PhysicsLab_2::run(void)
 
 			too_shader->SetDirectionalLight(directionalLightDirection);
 
+			UpdatingAABBMaxMin();
+
 			for (int i=0; i<MAXOBJECT; i++)
 			{
-				update(cubes[i]->GetTransformationMatrix(),m_shader->GetProgramID());
+				update(cubes[i]->GetTransformationMatrix(),too_shader->GetProgramID());
 				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
 
-				update(cubes[i]->GetTransformationMatrix(),m_shader->GetProgramID());
-				drawLine(boundingSphereBuffers[i]->vao, boundingSpheres[i]->vertices.size());
+				glm::mat4 tempPos = glm::mat4(1);
+				tempPos[3][0] = cubes[i]->m_position.x;
+				tempPos[3][1] = cubes[i]->m_position.y;
+				tempPos[3][2] = cubes[i]->m_position.z;
+
+				glm::mat4 r = glm::toMat4(glm::quat());
+
+				glm::mat4 tempScale = glm::scale(glm::vec3(cubes[i]->maxAABBx  * 2,cubes[i]->maxAABBy * 2,cubes[i]->maxAABBz * 2));
+
+				update((tempPos * r * tempScale),too_shader->GetProgramID());
+				drawLine(AABBBuffers[i]->vao, AABBMeshs[i]->vertices.size());
 			}
 		}
 
+		//AABB with SWEEP AND PRUNE
 		if (shaderType == WHATEVER)
 		{
 			m_physicsLabCamera->computeMatricesFromInputs(window);
@@ -237,6 +246,12 @@ void PhysicsLab_2::run(void)
 
 			for (int i=0; i<MAXOBJECT; i++)
 			{
+				AABBBuffers[i]->ChangeColors(AABBMeshs[i]->newColorsAABB);
+			}
+			computAABBOverLap();
+
+			for (int i=0; i<MAXOBJECT; i++)
+			{
 				update(cubes[i]->GetTransformationMatrix(),b_shader->GetProgramID());
 				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
 
@@ -245,11 +260,11 @@ void PhysicsLab_2::run(void)
 				tempPos[3][1] = cubes[i]->m_position.y;
 				tempPos[3][2] = cubes[i]->m_position.z;
 
-				//float tempF = cubes[i]->distanceFromCentreMessToPoint * 2;
+				glm::mat4 r = glm::toMat4(glm::quat());
 
 				glm::mat4 tempScale = glm::scale(glm::vec3(cubes[i]->maxAABBx  * 2,cubes[i]->maxAABBy * 2,cubes[i]->maxAABBz * 2));
 
-				update((tempPos * glm::mat4(1) * tempScale),b_shader->GetProgramID());
+				update((tempPos * r * tempScale),b_shader->GetProgramID());
 				drawLine(AABBBuffers[i]->vao, AABBMeshs[i]->vertices.size());
 			}
 		}
@@ -284,6 +299,7 @@ void PhysicsLab_2::run(void)
 				boundingSphereBuffers[i]->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
 				boundingSphereBuffers[i]->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
 				boundingSphereBuffers[i]->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
+				//printf("%f",cubes[i]->distanceFromCentreMessToPoint);
 			}
 		}
 
@@ -360,8 +376,8 @@ void PhysicsLab_2::initShaders()
 	printf("shaderProgramID is %d\n",m_shader->GetProgramID());
 
 	std::string vertexShaderSourceCode_2,fragmentShaderSourceCode_2;
-	too_shader->readShaderFile("too.vs",vertexShaderSourceCode_2);
-	too_shader->readShaderFile("too.ps",fragmentShaderSourceCode_2);
+	too_shader->readShaderFile("BlinnPhong.vs",vertexShaderSourceCode_2);
+	too_shader->readShaderFile("BlinnPhong.ps",fragmentShaderSourceCode_2);
 	GLuint vertexShaderID_2 = too_shader->makeShader(vertexShaderSourceCode_2.c_str(), GL_VERTEX_SHADER);
 	GLuint fragmentShaderID_2 = too_shader->makeShader(fragmentShaderSourceCode_2.c_str(), GL_FRAGMENT_SHADER);
 	too_shader->makeShaderProgram(vertexShaderID_2,fragmentShaderID_2);
@@ -519,51 +535,33 @@ void PhysicsLab_2::keyControl()
 	}
 
 	//transfer
+	if (glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS){
+		for (int i=0; i<MAXOBJECT; i++)
+		{
+			cubes[i]->SetAngularMomentum(glm::vec3(0.1f,0,0));
+		}
+	}
 	if (glfwGetKey(window, GLFW_KEY_R ) == GLFW_PRESS){
-		translateBody(-0.1f, 0.0f, 0.0f);
+		for (int i=0; i<MAXOBJECT; i++)
+		{
+			cubes[i]->SetAngularMomentum(glm::vec3(0,0.1f,0));
+		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_T ) == GLFW_PRESS){
-		translateBody(0.1f, 0.0f, 0.0f);
-	}
-	if (glfwGetKey(window, GLFW_KEY_F ) == GLFW_PRESS){
-		translateBody(0.0f, -0.1f, 0.0f);
-	}
-	if (glfwGetKey(window, GLFW_KEY_G ) == GLFW_PRESS){
-		translateBody(0.0f, 0.1f, 0.0f);
-	}
-	if (glfwGetKey(window, GLFW_KEY_V ) == GLFW_PRESS){
-		translateBody(0.0f, 0.0f, -0.1f);
-	}
-	if (glfwGetKey(window, GLFW_KEY_B ) == GLFW_PRESS){
-		translateBody(0.0f, 0.0f, 0.1f);
+		for (int i=0; i<MAXOBJECT; i++)
+		{
+			cubes[i]->SetAngularMomentum(glm::vec3(0,0,0.1f));
+		}
 	}
 
-// 	if (glfwGetKey(window, GLFW_KEY_1 ) == GLFW_PRESS){
-// 		cube->SetAngularMomentum(glm::vec3(1,0,0));
-// 	}
-// 	if (glfwGetKey(window, GLFW_KEY_2 ) == GLFW_PRESS){
-// 		cube->SetAngularMomentum(glm::vec3(0,1,0));
-// 	}
-// 	if (glfwGetKey(window, GLFW_KEY_3 ) == GLFW_PRESS){
-// 		cube->SetAngularMomentum(glm::vec3(0,0,1));
-// 	}
-// 	if (glfwGetKey(window, GLFW_KEY_4 ) == GLFW_PRESS){
-// 		cube->SetAngularMomentum(glm::vec3(0,0,0));
-// 	}
-// 
-// 	
-// 	if (glfwGetKey(window, GLFW_KEY_Z ) == GLFW_PRESS){
-// 		cube->SetAngularMomentum(applyForcePoint);
-// 	}
-// 
 	if (glfwGetKey(window, GLFW_KEY_X ) == GLFW_PRESS)
 	{
 		
 		for (int i=0; i<MAXOBJECT; i++)
 		{
-			float p1 = -1.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.5f-(-1.5f))));
-			float p2 = -1.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.5f-(-1.5f))));
-			float p3 = -1.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.5f-(-1.5f))));
+			float p1 = -0.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(0.5f-(-0.5f))));
+			float p2 = -0.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(0.5f-(-0.5f))));
+			float p3 = -0.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(0.5f-(-0.5f))));
 
 			float f1 = -50.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(50.0f-(-50.0f))));
 			float f2 = -50.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(50.0f-(-50.0f))));
@@ -687,13 +685,13 @@ void PhysicsLab_2::UpdatingAABBMaxMin()
 				cubes[i]->maxAABBx = glm::abs(p.x - cubes[i]->m_position.x);
 				if (p.x > cubes[i]->m_position.x)
 				{
-					cubes[i]->maxX = p.x;
-					cubes[i]->minX = p.x - (cubes[i]->maxAABBx * 2);
+					cubes[i]->AABBmax.x = p.x;
+					cubes[i]->AABBmin.x = p.x - (cubes[i]->maxAABBx * 2);
 				}
 				else
 				{
-					cubes[i]->minX = p.x;
-					cubes[i]->maxX = p.x + (cubes[i]->maxAABBx * 2);
+					cubes[i]->AABBmin.x = p.x;
+					cubes[i]->AABBmax.x = p.x + (cubes[i]->maxAABBx * 2);
 				}
 			}
 			if (glm::abs(p.y - cubes[i]->m_position.y) >= cubes[i]->maxAABBy)
@@ -701,13 +699,13 @@ void PhysicsLab_2::UpdatingAABBMaxMin()
 				cubes[i]->maxAABBy = glm::abs(p.y - cubes[i]->m_position.y);
 				if (p.y > cubes[i]->m_position.y)
 				{
-					cubes[i]->maxY = p.y;
-					cubes[i]->minY = p.y - (cubes[i]->maxAABBy * 2);
+					cubes[i]->AABBmax.y = p.y;
+					cubes[i]->AABBmin.y = p.y - (cubes[i]->maxAABBy * 2);
 				}
 				else
 				{
-					cubes[i]->minY = p.y;
-					cubes[i]->maxY = p.y + (cubes[i]->maxAABBy * 2);
+					cubes[i]->AABBmin.y = p.y;
+					cubes[i]->AABBmax.y = p.y + (cubes[i]->maxAABBy * 2);
 				}
 			}
 			if (glm::abs(p.z - cubes[i]->m_position.z) >= cubes[i]->maxAABBz)
@@ -715,47 +713,34 @@ void PhysicsLab_2::UpdatingAABBMaxMin()
 				cubes[i]->maxAABBz = glm::abs(p.z - cubes[i]->m_position.z);
 				if (p.z > cubes[i]->m_position.z)
 				{
-					cubes[i]->maxZ = p.z;
-					cubes[i]->minZ = p.z - (cubes[i]->maxAABBz * 2);
+					cubes[i]->AABBmax.z = p.z;
+					cubes[i]->AABBmin.z = p.z - (cubes[i]->maxAABBz * 2);
 				}
 				else
 				{
-					cubes[i]->minZ = p.z;
-					cubes[i]->maxZ = p.z + (cubes[i]->maxAABBz * 2);
+					cubes[i]->AABBmin.z = p.z;
+					cubes[i]->AABBmax.z = p.z + (cubes[i]->maxAABBz * 2);
 				}
 			}
 		}
 	}
 }
 
-void PhysicsLab_2::computingAABBMaxMin()
+void PhysicsLab_2::computAABBOverLap()
 {
 	for (int i=0; i<MAXOBJECT; i++)
 	{
-		for (int j=0; j<cubes[i]->m_points.size(); j++)
+		for (int j=0; j<MAXOBJECT; j++)
 		{
-			glm::vec3 p = cubes[i]->m_points[j];
-			if ((p.x > cubes[i]->m_position.x) && glm::abs(p.x - cubes[i]->m_position.x) >= cubes[i]->maxAABBx)
+			if (i != j)
 			{
-				cubes[i]->maxAABBx = glm::abs(p.x - cubes[i]->m_position.x);
-				cubes[i]->maxX = p.x;
-			}
-			if ((p.x < cubes[i]->m_position.x) && glm::abs(p.x - cubes[i]->m_position.x) <= cubes[i]->maxAABBx)
-			{
-				cubes[i]->maxAABBx = glm::abs(p.x - cubes[i]->m_position.x);
-				cubes[i]->maxX = p.x;
-			}
-			if (glm::abs(p.y - cubes[i]->m_position.y) >= cubes[i]->maxAABBy)
-			{
-				cubes[i]->maxAABBy = glm::abs(p.y - cubes[i]->m_position.y);
-			}
-			if (glm::abs(p.z - cubes[i]->m_position.z) >= cubes[i]->maxAABBz)
-			{
-				cubes[i]->maxAABBz = glm::abs(p.z - cubes[i]->m_position.z);
+				if ( !(cubes[i]->AABBmax.x < cubes[j]->AABBmin.x || cubes[i]->AABBmin.x > cubes[j]->AABBmax.x) && 
+					 !(cubes[i]->AABBmax.y < cubes[j]->AABBmin.y || cubes[i]->AABBmin.y > cubes[j]->AABBmax.y) &&
+					 !(cubes[i]->AABBmax.z < cubes[j]->AABBmin.z || cubes[i]->AABBmin.z > cubes[j]->AABBmax.z))
+				{
+					AABBBuffers[i]->ChangeColors(AABBMeshs[i]->newColors);
+				}
 			}
 		}
 	}
 }
-
-
-

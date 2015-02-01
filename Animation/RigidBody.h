@@ -33,6 +33,7 @@ public:
 	float maxAABBx;
 	float maxAABBy;
 	float maxAABBz;
+	glm::vec3 AABBmax,AABBmin;
 
 	void Update(float deltaTime);
 

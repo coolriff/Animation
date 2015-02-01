@@ -6,10 +6,10 @@ RigidBody::RigidBody(glm::vec3 &p, glm::quat &o, glm::vec3 &s)
 	m_position = p;
 	m_orientation = o;
 	m_scale = s;
-	m_linearMomentum = glm::vec3();
-	m_force = glm::vec3();
-	m_angularMomentum = glm::vec3();
-	m_torque = glm::vec3();
+	m_linearMomentum = glm::vec3(0.0f);
+	m_force = glm::vec3(0.0f);
+	m_angularMomentum = glm::vec3(0.0f);
+	m_torque = glm::vec3(0.0f);
 	distanceFromCentreMessToPoint = NULL;
 	maxX = 0.0f;
 	maxY = 0.0f;
@@ -20,6 +20,8 @@ RigidBody::RigidBody(glm::vec3 &p, glm::quat &o, glm::vec3 &s)
 	maxAABBx = 0.0f;
 	maxAABBy = 0.0f;
 	maxAABBz = 0.0f;
+	AABBmax = glm::vec3(0.0f);
+	AABBmin = glm::vec3(0.0f);
 }
 
 glm::mat4 RigidBody::GetTransformationMatrix()

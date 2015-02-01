@@ -17,7 +17,7 @@
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
 #define MAX 36
-#define MAXOBJECT 40
+#define MAXOBJECT 100
 
 class PhysicsLab_2
 {
@@ -95,7 +95,7 @@ public:
 	void drawLine(GLuint vao, int size);
 	void updateInBox();
 	void distanceCheck();
-	void computingAABBMaxMin();
+	void computAABBOverLap();
 	void UpdatingAABBMaxMin();
 };
 
