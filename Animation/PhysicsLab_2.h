@@ -11,6 +11,8 @@
 #include "CreateMesh.h"
 #include "Sphere.h"
 #include "Cylinder.h"
+#include <glm/gtc/matrix_transform.hpp> 
+#include <glm/gtx/transform.hpp>
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
@@ -36,6 +38,10 @@ public:
 	ObjectBuffer* cubesBuffer[MAXOBJECT];
 	CreateMesh* boundingSpheres[MAXOBJECT];
 	ObjectBuffer* boundingSphereBuffers[MAXOBJECT];
+
+	Cube* AABBcubes[MAXOBJECT];
+	CreateMesh* AABBMeshs[MAXOBJECT];
+	ObjectBuffer* AABBBuffers[MAXOBJECT];
 
 	Shader* m_shader;
 	Shader* too_shader;
@@ -89,5 +95,7 @@ public:
 	void drawLine(GLuint vao, int size);
 	void updateInBox();
 	void distanceCheck();
+	void computingAABBMaxMin();
+	void UpdatingAABBMaxMin();
 };
 

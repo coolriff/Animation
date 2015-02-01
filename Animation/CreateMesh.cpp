@@ -91,6 +91,8 @@ void CreateMesh::createCubeMesh()
 	for (int i=0; i<CUBE; i++ )
 	{
 		colors.push_back(c[i]);
+		newColorsAABB.push_back(glm::vec4(0.0f,  1.0f,  0.0f, 1.0f));
+		newColors.push_back(glm::vec4(1.0f,  0.0f,  0.0f, 1.0f));
 	}
 
 	for(unsigned int i=0; i<CUBE; i+=3)

@@ -11,7 +11,15 @@ RigidBody::RigidBody(glm::vec3 &p, glm::quat &o, glm::vec3 &s)
 	m_angularMomentum = glm::vec3();
 	m_torque = glm::vec3();
 	distanceFromCentreMessToPoint = NULL;
-
+	maxX = 0.0f;
+	maxY = 0.0f;
+	maxZ = 0.0f;
+	minX = 0.0f;
+	minY = 0.0f;
+	minZ = 0.0f;
+	maxAABBx = 0.0f;
+	maxAABBy = 0.0f;
+	maxAABBz = 0.0f;
 }
 
 glm::mat4 RigidBody::GetTransformationMatrix()
@@ -19,6 +27,15 @@ glm::mat4 RigidBody::GetTransformationMatrix()
 	glm::mat4 T = glm::translate(m_position);
 	glm::mat4 R = glm::toMat4(m_orientation);
 	glm::mat4 S = glm::scale(m_scale);
+
+	return T * R * S;
+}
+
+glm::mat4 RigidBody::GetTransformationMatrix(glm::vec3 p, glm::vec3 s)
+{
+	glm::mat4 T = glm::translate(p);
+	glm::mat4 R = glm::toMat4(m_orientation);
+	glm::mat4 S = glm::scale(s);
 
 	return T * R * S;
 }

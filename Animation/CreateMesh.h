@@ -14,8 +14,8 @@ public:
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec4> colors;
 	std::vector<glm::vec4> newColors;
+	std::vector<glm::vec4> newColorsAABB;
 	std::vector<glm::vec3> normals;
-
 
 	void createCubeMesh();
 	void createBoundingSphereMesh(float radius, int resolution);

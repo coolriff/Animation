@@ -29,10 +29,15 @@ public:
 	float m_massInverse;
 	float distanceFromCentreMessToPoint;
 
+	float maxX,maxY,maxZ,minX,minY,minZ;
+	float maxAABBx;
+	float maxAABBy;
+	float maxAABBz;
 
 	void Update(float deltaTime);
 
 	glm::mat4 GetTransformationMatrix();
+	glm::mat4 GetTransformationMatrix(glm::vec3 p, glm::vec3 s);
 
 	void SetPoints(const std::vector<glm::vec3> & vertices);
 
