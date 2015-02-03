@@ -127,7 +127,7 @@ void RigidBody::CalculateCentreOfMess(int verticesSize)
 		up += r[i] * area[i];
 		down += area[i];
 	}
-	centre_of_mess = up/down;
+	centre_of_mass = up/down;
 }
 
 void RigidBody::CalculateDistanceFromCentreOfMessToPoint(void)
@@ -135,10 +135,12 @@ void RigidBody::CalculateDistanceFromCentreOfMessToPoint(void)
 	glm::vec3 boundingPoint = m_points.at(0);
 
 	distanceFromCentreMessToPoint = glm::sqrt(
-		((centre_of_mess.x - boundingPoint.x) * (centre_of_mess.x - boundingPoint.x)) + 
-		((centre_of_mess.y - boundingPoint.y) * (centre_of_mess.y - boundingPoint.y)) + 
-		((centre_of_mess.z - boundingPoint.z) * (centre_of_mess.z - boundingPoint.z))
+		((centre_of_mass.x - boundingPoint.x) * (centre_of_mass.x - boundingPoint.x)) + 
+		((centre_of_mass.y - boundingPoint.y) * (centre_of_mass.y - boundingPoint.y)) + 
+		((centre_of_mass.z - boundingPoint.z) * (centre_of_mass.z - boundingPoint.z))
 		);
 
 	distanceFromCentreMessToPoint = glm::abs(distanceFromCentreMessToPoint);
 }
+
+

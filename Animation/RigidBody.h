@@ -22,9 +22,11 @@ public:
 	glm::vec3 m_force;
 	glm::vec3 m_torque;
 	glm::mat3 m_inverseI;
-	glm::vec3 centre_of_mess;
+	glm::vec3 centre_of_mass;
 	std::vector<glm::vec3> m_currentVerticesPosition;
 	std::vector<glm::vec3> m_points;
+
+	int ID;
 
 	float m_massInverse;
 	float distanceFromCentreMessToPoint;
@@ -33,6 +35,8 @@ public:
 	float maxAABBx;
 	float maxAABBy;
 	float maxAABBz;
+
+	//same as AABB struct 
 	glm::vec3 AABBmax,AABBmin;
 
 	void Update(float deltaTime);

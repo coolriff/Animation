@@ -13,11 +13,23 @@
 #include "Cylinder.h"
 #include <glm/gtc/matrix_transform.hpp> 
 #include <glm/gtx/transform.hpp>
+#include <algorithm>
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
 #define MAX 36
-#define MAXOBJECT 100
+#define MAXOBJECT 40
+
+struct AABB
+{
+	int ID;
+	float min_point;
+	float max_point;
+
+	bool operator<(const AABB& other){
+		return this->min_point < other.min_point;
+	}
+};
 
 class PhysicsLab_2
 {
@@ -27,17 +39,26 @@ public:
 
 	GLFWwindow* window;
 
-// 	std::vector<Cube*> cubes;
-// 	std::vector<CreateMesh*> cubesMesh;
-// 	std::vector<ObjectBuffer*> cubesBuffer;
-// 	std::vector<CreateMesh*> boundingSpheres;
-// 	std::vector<ObjectBuffer*> boundingSphereBuffers;
+	
+
+	struct cPair
+	{
+		int ID;
+		int collidingWith;
+	};
+
+	std::vector<AABB> axisX;
+	std::vector<AABB> axisY;
+	std::vector<AABB> axisZ;
+
+	std::vector<cPair*> collidingPair;
 
 	Cube* cubes[MAXOBJECT];
 	CreateMesh* cubesMesh[MAXOBJECT];
 	ObjectBuffer* cubesBuffer[MAXOBJECT];
 	CreateMesh* boundingSpheres[MAXOBJECT];
 	ObjectBuffer* boundingSphereBuffers[MAXOBJECT];
+	AABB* SAP[MAXOBJECT];
 
 	Cube* AABBcubes[MAXOBJECT];
 	CreateMesh* AABBMeshs[MAXOBJECT];
@@ -68,6 +89,8 @@ public:
 	bool bShader;
 	bool MMShader;
 
+	int gSortAxis;
+
 	enum ShaderType {
 		STANDARD, 
 		CARTOON, 
@@ -97,5 +120,6 @@ public:
 	void distanceCheck();
 	void computAABBOverLap();
 	void UpdatingAABBMaxMin();
+	void computAABBOverLapWithSweepAndPrune();
+	bool AABBOverlap(const Cube &a, const Cube &b);
 };
-

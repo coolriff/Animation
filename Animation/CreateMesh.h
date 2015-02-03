@@ -13,13 +13,16 @@ public:
 
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec4> colors;
-	std::vector<glm::vec4> newColors;
-	std::vector<glm::vec4> newColorsAABB;
+	std::vector<glm::vec4> redColors;
+	std::vector<glm::vec4> greenColors;
+	std::vector<glm::vec4> blueColors;
 	std::vector<glm::vec3> normals;
 
 	void createCubeMesh();
 	void createBoundingSphereMesh(float radius, int resolution);
 	void createSphereMesh(int numSegments);
+	void setColors(glm::vec4 c);
+	std::vector<glm::vec4> getColors(void) {return colors;};
 };
 #endif
 

@@ -91,8 +91,9 @@ void CreateMesh::createCubeMesh()
 	for (int i=0; i<CUBE; i++ )
 	{
 		colors.push_back(c[i]);
-		newColorsAABB.push_back(glm::vec4(0.0f,  1.0f,  0.0f, 1.0f));
-		newColors.push_back(glm::vec4(1.0f,  0.0f,  0.0f, 1.0f));
+		greenColors.push_back(glm::vec4(0.0f,  1.0f,  0.0f, 1.0f));
+		redColors.push_back(glm::vec4(1.0f,  0.0f,  0.0f, 1.0f));
+		blueColors.push_back(glm::vec4(0.0f,  0.0f,  1.0f, 1.0f));
 	}
 
 	for(unsigned int i=0; i<CUBE; i+=3)
@@ -218,7 +219,7 @@ void CreateMesh::createBoundingSphereMesh(float radius, int resolution)
 	for (int i=0; i<vertices.size(); i++ )
 	{
 		colors.push_back(glm::vec4(0.85f,  0.85f,  0.85f, 1.0f));
-		newColors.push_back(glm::vec4(1.0f,  0,  0, 1.0f));
+		redColors.push_back(glm::vec4(1.0f,  0,  0, 1.0f));
 	}
 
 	for(unsigned int i=0; i<vertices.size(); i+=3)
@@ -230,5 +231,13 @@ void CreateMesh::createBoundingSphereMesh(float radius, int resolution)
 		normals.push_back(n);
 		normals.push_back(n);
 		normals.push_back(n);
+	}
+}
+
+void CreateMesh::setColors(glm::vec4 c)
+{
+	for (int i=0; i<colors.size(); i++ )
+	{
+		colors.push_back(c);
 	}
 }
