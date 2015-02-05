@@ -1,10 +1,14 @@
 #version 330       
 
-uniform vec3 diffuseDirection;
-
+in vec3 diffuseDirection;
 in vec3 fPosition;
 in vec4 fColor;
 in vec3 fNormal;
+in vec2 fTexcoord;
+
+out vec4 FragColor;
+
+uniform sampler2D myTextureSampler;
 
 void main() 
 {                     
@@ -21,5 +25,5 @@ void main()
 		diffuseC += specularC;
 	}
 
-	gl_FragColor =  fColor * (ambientC + diffuseC);
+	FragColor =  (texture2D( myTextureSampler, UV ).rgb) * (fColor * (ambientC + diffuseC)) ;
 }

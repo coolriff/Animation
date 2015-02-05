@@ -84,9 +84,13 @@ void RenderingLab1n2::run(void)
 
 	double lastTime = glfwGetTime();
 
+	m_bodyMesh[0]->LoadMesh("../Models/teapot2.obj");
+	m_bodyMesh[1]->LoadMesh("../Models/teapot2.obj");
+	m_bodyMesh[2]->LoadMesh("../Models/head2.obj");
+	m_bodyMesh[3]->LoadMesh("../Models/head2.obj");
 	for (int i=0; i<MAXOBJECT; i++)
 	{
-		m_bodyMesh[i]->LoadMesh("../Models/teapot2.obj");
+		//m_bodyMesh[i]->LoadMesh("../Models/teapot2.obj");
 		m_bodyBuffer[i]->GenerateVBO(m_bodyMesh[i]->vertices, m_bodyMesh[i]->colors, m_bodyMesh[i]->normals);
 		m_bodyBuffer[i]->LinkBufferToShaderWithNormal(shaderDefault->GetProgramID());
 		m_bodyBuffer[i]->LinkBufferToShaderWithNormal(shaderToon->GetProgramID());
@@ -95,6 +99,9 @@ void RenderingLab1n2::run(void)
 	}
 	m_body[0]->SetPosition(glm::vec3(-5,0,0));
 	m_body[1]->SetPosition(glm::vec3(5,0,0));
+
+	m_body[2]->SetPosition(glm::vec3(-2,3,0));
+	m_body[3]->SetPosition(glm::vec3(2,3,0));
 	
 
 	do{
@@ -333,16 +340,16 @@ void RenderingLab1n2::initTweakBar()
 	TwAddVarRW(bar, "on", TW_TYPE_BOOL8, &oShader, " label='Oren Nayar(0) '");
 
 	TwAddVarRW(bar, "ambientColor", TW_TYPE_COLOR3F, &ambientColor, " label='AmbientColor '");
-	TwAddVarRW(bar, "ambientIntensity", TW_TYPE_FLOAT, &ambientIntensity, " label='AmbientIntensity '");
+	TwAddVarRW(bar, "ambientIntensity", TW_TYPE_FLOAT, &ambientIntensity,"step = 0.1" " label='AmbientIntensity '");
 
 	TwAddVarRW(bar, "diffuseColor", TW_TYPE_COLOR3F, &diffuseColor, " label='DiffuseColor '");
-	TwAddVarRW(bar, "diffuseIntensity", TW_TYPE_FLOAT, &diffuseIntensity, " label='DiffuseIntensity '");
+	TwAddVarRW(bar, "diffuseIntensity", TW_TYPE_FLOAT, &diffuseIntensity,"step = 0.1" " label='DiffuseIntensity '");
 	TwAddVarRW(bar, "diffuseDirection", TW_TYPE_DIR3F, &diffuseDirection, " label='DiffuseDirection '");
 
 	TwAddVarRW(bar, "specularColor", TW_TYPE_COLOR3F, &specularColor, " label='SpecularColor '");
-	TwAddVarRW(bar, "specularIntensity", TW_TYPE_FLOAT, &specularIntensity, " label='SpecularIntensity '");
-	TwAddVarRW(bar, "specularShininess", TW_TYPE_FLOAT, &specularShininess, " label='SpecularShininess '");
-	TwAddVarRW(bar, "roughness", TW_TYPE_FLOAT, &roughness, " label='Roughness '");
+	TwAddVarRW(bar, "specularIntensity", TW_TYPE_FLOAT, &specularIntensity, "step = 0.1" " label='SpecularIntensity '");
+	TwAddVarRW(bar, "specularShininess", TW_TYPE_FLOAT, &specularShininess, "step = 0.1" " label='SpecularShininess '");
+	TwAddVarRW(bar, "roughness", TW_TYPE_FLOAT, &roughness, "step = 0.1" " label='Roughness '");
 
 }
 
@@ -356,29 +363,37 @@ void RenderingLab1n2::keyControl()
 {
 	if (glfwGetKey(window, GLFW_KEY_R ) == GLFW_PRESS){
 		shaderType[0] = DEFAULT;
+		shaderType[2] = DEFAULT;
 	}
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
 		shaderType[0] = TOON;
+		shaderType[2] = TOON;
 	}
 	if (glfwGetKey(window, GLFW_KEY_Y ) == GLFW_PRESS){
 		shaderType[0] = BLINNPHONG;
+		shaderType[2] = BLINNPHONG;
 	}
 	if (glfwGetKey(window, GLFW_KEY_U ) == GLFW_PRESS){
 		shaderType[0] = OREN_NAYAR;
+		shaderType[2] = OREN_NAYAR;
 	}
 
 
 	if (glfwGetKey(window, GLFW_KEY_F ) == GLFW_PRESS){
 		shaderType[1] = DEFAULT;
+		shaderType[3] = DEFAULT;
 	}
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS){
 		shaderType[1] = TOON;
+		shaderType[3] = TOON;
 	}
 	if (glfwGetKey(window, GLFW_KEY_H ) == GLFW_PRESS){
 		shaderType[1] = BLINNPHONG;
+		shaderType[3] = BLINNPHONG;
 	}
 	if (glfwGetKey(window, GLFW_KEY_J ) == GLFW_PRESS){
 		shaderType[1] = OREN_NAYAR;
+		shaderType[3] = OREN_NAYAR;
 	}
 
 	//transfer

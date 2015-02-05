@@ -18,7 +18,7 @@
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
 #define MAX 36
-#define MAXOBJECT 2
+#define MAXOBJECT 4
 #define MAXSHADERTYPE 3
 
 class RenderingLab1n2

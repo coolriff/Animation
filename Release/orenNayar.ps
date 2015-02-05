@@ -1,0 +1,58 @@
+#version 330       
+
+uniform vec3 specularColor;
+uniform vec3 diffuseColor;
+uniform vec3 ambientColor;
+in vec3 diffuseDirection;
+
+uniform float roughness;
+uniform float diffuseIntensity;
+uniform float ambientIntensity;
+uniform float specularIntensity;
+uniform float specularShininess;
+
+//in vec3 fEye;
+in vec3 fPosition;
+in vec4 fColor;
+in vec3 fNormal;
+
+out vec4 FragColor;
+
+void main() 
+{               	
+	vec4 ambientC = vec4(ambientColor, 1.0f) * ambientIntensity;
+	   
+	vec3 vNorm = normalize(fPosition);
+	vec3 nNorm = normalize(fNormal);
+
+	float nDot = dot(nNorm, -normalize(diffuseDirection));
+	float vDot = dot(nNorm, vNorm);
+	
+	float thetaI = acos(nDot);
+	float thetaR = acos(vDot);
+	
+	float gamma = dot(normalize(vNorm - (nNorm * vDot)), normalize(-diffuseDirection - (nNorm * nDot)));
+	
+	float alpha = max(thetaI, thetaR);
+	float beta = min(thetaI, thetaR);
+
+	float roughnessSquared = roughness * roughness;
+	float A = 1.0 - 0.5 * roughnessSquared / (roughnessSquared + 0.50);
+	float B = 0.45 * roughnessSquared / (roughnessSquared + 0.09);
+	
+	B *=  max(0.0, gamma) * sin(alpha) * tan(beta);
+
+	vec4 diffuseC = vec4(diffuseColor, 1.0f) * diffuseIntensity * max(0.0, nDot) * (A + B);
+
+	// specular
+	if(nDot > 0.0f)
+	{
+		vec3 H = normalize(vNorm - diffuseDirection);
+		vec4 specularC = vec4(specularColor, 1.0f) * specularIntensity * max(0.0, pow(dot(nNorm, H), specularShininess));
+
+		diffuseC += specularC;
+	}
+
+	FragColor = fColor * vec4(ambientC + diffuseC);
+
+};
