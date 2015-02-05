@@ -101,9 +101,56 @@ GLuint Shader::GetProgramID()
 	return shaderProgramID;
 }
 
-void Shader::SetDirectionalLight(glm::vec3 direction)
-{
-	GLuint diffuseDirectionID = glGetUniformLocation(shaderProgramID, "diffuseDirection");
 
-	glUniform3f(diffuseDirectionID, direction.x,direction.y,direction.z);
+void Shader::findAllShaderID()
+{
+	vPositionID = glGetAttribLocation(shaderProgramID, "vPosition");
+	vColorID = glGetAttribLocation(shaderProgramID, "vColor");
+	vNormalID = glGetAttribLocation(shaderProgramID, "vNormal");
+
+	eyeID = glGetUniformLocation(shaderProgramID, "vEye");
+
+	ambientColorID = glGetUniformLocation(shaderProgramID, "ambientColor");
+	ambientIntensityID = glGetUniformLocation(shaderProgramID, "ambientIntensity");
+
+	diffuseColorID = glGetUniformLocation(shaderProgramID, "diffuseColor");
+	diffuseIntensityID = glGetUniformLocation(shaderProgramID, "diffuseIntensity");
+	diffuseDirectionID = glGetUniformLocation(shaderProgramID, "diffuseDirection");
+
+	specularColorID = glGetUniformLocation(shaderProgramID, "specularColor");
+	specularIntensityID = glGetUniformLocation(shaderProgramID, "specularIntensity");
+	specularShininessID = glGetUniformLocation(shaderProgramID, "specularShininess");
+
+	roughnessID = glGetUniformLocation(shaderProgramID, "roughness");
+}
+
+void Shader::SetRoughness(float roughness)
+{
+	glUniform1f(roughnessID, roughness);
+}
+
+
+void Shader::SetEyeVector(const glm::vec3 &eye)
+{
+	glUniform3f(eyeID, eye.x, eye.y, eye.z);
+}
+
+void Shader::SetAmbientLight(glm::vec3 color, float intensity)
+{
+	glUniform3f(ambientColorID, color.r, color.g, color.b);
+	glUniform1f(ambientIntensityID, intensity);
+}
+
+void Shader::SetDirectionalLight(glm::vec3 direction, glm::vec3 color, float intensity)
+{
+	glUniform3f(diffuseColorID, color.r, color.g, color.b);
+	glUniform1f(diffuseIntensityID, intensity);
+	glUniform3f(diffuseDirectionID, direction.x, direction.y, direction.z);
+}
+
+void Shader::SetSpecularComponent(glm::vec3 color, float intensity, float shininess)
+{
+	glUniform3f(specularColorID, color.r, color.g, color.b);
+	glUniform1f(specularIntensityID, intensity);
+	glUniform1f(specularShininessID, shininess);
 }

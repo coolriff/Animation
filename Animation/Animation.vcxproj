@@ -102,7 +102,6 @@
     <ClCompile Include="maths_funcs.cpp" />
     <ClCompile Include="math_3d.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="ObjectBuffer.cpp" />
     <ClCompile Include="ogldev_texture.cpp" />
     <ClCompile Include="ogldev_util.cpp" />
@@ -129,8 +128,8 @@
     <None Include="defaultTexture.vs" />
     <None Include="diffuse.ps" />
     <None Include="diffuse.vs" />
-    <None Include="Gooch.ps" />
-    <None Include="Gooch.vs" />
+    <None Include="orenNayar.ps" />
+    <None Include="orenNayar.vs" />
     <None Include="Particle.fragmentshader" />
     <None Include="Particle.vertexshader" />
     <None Include="Particles.ps" />
@@ -161,7 +160,6 @@
     <ClInclude Include="Lab3Model.h" />
     <ClInclude Include="maths_funcs.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="ObjectBuffer.h" />
     <ClInclude Include="ogldev_app.h" />
     <ClInclude Include="ogldev_math_3d.h" />

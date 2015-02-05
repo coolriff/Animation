@@ -10,6 +10,8 @@ out vec3 fNormal;
 
 uniform vec3 vDiffuseDirection;
 out vec3 diffuseDirection;
+uniform vec3 vEye;
+out vec3 fEye;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -23,6 +25,7 @@ void main()
 	gl_Position = projection * vec4(fPosition, 1.0);  
 	
 	diffuseDirection = (view * vec4(vDiffuseDirection, 0.0)).xyz;
+	fEye = vec3(V * vec4(vEye, 1.0));
 
 	fColor = vColor;
 }

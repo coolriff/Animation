@@ -14,7 +14,6 @@
 #include <glm/gtc/matrix_transform.hpp> 
 #include <glm/gtx/transform.hpp>
 #include <algorithm>
-#include "MeshLoader.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
@@ -30,42 +29,48 @@ public:
 
 	GLFWwindow* window;
 
-// 	Cube* cubes[MAXOBJECT];
-// 	CreateMesh* cubesMesh[MAXOBJECT];
-// 	ObjectBuffer* cubesBuffer[MAXOBJECT];
+	Cube *m_body;
+	CreateMesh *m_bodyMesh;
+	ObjectBuffer *m_bodyBuffer;
 
-	Cube models[MAXOBJECT];
-	CreateMesh modelsMesh[MAXOBJECT];
-	ObjectBuffer modelsBuffer[MAXOBJECT];
+	Shader *shaderDefault;
+	Shader *shaderBlinnPhong;
+	Shader *shaderToon;
+	Shader *shaderOrenNayar;
 
-
-	Cube m_body;
-	CreateMesh m_bodyMesh;
-	ObjectBuffer m_bodyBuffer;
-
-	MeshLoader* teapot;
-
-	Shader *shader;
-
-	Shader m_shader[MAXSHADERTYPE];
-	Shader m_shaderTexture[MAXSHADERTYPE];
 	PhysicsLabCamera* m_physicsLabCamera;
 
-	glm::vec3 directionalLightDirection;
+
+	glm::vec3 eye;
+
+	glm::vec3 ambientColor;
+	float ambientIntensity;	
+
+	glm::vec3 diffuseColor; 
+	float diffuseIntensity;
+	glm::vec3 diffuseDirection;
+
+	glm::vec3 specularColor;
+	float specularIntensity;
+	float specularShininess;
+	float roughness;
+
 
 	bool stopTime;
 	bool useForce;
-	bool tooShader;
-	bool stdShader;
+
+	bool dShader;
+	bool tShader;
 	bool bShader;
-	bool MMShader;
+	bool oShader;
+
 	bool isTexture;
 
 	enum ShaderType {
-		STANDARD, 
-		CARTOON, 
-		WHATEVER,
-		NUMBER4
+		DEFAULT, 
+		TOON, 
+		BLINNPHONG,
+		OREN_NAYAR
 	};
 
 	ShaderType shaderType;

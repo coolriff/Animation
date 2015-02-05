@@ -126,9 +126,6 @@
     <ClCompile Include="RenderingLab1n2.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
-    <ClCompile Include="MeshLoader.cpp">
-      <Filter>Physics Lab2</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="diffuse.ps">
@@ -173,12 +170,6 @@
     <None Include="default.ps">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="Gooch.ps">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="Gooch.vs">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
     <None Include="TextureBlinnPhong.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
@@ -189,6 +180,12 @@
       <Filter>Physics Lab2\Shader</Filter>
     </None>
     <None Include="defaultTexture.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="orenNayar.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="orenNayar.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
   </ItemGroup>
@@ -302,9 +299,6 @@
       <Filter>Physics Lab2</Filter>
     </ClInclude>
     <ClInclude Include="RenderingLab1n2.h">
-      <Filter>Physics Lab2</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshLoader.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
   </ItemGroup>

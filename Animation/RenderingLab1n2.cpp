@@ -31,13 +31,37 @@ RenderingLab1n2::RenderingLab1n2(void)
 	m_physicsLabCamera = new PhysicsLabCamera();
 	stopTime = false;
 	useForce = false;
-	tooShader = false;
-	stdShader = true;
+	dShader = false;
+	tShader = false;
 	bShader = false;
-	MMShader = false;
-	shaderType = STANDARD;
-	isTexture = true;
-	shader = new Shader();
+	oShader = false;
+	shaderType = DEFAULT;
+	isTexture = false;
+
+	shaderDefault = new Shader();
+	shaderToon = new Shader();
+	shaderBlinnPhong = new Shader();
+	shaderOrenNayar = new Shader();
+
+	m_body = new Cube();
+	m_bodyMesh = new CreateMesh();
+	m_bodyBuffer = new ObjectBuffer();
+
+
+	eye = m_physicsLabCamera->direction;
+
+	ambientColor = glm::vec3(1.0f,1.0f,1.0f);
+	ambientIntensity = 0.1f;	
+
+	diffuseColor = glm::vec3(1.0f,1.0f,1.0f);
+	diffuseIntensity = 0.1f;
+	diffuseDirection = glm::vec3(0, 0, -1);
+
+	specularColor = glm::vec3(1.0f,1.0f,1.0f);
+	specularIntensity = 0.7f;
+	specularShininess = 60.0f;
+
+	roughness = 1.0f;
 }
 
 
@@ -56,52 +80,18 @@ void RenderingLab1n2::run(void)
 
 	double lastTime = glfwGetTime();
 
-// 	modelsMesh[0].LoadMesh("../Models/teapot2.obj");
-// 	modelsMesh[1].LoadMesh("../Models/teapot2.obj");
-// 
-// 	for (int i=0; i<MAXOBJECT; i++)
-// 	{
-// 		modelsBuffer[i].GenerateVBO(modelsMesh[i].vertices, modelsMesh[i].colors, modelsMesh[i].normals);
-// 		models[i].ID = i;
-// 		models[i].m_orientation = glm::quat();
-// 	}
-// 
-// 	for (int i=0; i<MAXOBJECT; i++)
-// 	{
-// 		for (int j=0; j<MAXSHADERTYPE; j++)
-// 		{
-// 			modelsBuffer[i].LinkBufferToShaderWithNormal(m_shader[j].GetProgramID());
-// 			modelsBuffer[i].SetTexture("../Models/bricks.jpg",m_shader[j].GetProgramID());
-// 		}
-// 	}
-// 
-// 
-// 	models[0].m_position = glm::vec3(-3,0,0);
-// 	models[1].m_position = glm::vec3(3,0,0);
+	m_body->SetPosition(glm::vec3(0));
+	m_bodyMesh->LoadMesh("../Models/teapot2.obj");
+	m_bodyBuffer->GenerateVBO(m_bodyMesh->vertices, m_bodyMesh->colors, m_bodyMesh->normals);
+	m_bodyBuffer->LinkBufferToShaderWithNormal(shaderDefault->GetProgramID());
+	m_bodyBuffer->LinkBufferToShaderWithNormal(shaderToon->GetProgramID());
+	m_bodyBuffer->LinkBufferToShaderWithNormal(shaderBlinnPhong->GetProgramID());
+	m_bodyBuffer->LinkBufferToShaderWithNormal(shaderOrenNayar->GetProgramID());
 
-// 	m_body.m_position = glm::vec3(0);
-// 	m_bodyMesh.LoadMesh("../Models/teapot2.obj");
-// 	m_bodyBuffer.tony(m_bodyMesh.vertices, m_bodyMesh.colors, m_bodyMesh.normals,m_bodyMesh.texcoords, m_bodyMesh.indices);
-
-	//m_bodyBuffer.LinkBufferToShaderWithNormal(m_shader[0].GetProgramID());
-	//m_bodyBuffer.SetTexture("../Models/bricks.jpg",m_shader[0].GetProgramID());
-
-	//m_bodyBuffer.LinkBufferToShaderWithNormal(m_shaderTexture[0].GetProgramID());
-	//m_bodyBuffer.SetTexture("../Models/gold.png", shader->GetProgramID());
-
-
-	teapot = new MeshLoader(shader->GetProgramID(), "../Models/teapot2.obj");
-	teapot->SetPos(glm::vec3(3,0,0));
-	teapot->SetScale(glm::vec3(0.8,0.8,0.8));
-	teapot->SetPossibleShaders(shader->GetProgramID());
-	teapot->SetColor(glm::vec3(1,1,1));
-	teapot->SetTexture("../Models/gold.png");
-
-
-
-
-	directionalLightDirection = glm::vec3(0, 0, -1);
-
+// 	shaderDefault->findAllShaderID();
+// 	shaderToon->findAllShaderID();
+// 	shaderBlinnPhong->findAllShaderID();
+// 	shaderOrenNayar->findAllShaderID();
 
 	do{
 		double currentTime = glfwGetTime();
@@ -115,176 +105,137 @@ void RenderingLab1n2::run(void)
 
 		preDraw();
 		
-		if (glfwGetKey(window, GLFW_KEY_LEFT_BRACKET ) == GLFW_PRESS){
-			isTexture = true;
-		}
-
-		if (glfwGetKey(window, GLFW_KEY_RIGHT_BRACKET ) == GLFW_PRESS){
-			isTexture = false;
-		}
+// 		if (glfwGetKey(window, GLFW_KEY_LEFT_BRACKET ) == GLFW_PRESS){
+// 			isTexture = true;
+// 		}
+// 
+// 		if (glfwGetKey(window, GLFW_KEY_RIGHT_BRACKET ) == GLFW_PRESS){
+// 			isTexture = false;
+// 		}
 
 		if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
-			shaderType = STANDARD;
-			stdShader = true;
-			tooShader = false;
+			shaderType = DEFAULT;
+			dShader = true;
+			tShader = false;
 			bShader = false;
-			MMShader = false;
+			oShader = false;
 		}
 		if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS){
-			shaderType = CARTOON;
-			stdShader = false;
-			tooShader = true;
+			shaderType = TOON;
+			dShader = false;
+			tShader = true;
 			bShader = false;
-			MMShader = false;
+			oShader = false;
 		}
 		if (glfwGetKey(window, GLFW_KEY_9 ) == GLFW_PRESS){
-			shaderType = WHATEVER;
-			stdShader = false;
-			tooShader = false;
+			shaderType = BLINNPHONG;
+			dShader = false;
+			tShader = false;
 			bShader = true;
-			MMShader = false;
+			oShader = false;
 		}
 		if (glfwGetKey(window, GLFW_KEY_0 ) == GLFW_PRESS){
-			shaderType = NUMBER4;
-			stdShader = false;
-			tooShader = false;
+			shaderType = OREN_NAYAR;
+			dShader = false;
+			tShader = false;
 			bShader = false;
-			MMShader = true;
+			oShader = true;
+
+
 		}
 
 
 		switch (shaderType)
 		{
-		case RenderingLab1n2::STANDARD:
-// 			if (isTexture)
-// 			{
-// 				glUseProgram(m_shaderTexture[0].GetProgramID());
-// 			}
-// 			else
-// 			{
-// 				glUseProgram(m_shader[0].GetProgramID());
-// 			}
+		case RenderingLab1n2::DEFAULT:
+			glUseProgram(shaderDefault->GetProgramID());
  			break;
-		case RenderingLab1n2::CARTOON:
-			glUseProgram(m_shader[1].GetProgramID());
+		case RenderingLab1n2::TOON:
+			glUseProgram(shaderToon->GetProgramID());
 			break;
-		case RenderingLab1n2::WHATEVER:
-			glUseProgram(m_shader[2].GetProgramID());
+		case RenderingLab1n2::BLINNPHONG:
+			glUseProgram(shaderBlinnPhong->GetProgramID());
 			break;
-		case RenderingLab1n2::NUMBER4:
-			//glUseProgram(cylinderShader->GetProgramID());
+		case RenderingLab1n2::OREN_NAYAR:
+			glUseProgram(shaderOrenNayar->GetProgramID());
 			break;
 		}
 
 		keyControl();
-// 		for (int i=0; i<MAXOBJECT; i++)
-// 		{
-// 			models[i].Update(delta);
-// 		}
 		
-		m_body.Update(delta);
-
-				glUseProgram(shader->GetProgramID());
-				m_physicsLabCamera->computeMatricesFromInputs(window);
-				GLuint modelLoc = glGetUniformLocation(shader->GetProgramID(), "model");
-				GLuint viewLoc = glGetUniformLocation(shader->GetProgramID(), "view");
-				GLuint projLoc = glGetUniformLocation(shader->GetProgramID(), "projection");
-				m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-
-		teapot->UpdateShader();
-		teapot->Render();
-
-		//ball detecction
-// 		if (shaderType == STANDARD)
-// 		{
-// 			if (isTexture)
-// 			{
-// 				glUseProgram(shader->GetProgramID());
-// 				m_physicsLabCamera->computeMatricesFromInputs(window);
-// 				GLuint modelLoc = glGetUniformLocation(shader->GetProgramID(), "model");
-// 				GLuint viewLoc = glGetUniformLocation(shader->GetProgramID(), "view");
-// 				GLuint projLoc = glGetUniformLocation(shader->GetProgramID(), "projection");
-// 				m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-// 
-// 				//m_shaderTexture[0].SetDirectionalLight(directionalLightDirection);
-// 				update(m_body.GetTransformationMatrix(), shader->GetProgramID());
-// 
-// 
-// 
-// 				m_bodyBuffer.textureLoader->Bind(GL_TEXTURE0);
-// 
-// 			
-// 				glBindVertexArray(m_bodyBuffer.vao);
-// 				//glDrawArrays(GL_TRIANGLES, 0, m_bodyMesh.vertices.size());
-// 				glDrawElements(GL_TRIANGLES, m_bodyMesh.numElements, GL_UNSIGNED_INT, NULL);
-// 				glBindVertexArray(0);
-// 			}
-// 			else
-// 			{
-// 				m_physicsLabCamera->computeMatricesFromInputs(window);
-// 				GLuint modelLoc = glGetUniformLocation(m_shader[0].GetProgramID(), "model");
-// 				GLuint viewLoc = glGetUniformLocation(m_shader[0].GetProgramID(), "view");
-// 				GLuint projLoc = glGetUniformLocation(m_shader[0].GetProgramID(), "projection");
-// 				m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-// 
-// 				//m_shader[0].SetDirectionalLight(directionalLightDirection);
-// 				update(m_body.GetTransformationMatrix(),m_shader[0].GetProgramID());
-// 
-// 				draw(m_bodyBuffer.vao, m_bodyMesh.vertices.size()); 
-// 			}
-
-			
-
-
-// 			for (int i=0; i<MAXOBJECT; i++)
-// 			{
-// 				update(models[i].GetTransformationMatrix(),m_shader[0].GetProgramID());
-// 				draw(modelsBuffer[i].vao, modelsMesh[i].vertices.size()); 
-// 			}
-//		}
-
-		//AABB with SWEEP AND PRUNE
-		if (shaderType == CARTOON)
+		if (shaderType == DEFAULT)
 		{
+			m_body->Update(delta);
+
 			m_physicsLabCamera->computeMatricesFromInputs(window);
-			GLuint modelLoc = glGetUniformLocation(m_shader[1].GetProgramID(), "model");
-			GLuint viewLoc = glGetUniformLocation(m_shader[1].GetProgramID(), "view");
-			GLuint projLoc = glGetUniformLocation(m_shader[1].GetProgramID(), "projection");
+			GLuint modelLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "model");
+			GLuint viewLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "view");
+			GLuint projLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "projection");
 			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
 
-			m_shader[1].SetDirectionalLight(directionalLightDirection);
+			shaderDefault->findAllShaderID();
+			shaderDefault->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
 
-// 			for (int i=0; i<MAXOBJECT; i++)
-// 			{
-// 				update(models[i].GetTransformationMatrix(),m_shader[1].GetProgramID());
-// 				draw(modelsBuffer[i].vao, modelsMesh[i].vertices.size()); 
-// 			}
+			update(m_body->GetTransformationMatrix(), shaderDefault->GetProgramID());
+			draw(m_bodyBuffer->vao, m_bodyMesh->vertices.size()); 
+
 		}
 
-		//AABB without SWEEP AND PRUNE
-		if (shaderType == WHATEVER)
+		if (shaderType == TOON)
 		{
+			m_body->Update(delta);
+
 			m_physicsLabCamera->computeMatricesFromInputs(window);
-			GLuint modelLoc = glGetUniformLocation(m_shader[2].GetProgramID(), "model");
-			GLuint viewLoc = glGetUniformLocation(m_shader[2].GetProgramID(), "view");
-			GLuint projLoc = glGetUniformLocation(m_shader[2].GetProgramID(), "projection");
+			GLuint modelLoc = glGetUniformLocation(shaderToon->GetProgramID(), "model");
+			GLuint viewLoc = glGetUniformLocation(shaderToon->GetProgramID(), "view");
+			GLuint projLoc = glGetUniformLocation(shaderToon->GetProgramID(), "projection");
 			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
 
-			m_shader[2].SetDirectionalLight(directionalLightDirection);
+			shaderToon->findAllShaderID();
+			shaderToon->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
 
-// 			for (int i=0; i<MAXOBJECT; i++)
-// 			{
-// 				update(models[i].GetTransformationMatrix(),m_shader[2].GetProgramID());
-// 				draw(modelsBuffer[i].vao, modelsMesh[i].vertices.size()); 
-// 			}
+			update(m_body->GetTransformationMatrix(), shaderToon->GetProgramID());
+			draw(m_bodyBuffer->vao, m_bodyMesh->vertices.size()); 
 		}
 
-		if (shaderType == NUMBER4)
+		if (shaderType == BLINNPHONG)
 		{
+			m_body->Update(delta);
 
+			m_physicsLabCamera->computeMatricesFromInputs(window);
+			GLuint modelLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "model");
+			GLuint viewLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "view");
+			GLuint projLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "projection");
+			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+
+			shaderBlinnPhong->findAllShaderID();
+			shaderBlinnPhong->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
+
+			update(m_body->GetTransformationMatrix(), shaderBlinnPhong->GetProgramID());
+			draw(m_bodyBuffer->vao, m_bodyMesh->vertices.size()); 
 		}
 
-		//check distance and change colors
+		if (shaderType == OREN_NAYAR)
+		{
+			m_body->Update(delta);
+
+			m_physicsLabCamera->computeMatricesFromInputs(window);
+			GLuint modelLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "model");
+			GLuint viewLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "view");
+			GLuint projLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "projection");
+			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+
+
+			shaderOrenNayar->findAllShaderID();
+			shaderOrenNayar->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
+			shaderOrenNayar->SetAmbientLight(ambientColor,ambientIntensity);
+			shaderOrenNayar->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
+			shaderOrenNayar->SetEyeVector(m_physicsLabCamera->position + m_physicsLabCamera->direction);
+
+			update(m_body->GetTransformationMatrix(), shaderOrenNayar->GetProgramID());
+			draw(m_bodyBuffer->vao, m_bodyMesh->vertices.size()); 
+		}
+
 
 		TwDraw();
 
@@ -303,16 +254,45 @@ void RenderingLab1n2::run(void)
 
 void RenderingLab1n2::initShaders()
 {
-	//with texture
-	std::string vertexShaderSourceCode_T1,fragmentShaderSourceCode_T1;
-	m_shaderTexture[0].readShaderFile("defaultTexture.vs",vertexShaderSourceCode_T1);
-	m_shaderTexture[0].readShaderFile("defaultTexture.ps",fragmentShaderSourceCode_T1);
-	GLuint vertexShaderID_T1 = m_shaderTexture[0].makeShader(vertexShaderSourceCode_T1.c_str(), GL_VERTEX_SHADER);
-	GLuint fragmentShaderID_T1 = m_shaderTexture[0].makeShader(fragmentShaderSourceCode_T1.c_str(), GL_FRAGMENT_SHADER);
-	m_shaderTexture[0].makeShaderProgram(vertexShaderID_T1,fragmentShaderID_T1);
+	std::string v1,f1;
+	shaderDefault->readShaderFile("default.vs",v1);
+	shaderDefault->readShaderFile("default.ps",f1);
+	GLuint vertexShaderID_T1 = shaderDefault->makeShader(v1.c_str(), GL_VERTEX_SHADER);
+	GLuint fragmentShaderID_T1 = shaderDefault->makeShader(f1.c_str(), GL_FRAGMENT_SHADER);
+	shaderDefault->makeShaderProgram(vertexShaderID_T1,fragmentShaderID_T1);
 	printf("vertexShaderID is %d\n",vertexShaderID_T1);
 	printf("fragmentShaderID is %d\n",fragmentShaderID_T1);
-	printf("shaderProgramID is %d\n",m_shaderTexture[0].GetProgramID());
+	printf("shaderProgramID is %d\n",shaderDefault->GetProgramID());
+
+	std::string v2,f2;
+	shaderToon->readShaderFile("too.vs",v2);
+	shaderToon->readShaderFile("too.ps",f2);
+	GLuint vertexShaderID_T2 = shaderToon->makeShader(v2.c_str(), GL_VERTEX_SHADER);
+	GLuint fragmentShaderID_T2 = shaderToon->makeShader(f2.c_str(), GL_FRAGMENT_SHADER);
+	shaderToon->makeShaderProgram(vertexShaderID_T2,fragmentShaderID_T2);
+	printf("vertexShaderID is %d\n",vertexShaderID_T2);
+	printf("fragmentShaderID is %d\n",fragmentShaderID_T2);
+	printf("shaderProgramID is %d\n",shaderToon->GetProgramID());
+
+	std::string v3,f3;
+	shaderBlinnPhong->readShaderFile("BlinnPhong.vs",v3);
+	shaderBlinnPhong->readShaderFile("BlinnPhong.ps",f3);
+	GLuint vertexShaderID_T3 = shaderBlinnPhong->makeShader(v3.c_str(), GL_VERTEX_SHADER);
+	GLuint fragmentShaderID_T3 = shaderBlinnPhong->makeShader(f3.c_str(), GL_FRAGMENT_SHADER);
+	shaderBlinnPhong->makeShaderProgram(vertexShaderID_T3,fragmentShaderID_T3);
+	printf("vertexShaderID is %d\n",vertexShaderID_T3);
+	printf("fragmentShaderID is %d\n",fragmentShaderID_T3);
+	printf("shaderProgramID is %d\n",shaderBlinnPhong->GetProgramID());
+
+	std::string v4,f4;
+	shaderOrenNayar->readShaderFile("orenNayar.vs",v4);
+	shaderOrenNayar->readShaderFile("orenNayar.ps",f4);
+	GLuint vertexShaderID_T4 = shaderOrenNayar->makeShader(v4.c_str(), GL_VERTEX_SHADER);
+	GLuint fragmentShaderID_T4 = shaderOrenNayar->makeShader(f4.c_str(), GL_FRAGMENT_SHADER);
+	shaderOrenNayar->makeShaderProgram(vertexShaderID_T4,fragmentShaderID_T4);
+	printf("vertexShaderID is %d\n",vertexShaderID_T4);
+	printf("fragmentShaderID is %d\n",fragmentShaderID_T4);
+	printf("shaderProgramID is %d\n",shaderOrenNayar->GetProgramID());
 }
 
 void RenderingLab1n2::setupGlfwGlew()
@@ -394,21 +374,23 @@ void RenderingLab1n2::initTweakBar()
 	TwDefine(" Simulation size='300 400' ");
 
 
-	TwAddVarRO(bar, "std", TW_TYPE_BOOL8, &stdShader, " label='Default(7) '");
-	TwAddVarRO(bar, "Too", TW_TYPE_BOOL8, &tooShader, " label='Cartoon(8) '");
-	TwAddVarRO(bar, "bs", TW_TYPE_BOOL8, &bShader, " label='BlinnPhong(9) '");
-	TwAddVarRO(bar, "mm", TW_TYPE_BOOL8, &MMShader, " label='MM(0) '");
+	TwAddVarRO(bar, "def", TW_TYPE_BOOL8, &dShader, " label='Default(7) '");
+	TwAddVarRO(bar, "Too", TW_TYPE_BOOL8, &tShader, " label='Toon(8) '");
+	TwAddVarRO(bar, "bp", TW_TYPE_BOOL8, &bShader, " label='BlinnPhong(9) '");
+	TwAddVarRO(bar, "on", TW_TYPE_BOOL8, &oShader, " label='Oren Nayar(0) '");
 
+	TwAddVarRW(bar, "ambientColor", TW_TYPE_COLOR3F, &ambientColor, " label='AmbientColor '");
+	TwAddVarRW(bar, "ambientIntensity", TW_TYPE_FLOAT, &ambientIntensity, " label='AmbientIntensity '");
 
-	// 	TwAddVarRO(bar, "boxPoint0", TW_TYPE_DIR3F, &cubes[0]->m_points.at(0), " label='p0: '");
-	// 	TwAddVarRO(bar, "boxPoint1", TW_TYPE_DIR3F, &cubes[0]->m_points.at(1), " label='p1: '");
-	// 	TwAddVarRO(bar, "boxPoint2", TW_TYPE_DIR3F, &cubes[0]->m_points.at(2), " label='p2: '");
-	// 	TwAddVarRO(bar, "boxPoint3", TW_TYPE_DIR3F, &cubes[0]->m_points.at(3), " label='p3: '");
-	// 	TwAddVarRO(bar, "boxPoint4", TW_TYPE_DIR3F, &cubes[0]->m_points.at(4), " label='p4: '");
-	// 	TwAddVarRO(bar, "boxPoint5", TW_TYPE_DIR3F, &cubes[0]->m_points.at(5), " label='p5: '");
-	// 	TwAddVarRO(bar, "boxPoint6", TW_TYPE_DIR3F, &cubes[0]->m_points.at(6), " label='p6: '");
-	// 	TwAddVarRO(bar, "boxPoint7", TW_TYPE_DIR3F, &cubes[0]->m_points.at(7), " label='p7: '");
-	// 	TwAddVarRO(bar, "cmass", TW_TYPE_DIR3F, &cube->centre_of_mess, " label='centre of mess: '");
+	TwAddVarRW(bar, "diffuseColor", TW_TYPE_COLOR3F, &diffuseColor, " label='DiffuseColor '");
+	TwAddVarRW(bar, "diffuseIntensity", TW_TYPE_FLOAT, &diffuseIntensity, " label='DiffuseIntensity '");
+	TwAddVarRW(bar, "diffuseDirection", TW_TYPE_DIR3F, &diffuseDirection, " label='DiffuseDirection '");
+
+	TwAddVarRW(bar, "specularColor", TW_TYPE_COLOR3F, &specularColor, " label='SpecularColor '");
+	TwAddVarRW(bar, "specularIntensity", TW_TYPE_FLOAT, &specularIntensity, " label='SpecularIntensity '");
+	TwAddVarRW(bar, "specularShininess", TW_TYPE_FLOAT, &specularShininess, " label='SpecularShininess '");
+	TwAddVarRW(bar, "roughness", TW_TYPE_FLOAT, &roughness, " label='Roughness '");
+
 }
 
 void RenderingLab1n2::update(glm::mat4 ModelMatrix, GLuint shaderProgramID)
@@ -422,22 +404,13 @@ void RenderingLab1n2::keyControl()
 
 	//transfer
 	if (glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS){
-		for (int i=0; i<MAXOBJECT; i++)
-		{
-			//models[i].SetAngularMomentum(glm::vec3(0.9f,0,0));
-		}
+		m_body->SetAngularMomentum(glm::vec3(0.9f,0,0));
 	}
 	if (glfwGetKey(window, GLFW_KEY_R ) == GLFW_PRESS){
-		for (int i=0; i<MAXOBJECT; i++)
-		{
-			//models[i].SetAngularMomentum(glm::vec3(0,0.9f,0));
-		}
+		m_body->SetAngularMomentum(glm::vec3(0,0.9f,0));
 	}
 	if (glfwGetKey(window, GLFW_KEY_T ) == GLFW_PRESS){
-		for (int i=0; i<MAXOBJECT; i++)
-		{
-			//models[i].SetAngularMomentum(glm::vec3(0,0,0.9f));
-		}
+		m_body->SetAngularMomentum(glm::vec3(0,0,0.9f));
 	}
 
 	//dt
@@ -448,35 +421,12 @@ void RenderingLab1n2::keyControl()
 	if (glfwGetKey(window, GLFW_KEY_O ) == GLFW_PRESS){
 		stopTime = false;
 	}
-
-	// use force
-	if (glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS){
-		if (useForce == false)
-		{
-			useForce = true;
-		}
-		else
-		{
-			useForce = false;
-		}
-	}
-
 }
 
 void RenderingLab1n2::draw(GLuint vao, int size)
 {
-// 	if(isTexture)
-// 	{
-// 		m_bodyBuffer.texture->Bind(GL_TEXTURE0);
-// 	}
-// 	else
-// 	{
-// 		m_bodyBuffer.texture->UnBind();
-// 	}
-
 	glBindVertexArray(vao);
 	glDrawArrays(GL_TRIANGLES, 0, size);
-	//glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0);
 }
 

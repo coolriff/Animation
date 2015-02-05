@@ -103,10 +103,10 @@ GLuint ObjectBuffer::GenerateVBO(const std::vector<glm::vec3> & vertices,
 	iSize = indices.size() * sizeof(glm::vec3);
 
 	std::cout << vertices.size() << std::endl;
-		std::cout << normals.size() << std::endl;
-			std::cout << texcoords.size() << std::endl;
-				std::cout << colors.size() << std::endl;
-					std::cout << indices.size() << std::endl;
+	std::cout << normals.size() << std::endl;
+	std::cout << texcoords.size() << std::endl;
+	std::cout << colors.size() << std::endl;
+	std::cout << indices.size() << std::endl;
 	// buffer will contain an array of vertices
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -150,24 +150,17 @@ void ObjectBuffer::LinkBufferToShaderWithNormal(GLuint shaderProgramID)
 	GLuint positionID = glGetAttribLocation(shaderProgramID, "vPosition");
 	GLuint colorID = glGetAttribLocation(shaderProgramID, "vColor");
 	GLuint normalID = glGetAttribLocation(shaderProgramID, "vNormal");
-	GLuint texID = glGetAttribLocation(shaderProgramID, "vTexCoord");
-
-	std::cout << "Tex ID: " << texID << std::endl;
-	//GLuint faceID = glGetAttribLocation(shaderProgramID, "vFaces");
 
 	// Have to enable this
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(positionID);
 	// Tell it where to find the position data in the currently active buffer (at index positionID)
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(positionID, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	// Similarly, for the color data.
-	//glEnableVertexAttribArray(1);
-	//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(vSize));
+	glEnableVertexAttribArray(colorID);
+	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(vSize));
 
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(vSize + cSize));
-
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(vSize + cSize + nSize));
+	glEnableVertexAttribArray(normalID);
+	glVertexAttribPointer(normalID, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(vSize + cSize));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -253,7 +246,6 @@ void ObjectBuffer::tony(const std::vector<glm::vec3> & vertices,
 
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray (4);
-
 
 
 
