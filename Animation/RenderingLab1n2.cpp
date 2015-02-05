@@ -31,11 +31,8 @@ RenderingLab1n2::RenderingLab1n2(void)
 	m_physicsLabCamera = new PhysicsLabCamera();
 	stopTime = false;
 	useForce = false;
-	dShader = false;
-	tShader = false;
-	bShader = false;
-	oShader = false;
-	shaderType = DEFAULT;
+
+	
 	isTexture = false;
 
 	shaderDefault = new Shader();
@@ -43,10 +40,17 @@ RenderingLab1n2::RenderingLab1n2(void)
 	shaderBlinnPhong = new Shader();
 	shaderOrenNayar = new Shader();
 
-	m_body = new Cube();
-	m_bodyMesh = new CreateMesh();
-	m_bodyBuffer = new ObjectBuffer();
-
+	for (int i=0; i<MAXOBJECT; i++)
+	{
+		m_body[i] = new Cube();
+		m_bodyMesh[i] = new CreateMesh();
+		m_bodyBuffer[i] = new ObjectBuffer();
+		dShader[i] = false;
+		tShader[i] = false;
+		bShader[i] = false;
+		oShader[i] = false;
+		shaderType[i]= DEFAULT;
+	}
 
 	eye = m_physicsLabCamera->direction;
 
@@ -80,18 +84,18 @@ void RenderingLab1n2::run(void)
 
 	double lastTime = glfwGetTime();
 
-	m_body->SetPosition(glm::vec3(0));
-	m_bodyMesh->LoadMesh("../Models/teapot2.obj");
-	m_bodyBuffer->GenerateVBO(m_bodyMesh->vertices, m_bodyMesh->colors, m_bodyMesh->normals);
-	m_bodyBuffer->LinkBufferToShaderWithNormal(shaderDefault->GetProgramID());
-	m_bodyBuffer->LinkBufferToShaderWithNormal(shaderToon->GetProgramID());
-	m_bodyBuffer->LinkBufferToShaderWithNormal(shaderBlinnPhong->GetProgramID());
-	m_bodyBuffer->LinkBufferToShaderWithNormal(shaderOrenNayar->GetProgramID());
-
-// 	shaderDefault->findAllShaderID();
-// 	shaderToon->findAllShaderID();
-// 	shaderBlinnPhong->findAllShaderID();
-// 	shaderOrenNayar->findAllShaderID();
+	for (int i=0; i<MAXOBJECT; i++)
+	{
+		m_bodyMesh[i]->LoadMesh("../Models/teapot2.obj");
+		m_bodyBuffer[i]->GenerateVBO(m_bodyMesh[i]->vertices, m_bodyMesh[i]->colors, m_bodyMesh[i]->normals);
+		m_bodyBuffer[i]->LinkBufferToShaderWithNormal(shaderDefault->GetProgramID());
+		m_bodyBuffer[i]->LinkBufferToShaderWithNormal(shaderToon->GetProgramID());
+		m_bodyBuffer[i]->LinkBufferToShaderWithNormal(shaderBlinnPhong->GetProgramID());
+		m_bodyBuffer[i]->LinkBufferToShaderWithNormal(shaderOrenNayar->GetProgramID());
+	}
+	m_body[0]->SetPosition(glm::vec3(-5,0,0));
+	m_body[1]->SetPosition(glm::vec3(5,0,0));
+	
 
 	do{
 		double currentTime = glfwGetTime();
@@ -113,135 +117,78 @@ void RenderingLab1n2::run(void)
 // 			isTexture = false;
 // 		}
 
-		if (glfwGetKey(window, GLFW_KEY_R ) == GLFW_PRESS){
-			shaderType = DEFAULT;
-			dShader = true;
-			tShader = false;
-			bShader = false;
-			oShader = false;
-		}
-		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
-			shaderType = TOON;
-			dShader = false;
-			tShader = true;
-			bShader = false;
-			oShader = false;
-		}
-		if (glfwGetKey(window, GLFW_KEY_Y ) == GLFW_PRESS){
-			shaderType = BLINNPHONG;
-			dShader = false;
-			tShader = false;
-			bShader = true;
-			oShader = false;
-		}
-		if (glfwGetKey(window, GLFW_KEY_U ) == GLFW_PRESS){
-			shaderType = OREN_NAYAR;
-			dShader = false;
-			tShader = false;
-			bShader = false;
-			oShader = true;
 
 
-		}
-
-
-		switch (shaderType)
+		for (int i=0; i<MAXOBJECT; i++)
 		{
-		case RenderingLab1n2::DEFAULT:
-			glUseProgram(shaderDefault->GetProgramID());
- 			break;
-		case RenderingLab1n2::TOON:
-			glUseProgram(shaderToon->GetProgramID());
-			break;
-		case RenderingLab1n2::BLINNPHONG:
-			glUseProgram(shaderBlinnPhong->GetProgramID());
-			break;
-		case RenderingLab1n2::OREN_NAYAR:
-			glUseProgram(shaderOrenNayar->GetProgramID());
-			break;
+			m_body[i]->Update(delta);
 		}
 
 		keyControl();
-		
-		if (shaderType == DEFAULT)
+
+		for (int i=0; i<MAXOBJECT; i++)
 		{
-			m_body->Update(delta);
-
-			m_physicsLabCamera->computeMatricesFromInputs(window);
-			GLuint modelLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "model");
-			GLuint viewLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "view");
-			GLuint projLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "projection");
-			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-
-			shaderDefault->findAllShaderID();
-			shaderDefault->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
-			shaderDefault->SetAmbientLight(ambientColor,ambientIntensity);
-			shaderDefault->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
-
-			update(m_body->GetTransformationMatrix(), shaderDefault->GetProgramID());
-			draw(m_bodyBuffer->vao, m_bodyMesh->vertices.size()); 
-
+			switch (shaderType[i])
+			{
+			case RenderingLab1n2::DEFAULT:
+				glUseProgram(shaderDefault->GetProgramID());
+				m_physicsLabCamera->computeMatricesFromInputs(window);
+				modelLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "model");
+				viewLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "view");
+				projLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "projection");
+				m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+				shaderDefault->findAllShaderID();
+				shaderDefault->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
+				shaderDefault->SetAmbientLight(ambientColor,ambientIntensity);
+				shaderDefault->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
+				update(m_body[i]->GetTransformationMatrix(), shaderDefault->GetProgramID());
+				draw(m_bodyBuffer[i]->vao, m_bodyMesh[i]->vertices.size()); 
+ 				break;
+			case RenderingLab1n2::TOON:
+				glUseProgram(shaderToon->GetProgramID());
+				m_physicsLabCamera->computeMatricesFromInputs(window);
+				modelLoc = glGetUniformLocation(shaderToon->GetProgramID(), "model");
+				viewLoc = glGetUniformLocation(shaderToon->GetProgramID(), "view");
+				projLoc = glGetUniformLocation(shaderToon->GetProgramID(), "projection");
+				m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+				shaderToon->findAllShaderID();
+				shaderToon->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
+				shaderToon->SetAmbientLight(ambientColor,ambientIntensity);
+				shaderToon->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
+				update(m_body[i]->GetTransformationMatrix(), shaderToon->GetProgramID());
+				draw(m_bodyBuffer[i]->vao, m_bodyMesh[i]->vertices.size()); 
+				break;
+			case RenderingLab1n2::BLINNPHONG:
+				glUseProgram(shaderBlinnPhong->GetProgramID());
+				m_physicsLabCamera->computeMatricesFromInputs(window);
+				modelLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "model");
+				viewLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "view");
+				projLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "projection");
+				m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+				shaderBlinnPhong->findAllShaderID();
+				shaderBlinnPhong->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
+				shaderBlinnPhong->SetAmbientLight(ambientColor,ambientIntensity);
+				shaderBlinnPhong->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
+				update(m_body[i]->GetTransformationMatrix(), shaderBlinnPhong->GetProgramID());
+				draw(m_bodyBuffer[i]->vao, m_bodyMesh[i]->vertices.size()); 
+				break;
+			case RenderingLab1n2::OREN_NAYAR:
+				glUseProgram(shaderOrenNayar->GetProgramID());
+				m_physicsLabCamera->computeMatricesFromInputs(window);
+				modelLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "model");
+				viewLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "view");
+				projLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "projection");
+				m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+				shaderOrenNayar->findAllShaderID();
+				shaderOrenNayar->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
+				shaderOrenNayar->SetAmbientLight(ambientColor,ambientIntensity);
+				shaderOrenNayar->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
+				//shaderOrenNayar->SetEyeVector(m_physicsLabCamera->position + m_physicsLabCamera->direction);
+				update(m_body[i]->GetTransformationMatrix(), shaderOrenNayar->GetProgramID());
+				draw(m_bodyBuffer[i]->vao, m_bodyMesh[i]->vertices.size()); 
+				break;
+			}
 		}
-
-		if (shaderType == TOON)
-		{
-			m_body->Update(delta);
-
-			m_physicsLabCamera->computeMatricesFromInputs(window);
-			GLuint modelLoc = glGetUniformLocation(shaderToon->GetProgramID(), "model");
-			GLuint viewLoc = glGetUniformLocation(shaderToon->GetProgramID(), "view");
-			GLuint projLoc = glGetUniformLocation(shaderToon->GetProgramID(), "projection");
-			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-
-			shaderToon->findAllShaderID();
-			shaderToon->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
-			shaderToon->SetAmbientLight(ambientColor,ambientIntensity);
-			shaderToon->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
-
-			update(m_body->GetTransformationMatrix(), shaderToon->GetProgramID());
-			draw(m_bodyBuffer->vao, m_bodyMesh->vertices.size()); 
-		}
-
-		if (shaderType == BLINNPHONG)
-		{
-			m_body->Update(delta);
-
-			m_physicsLabCamera->computeMatricesFromInputs(window);
-			GLuint modelLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "model");
-			GLuint viewLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "view");
-			GLuint projLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "projection");
-			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-
-			shaderBlinnPhong->findAllShaderID();
-			shaderBlinnPhong->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
-			shaderBlinnPhong->SetAmbientLight(ambientColor,ambientIntensity);
-			shaderBlinnPhong->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
-
-			update(m_body->GetTransformationMatrix(), shaderBlinnPhong->GetProgramID());
-			draw(m_bodyBuffer->vao, m_bodyMesh->vertices.size()); 
-		}
-
-		if (shaderType == OREN_NAYAR)
-		{
-			m_body->Update(delta);
-
-			m_physicsLabCamera->computeMatricesFromInputs(window);
-			GLuint modelLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "model");
-			GLuint viewLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "view");
-			GLuint projLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "projection");
-			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-
-
-			shaderOrenNayar->findAllShaderID();
-			shaderOrenNayar->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
-			shaderOrenNayar->SetAmbientLight(ambientColor,ambientIntensity);
-			shaderOrenNayar->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
-			//shaderOrenNayar->SetEyeVector(m_physicsLabCamera->position + m_physicsLabCamera->direction);
-
-			update(m_body->GetTransformationMatrix(), shaderOrenNayar->GetProgramID());
-			draw(m_bodyBuffer->vao, m_bodyMesh->vertices.size()); 
-		}
-
 
 		TwDraw();
 
@@ -407,16 +354,51 @@ void RenderingLab1n2::update(glm::mat4 ModelMatrix, GLuint shaderProgramID)
 
 void RenderingLab1n2::keyControl()
 {
+	if (glfwGetKey(window, GLFW_KEY_R ) == GLFW_PRESS){
+		shaderType[0] = DEFAULT;
+	}
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
+		shaderType[0] = TOON;
+	}
+	if (glfwGetKey(window, GLFW_KEY_Y ) == GLFW_PRESS){
+		shaderType[0] = BLINNPHONG;
+	}
+	if (glfwGetKey(window, GLFW_KEY_U ) == GLFW_PRESS){
+		shaderType[0] = OREN_NAYAR;
+	}
+
+
+	if (glfwGetKey(window, GLFW_KEY_F ) == GLFW_PRESS){
+		shaderType[1] = DEFAULT;
+	}
+	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS){
+		shaderType[1] = TOON;
+	}
+	if (glfwGetKey(window, GLFW_KEY_H ) == GLFW_PRESS){
+		shaderType[1] = BLINNPHONG;
+	}
+	if (glfwGetKey(window, GLFW_KEY_J ) == GLFW_PRESS){
+		shaderType[1] = OREN_NAYAR;
+	}
 
 	//transfer
 	if (glfwGetKey(window, GLFW_KEY_Z ) == GLFW_PRESS){
-		m_body->SetAngularMomentum(glm::vec3(0.9f,0,0));
+		for (int i=0; i<MAXOBJECT; i++)
+		{
+			m_body[i]->SetAngularMomentum(glm::vec3(0.5f,0,0));
+		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_X ) == GLFW_PRESS){
-		m_body->SetAngularMomentum(glm::vec3(0,0.9f,0));
+		for (int i=0; i<MAXOBJECT; i++)
+		{
+			m_body[i]->SetAngularMomentum(glm::vec3(0,0.5f,0));
+		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_C ) == GLFW_PRESS){
-		m_body->SetAngularMomentum(glm::vec3(0,0,0.9f));
+		for (int i=0; i<MAXOBJECT; i++)
+		{
+			m_body[i]->SetAngularMomentum(glm::vec3(0,0,0.5f));
+		}
 	}
 
 	//dt

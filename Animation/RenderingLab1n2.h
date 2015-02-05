@@ -29,9 +29,9 @@ public:
 
 	GLFWwindow* window;
 
-	Cube *m_body;
-	CreateMesh *m_bodyMesh;
-	ObjectBuffer *m_bodyBuffer;
+	Cube *m_body[MAXOBJECT];
+	CreateMesh *m_bodyMesh[MAXOBJECT];
+	ObjectBuffer *m_bodyBuffer[MAXOBJECT];
 
 	Shader *shaderDefault;
 	Shader *shaderBlinnPhong;
@@ -40,16 +40,16 @@ public:
 
 	PhysicsLabCamera* m_physicsLabCamera;
 
+	GLuint modelLoc;
+	GLuint viewLoc;
+	GLuint projLoc;
 
 	glm::vec3 eye;
-
 	glm::vec3 ambientColor;
 	float ambientIntensity;	
-
 	glm::vec3 diffuseColor; 
 	float diffuseIntensity;
 	glm::vec3 diffuseDirection;
-
 	glm::vec3 specularColor;
 	float specularIntensity;
 	float specularShininess;
@@ -59,10 +59,10 @@ public:
 	bool stopTime;
 	bool useForce;
 
-	bool dShader;
-	bool tShader;
-	bool bShader;
-	bool oShader;
+	bool dShader[MAXOBJECT];
+	bool tShader[MAXOBJECT];
+	bool bShader[MAXOBJECT];
+	bool oShader[MAXOBJECT];
 
 	bool isTexture;
 
@@ -73,7 +73,7 @@ public:
 		OREN_NAYAR
 	};
 
-	ShaderType shaderType;
+	ShaderType shaderType[MAXOBJECT];
 
 	void run(void);
 	void initShaders();
