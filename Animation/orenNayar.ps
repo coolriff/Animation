@@ -3,7 +3,7 @@
 uniform vec3 specularColor;
 uniform vec3 diffuseColor;
 uniform vec3 ambientColor;
-uniform vec3 diffuseDirection;
+in vec3 diffuseDirection;
 
 uniform float roughness;
 uniform float diffuseIntensity;
@@ -53,7 +53,6 @@ void main()
 		diffuseC += specularC;
 	}
 
-	// final color
 	FragColor = fColor * vec4(ambientC + diffuseC);
 
 };

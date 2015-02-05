@@ -113,28 +113,28 @@ void RenderingLab1n2::run(void)
 // 			isTexture = false;
 // 		}
 
-		if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
+		if (glfwGetKey(window, GLFW_KEY_R ) == GLFW_PRESS){
 			shaderType = DEFAULT;
 			dShader = true;
 			tShader = false;
 			bShader = false;
 			oShader = false;
 		}
-		if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS){
+		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
 			shaderType = TOON;
 			dShader = false;
 			tShader = true;
 			bShader = false;
 			oShader = false;
 		}
-		if (glfwGetKey(window, GLFW_KEY_9 ) == GLFW_PRESS){
+		if (glfwGetKey(window, GLFW_KEY_Y ) == GLFW_PRESS){
 			shaderType = BLINNPHONG;
 			dShader = false;
 			tShader = false;
 			bShader = true;
 			oShader = false;
 		}
-		if (glfwGetKey(window, GLFW_KEY_0 ) == GLFW_PRESS){
+		if (glfwGetKey(window, GLFW_KEY_U ) == GLFW_PRESS){
 			shaderType = OREN_NAYAR;
 			dShader = false;
 			tShader = false;
@@ -175,6 +175,8 @@ void RenderingLab1n2::run(void)
 
 			shaderDefault->findAllShaderID();
 			shaderDefault->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
+			shaderDefault->SetAmbientLight(ambientColor,ambientIntensity);
+			shaderDefault->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
 
 			update(m_body->GetTransformationMatrix(), shaderDefault->GetProgramID());
 			draw(m_bodyBuffer->vao, m_bodyMesh->vertices.size()); 
@@ -193,6 +195,8 @@ void RenderingLab1n2::run(void)
 
 			shaderToon->findAllShaderID();
 			shaderToon->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
+			shaderToon->SetAmbientLight(ambientColor,ambientIntensity);
+			shaderToon->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
 
 			update(m_body->GetTransformationMatrix(), shaderToon->GetProgramID());
 			draw(m_bodyBuffer->vao, m_bodyMesh->vertices.size()); 
@@ -210,6 +214,8 @@ void RenderingLab1n2::run(void)
 
 			shaderBlinnPhong->findAllShaderID();
 			shaderBlinnPhong->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
+			shaderBlinnPhong->SetAmbientLight(ambientColor,ambientIntensity);
+			shaderBlinnPhong->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
 
 			update(m_body->GetTransformationMatrix(), shaderBlinnPhong->GetProgramID());
 			draw(m_bodyBuffer->vao, m_bodyMesh->vertices.size()); 
@@ -230,7 +236,7 @@ void RenderingLab1n2::run(void)
 			shaderOrenNayar->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
 			shaderOrenNayar->SetAmbientLight(ambientColor,ambientIntensity);
 			shaderOrenNayar->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
-			shaderOrenNayar->SetEyeVector(m_physicsLabCamera->position + m_physicsLabCamera->direction);
+			//shaderOrenNayar->SetEyeVector(m_physicsLabCamera->position + m_physicsLabCamera->direction);
 
 			update(m_body->GetTransformationMatrix(), shaderOrenNayar->GetProgramID());
 			draw(m_bodyBuffer->vao, m_bodyMesh->vertices.size()); 
@@ -374,10 +380,10 @@ void RenderingLab1n2::initTweakBar()
 	TwDefine(" Simulation size='300 400' ");
 
 
-	TwAddVarRO(bar, "def", TW_TYPE_BOOL8, &dShader, " label='Default(7) '");
-	TwAddVarRO(bar, "Too", TW_TYPE_BOOL8, &tShader, " label='Toon(8) '");
-	TwAddVarRO(bar, "bp", TW_TYPE_BOOL8, &bShader, " label='BlinnPhong(9) '");
-	TwAddVarRO(bar, "on", TW_TYPE_BOOL8, &oShader, " label='Oren Nayar(0) '");
+	TwAddVarRW(bar, "def", TW_TYPE_BOOL8, &dShader, " label='Default(7) '");
+	TwAddVarRW(bar, "Too", TW_TYPE_BOOL8, &tShader, " label='Toon(8) '");
+	TwAddVarRW(bar, "bp", TW_TYPE_BOOL8, &bShader, " label='BlinnPhong(9) '");
+	TwAddVarRW(bar, "on", TW_TYPE_BOOL8, &oShader, " label='Oren Nayar(0) '");
 
 	TwAddVarRW(bar, "ambientColor", TW_TYPE_COLOR3F, &ambientColor, " label='AmbientColor '");
 	TwAddVarRW(bar, "ambientIntensity", TW_TYPE_FLOAT, &ambientIntensity, " label='AmbientIntensity '");
@@ -403,13 +409,13 @@ void RenderingLab1n2::keyControl()
 {
 
 	//transfer
-	if (glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_Z ) == GLFW_PRESS){
 		m_body->SetAngularMomentum(glm::vec3(0.9f,0,0));
 	}
-	if (glfwGetKey(window, GLFW_KEY_R ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_X ) == GLFW_PRESS){
 		m_body->SetAngularMomentum(glm::vec3(0,0.9f,0));
 	}
-	if (glfwGetKey(window, GLFW_KEY_T ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_C ) == GLFW_PRESS){
 		m_body->SetAngularMomentum(glm::vec3(0,0,0.9f));
 	}
 

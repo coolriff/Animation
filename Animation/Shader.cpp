@@ -115,7 +115,7 @@ void Shader::findAllShaderID()
 
 	diffuseColorID = glGetUniformLocation(shaderProgramID, "diffuseColor");
 	diffuseIntensityID = glGetUniformLocation(shaderProgramID, "diffuseIntensity");
-	diffuseDirectionID = glGetUniformLocation(shaderProgramID, "diffuseDirection");
+	diffuseDirectionID = glGetUniformLocation(shaderProgramID, "vDiffuseDirection");
 
 	specularColorID = glGetUniformLocation(shaderProgramID, "specularColor");
 	specularIntensityID = glGetUniformLocation(shaderProgramID, "specularIntensity");
