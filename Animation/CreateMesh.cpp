@@ -241,3 +241,60 @@ void CreateMesh::setColors(glm::vec4 c)
 		colors.push_back(c);
 	}
 }
+
+void CreateMesh::LoadMesh(const char* filename)
+{
+	Assimp::Importer importer;
+	aiMesh *mesh;
+
+	const aiScene *scene = importer.ReadFile(filename, 	aiProcess_Triangulate
+		| aiProcess_OptimizeGraph
+		| aiProcess_OptimizeMeshes
+		| aiProcess_RemoveRedundantMaterials
+		| aiProcess_GenSmoothNormals);
+
+	if(!scene) 
+	{
+		printf("Unable to load mesh: %s\n", importer.GetErrorString());
+	}
+
+	mesh = scene->mMeshes[0];
+	numElements = mesh->mNumFaces * 3;
+
+	if(mesh->HasPositions())
+	{
+		for(int i = 0; i < mesh->mNumVertices; i++) 
+		{
+			vertices.push_back(glm::vec3(mesh->mVertices[i].x,mesh->mVertices[i].y,mesh->mVertices[i].z));
+			colors.push_back(glm::vec4(0.85f,  0.85f,  0.85f, 1.0f));
+		}
+	}
+
+	if(mesh->HasTextureCoords(0))
+	{
+		glm::vec2 t = glm::vec2();
+		for(int i = 0; i < mesh->mNumVertices; i++)
+		{
+			t.x = mesh->mTextureCoords[0][i].x;
+			t.y = mesh->mTextureCoords[0][i].y;
+			texcoords.push_back(t);
+		}
+	}
+
+	if(mesh->HasNormals())
+	{
+		for(int i = 0; i < mesh->mNumVertices; i++)
+		{
+			normals.push_back(glm::vec3(mesh->mNormals[i].x,mesh->mNormals[i].y,mesh->mNormals[i].z));
+		}
+	}
+
+	if(mesh->HasFaces())
+	{
+
+		for(int i = 0; i < mesh->mNumFaces; i++)
+		{
+			indices.push_back(glm::vec3(mesh->mFaces[i].mIndices[0],mesh->mFaces[i].mIndices[1],mesh->mFaces[i].mIndices[2]));
+		}
+	}
+}

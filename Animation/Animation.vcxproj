@@ -102,6 +102,7 @@
     <ClCompile Include="maths_funcs.cpp" />
     <ClCompile Include="math_3d.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="ObjectBuffer.cpp" />
     <ClCompile Include="ogldev_texture.cpp" />
     <ClCompile Include="ogldev_util.cpp" />
@@ -110,18 +111,22 @@
     <ClCompile Include="PhysicsLabCamera.cpp" />
     <ClCompile Include="PhysicsLab_1.cpp" />
     <ClCompile Include="PhysicsLab_2.cpp" />
+    <ClCompile Include="RenderingLab1n2.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="Setup.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="skinning_technique.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BlinnPhong.ps" />
     <None Include="BlinnPhong.vs" />
     <None Include="default.ps" />
     <None Include="default.vs" />
+    <None Include="defaultTexture.ps" />
+    <None Include="defaultTexture.vs" />
     <None Include="diffuse.ps" />
     <None Include="diffuse.vs" />
     <None Include="Gooch.ps" />
@@ -132,6 +137,8 @@
     <None Include="Particles.vs" />
     <None Include="skinning.fs" />
     <None Include="skinning.vs" />
+    <None Include="TextureBlinnPhong.ps" />
+    <None Include="TextureBlinnPhong.vs" />
     <None Include="too.ps" />
     <None Include="too.vs" />
   </ItemGroup>
@@ -154,6 +161,7 @@
     <ClInclude Include="Lab3Model.h" />
     <ClInclude Include="maths_funcs.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="ObjectBuffer.h" />
     <ClInclude Include="ogldev_app.h" />
     <ClInclude Include="ogldev_math_3d.h" />
@@ -164,6 +172,7 @@
     <ClInclude Include="PhysicsLabCamera.h" />
     <ClInclude Include="PhysicsLab_1.h" />
     <ClInclude Include="PhysicsLab_2.h" />
+    <ClInclude Include="RenderingLab1n2.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Setup.h" />
     <ClInclude Include="Shader.h" />
@@ -171,6 +180,7 @@
     <ClInclude Include="skinning_technique.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="technique.h" />
+    <ClInclude Include="TextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="simpleFragmentShader.txt" />

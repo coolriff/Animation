@@ -19,6 +19,9 @@
     <Filter Include="Physics Lab2">
       <UniqueIdentifier>{b8f181ea-aa6d-462b-b197-9c5d932a2577}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics Lab2\Shader">
+      <UniqueIdentifier>{89a5ca24-d1e5-4cb5-8b11-59216e297231}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -117,6 +120,15 @@
     <ClCompile Include="Sphere.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
+    <ClCompile Include="TextureLoader.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingLab1n2.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshLoader.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="diffuse.ps">
@@ -143,29 +155,41 @@
     <None Include="Particle.vertexshader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="too.ps">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="default.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="default.ps">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="too.vs">
-      <Filter>Resource Files</Filter>
+      <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="BlinnPhong.vs">
-      <Filter>Resource Files</Filter>
+    <None Include="too.ps">
+      <Filter>Physics Lab2\Shader</Filter>
     </None>
     <None Include="BlinnPhong.ps">
-      <Filter>Resource Files</Filter>
+      <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="Gooch.vs">
-      <Filter>Resource Files</Filter>
+    <None Include="BlinnPhong.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="default.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="default.ps">
+      <Filter>Physics Lab2\Shader</Filter>
     </None>
     <None Include="Gooch.ps">
-      <Filter>Resource Files</Filter>
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="Gooch.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="TextureBlinnPhong.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="TextureBlinnPhong.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="defaultTexture.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="defaultTexture.vs">
+      <Filter>Physics Lab2\Shader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -272,6 +296,15 @@
       <Filter>Physics Lab2</Filter>
     </ClInclude>
     <ClInclude Include="Sphere.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureLoader.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingLab1n2.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshLoader.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
   </ItemGroup>
