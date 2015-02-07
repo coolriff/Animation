@@ -82,7 +82,7 @@ void PhysicsLabCamera::computeMatricesFromInputs(GLFWwindow* window)
 			cos(horizontalAngle - 3.14f/2.0f)
 			);
 	}
-	
+
 
 
 	// Up vector
@@ -105,27 +105,27 @@ void PhysicsLabCamera::computeMatricesFromInputs(GLFWwindow* window)
 		position -= right * deltaTime * speed;
 	}
 
-// 	if (glfwGetKey( window, GLFW_KEY_LEFT ) == GLFW_PRESS){
-// 
-// 		horizontalAngle += mouseSpeed * float(1024/2);
-// 		verticalAngle   += mouseSpeed * float( 768/2);
-// 
-// 		direction = glm::vec3(sin(horizontalAngle),0,cos(horizontalAngle));
-// 		right = glm::vec3(sin(horizontalAngle - 3.14f/2.0f), 0,cos(horizontalAngle - 3.14f/2.0f));
-// 
-// 		//position -= right * deltaTime * speed;
-// 	}
-// 
-// 	if (glfwGetKey( window, GLFW_KEY_RIGHT ) == GLFW_PRESS){
-// 
-// 		horizontalAngle += mouseSpeed * float(1024/2);
-// 		verticalAngle   += mouseSpeed * float( 768/2);
-// 
-// 		direction = glm::vec3(sin(horizontalAngle),0,cos(horizontalAngle));
-// 		right = glm::vec3(sin(horizontalAngle - 3.14f/2.0f), 0,cos(horizontalAngle - 3.14f/2.0f));
-// 
-// 		//position -= right * deltaTime * speed;
-// 	}
+	// 	if (glfwGetKey( window, GLFW_KEY_LEFT ) == GLFW_PRESS){
+	// 
+	// 		horizontalAngle += mouseSpeed * float(1024/2);
+	// 		verticalAngle   += mouseSpeed * float( 768/2);
+	// 
+	// 		direction = glm::vec3(sin(horizontalAngle),0,cos(horizontalAngle));
+	// 		right = glm::vec3(sin(horizontalAngle - 3.14f/2.0f), 0,cos(horizontalAngle - 3.14f/2.0f));
+	// 
+	// 		//position -= right * deltaTime * speed;
+	// 	}
+	// 
+	// 	if (glfwGetKey( window, GLFW_KEY_RIGHT ) == GLFW_PRESS){
+	// 
+	// 		horizontalAngle += mouseSpeed * float(1024/2);
+	// 		verticalAngle   += mouseSpeed * float( 768/2);
+	// 
+	// 		direction = glm::vec3(sin(horizontalAngle),0,cos(horizontalAngle));
+	// 		right = glm::vec3(sin(horizontalAngle - 3.14f/2.0f), 0,cos(horizontalAngle - 3.14f/2.0f));
+	// 
+	// 		//position -= right * deltaTime * speed;
+	// 	}
 
 	float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
 

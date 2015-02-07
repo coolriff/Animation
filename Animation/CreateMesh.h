@@ -12,9 +12,13 @@
 #include <assimp/postprocess.h>
 #include "TextureLoader.h"
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
 class CreateMesh
 {
 public:
+	CreateMesh(void);
+	~CreateMesh(void);
 
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec2> texcoords;
@@ -27,13 +31,21 @@ public:
 	std::vector<glm::vec4> blueColors;
 
 	GLuint numElements;
+	GLuint vSize, cSize;
+	GLuint VAO, v_VBO, t_VBO, n_VBO, i_VBO;
+
+	bool isTextured;
 
 	void createCubeMesh();
 	void createBoundingSphereMesh(float radius, int resolution);
 	void createSphereMesh(int numSegments);
 	void setColors(glm::vec4 c);
+	void setTexture(const char* filename, GLuint shaderID);
 	std::vector<glm::vec4> getColors(void) {return colors;};
 	void LoadMesh(const char* filename);
+	void Render();
+
+	TextureLoader *texture;
 };
 #endif
 

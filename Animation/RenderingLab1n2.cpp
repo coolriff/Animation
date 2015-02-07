@@ -33,7 +33,7 @@ RenderingLab1n2::RenderingLab1n2(void)
 	useForce = false;
 
 	
-	isTexture = false;
+	isTexture = true;
 
 	shaderDefault = new Shader();
 	shaderToon = new Shader();
@@ -85,9 +85,21 @@ void RenderingLab1n2::run(void)
 	double lastTime = glfwGetTime();
 
 	m_bodyMesh[0]->LoadMesh("../Models/teapot2.obj");
+	m_bodyMesh[0]->setTexture("../Models/bricks.jpg",shaderDefault->GetProgramID());
+	//m_bodyMesh[0]->setColors(glm::vec4(1,0,0,1));
+
+	//m_bodyMesh[0]->setTexture("../Models/bricks.jpg",shaderBlinnPhong->GetProgramID());
 	m_bodyMesh[1]->LoadMesh("../Models/teapot2.obj");
+	m_bodyMesh[1]->setTexture("../Models/gold.jpg",shaderDefault->GetProgramID());
+	//m_bodyMesh[1]->setColors(glm::vec4(1,0,0,1));
 	m_bodyMesh[2]->LoadMesh("../Models/head2.obj");
+	m_bodyMesh[2]->setTexture("../Models/bricks.jpg",shaderDefault->GetProgramID());
+	//m_bodyMesh[2]->setColors(glm::vec4(1,0,0,1));
 	m_bodyMesh[3]->LoadMesh("../Models/head2.obj");
+	m_bodyMesh[3]->setTexture("../Models/gold.jpg",shaderDefault->GetProgramID());
+	//m_bodyMesh[3]->setColors(glm::vec4(1,0,0,1));
+
+	/*
 	for (int i=0; i<MAXOBJECT; i++)
 	{
 		//m_bodyMesh[i]->LoadMesh("../Models/teapot2.obj");
@@ -97,6 +109,7 @@ void RenderingLab1n2::run(void)
 		m_bodyBuffer[i]->LinkBufferToShaderWithNormal(shaderBlinnPhong->GetProgramID());
 		m_bodyBuffer[i]->LinkBufferToShaderWithNormal(shaderOrenNayar->GetProgramID());
 	}
+	*/
 	m_body[0]->SetPosition(glm::vec3(-5,0,0));
 	m_body[1]->SetPosition(glm::vec3(5,0,0));
 
@@ -138,6 +151,7 @@ void RenderingLab1n2::run(void)
 			switch (shaderType[i])
 			{
 			case RenderingLab1n2::DEFAULT:
+				m_bodyMesh[i]->isTextured = true;
 				glUseProgram(shaderDefault->GetProgramID());
 				m_physicsLabCamera->computeMatricesFromInputs(window);
 				modelLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "model");
@@ -148,10 +162,15 @@ void RenderingLab1n2::run(void)
 				shaderDefault->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
 				shaderDefault->SetAmbientLight(ambientColor,ambientIntensity);
 				shaderDefault->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
+			
 				update(m_body[i]->GetTransformationMatrix(), shaderDefault->GetProgramID());
-				draw(m_bodyBuffer[i]->vao, m_bodyMesh[i]->vertices.size()); 
+
+				m_bodyMesh[i]->Render();
+				//draw(m_bodyBuffer[i]->vao, m_bodyMesh[i]->vertices.size()); 
+
  				break;
 			case RenderingLab1n2::TOON:
+				m_bodyMesh[i]->isTextured = false;
 				glUseProgram(shaderToon->GetProgramID());
 				m_physicsLabCamera->computeMatricesFromInputs(window);
 				modelLoc = glGetUniformLocation(shaderToon->GetProgramID(), "model");
@@ -162,10 +181,13 @@ void RenderingLab1n2::run(void)
 				shaderToon->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
 				shaderToon->SetAmbientLight(ambientColor,ambientIntensity);
 				shaderToon->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
+				//m_bodyMesh[i]->setColors(glm::vec4(1,0,0,1));
 				update(m_body[i]->GetTransformationMatrix(), shaderToon->GetProgramID());
-				draw(m_bodyBuffer[i]->vao, m_bodyMesh[i]->vertices.size()); 
+
+				m_bodyMesh[i]->Render();
 				break;
 			case RenderingLab1n2::BLINNPHONG:
+				m_bodyMesh[i]->isTextured = false;
 				glUseProgram(shaderBlinnPhong->GetProgramID());
 				m_physicsLabCamera->computeMatricesFromInputs(window);
 				modelLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "model");
@@ -177,9 +199,10 @@ void RenderingLab1n2::run(void)
 				shaderBlinnPhong->SetAmbientLight(ambientColor,ambientIntensity);
 				shaderBlinnPhong->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
 				update(m_body[i]->GetTransformationMatrix(), shaderBlinnPhong->GetProgramID());
-				draw(m_bodyBuffer[i]->vao, m_bodyMesh[i]->vertices.size()); 
+				m_bodyMesh[i]->Render();
 				break;
 			case RenderingLab1n2::OREN_NAYAR:
+				m_bodyMesh[i]->isTextured = false;
 				glUseProgram(shaderOrenNayar->GetProgramID());
 				m_physicsLabCamera->computeMatricesFromInputs(window);
 				modelLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "model");
@@ -192,7 +215,7 @@ void RenderingLab1n2::run(void)
 				shaderOrenNayar->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
 				//shaderOrenNayar->SetEyeVector(m_physicsLabCamera->position + m_physicsLabCamera->direction);
 				update(m_body[i]->GetTransformationMatrix(), shaderOrenNayar->GetProgramID());
-				draw(m_bodyBuffer[i]->vao, m_bodyMesh[i]->vertices.size()); 
+				m_bodyMesh[i]->Render();
 				break;
 			}
 		}
@@ -215,8 +238,8 @@ void RenderingLab1n2::run(void)
 void RenderingLab1n2::initShaders()
 {
 	std::string v1,f1;
-	shaderDefault->readShaderFile("default.vs",v1);
-	shaderDefault->readShaderFile("default.ps",f1);
+	shaderDefault->readShaderFile("defaultTexture.vs",v1);
+	shaderDefault->readShaderFile("defaultTexture.ps",f1);
 	GLuint vertexShaderID_T1 = shaderDefault->makeShader(v1.c_str(), GL_VERTEX_SHADER);
 	GLuint fragmentShaderID_T1 = shaderDefault->makeShader(f1.c_str(), GL_FRAGMENT_SHADER);
 	shaderDefault->makeShaderProgram(vertexShaderID_T1,fragmentShaderID_T1);
@@ -235,8 +258,9 @@ void RenderingLab1n2::initShaders()
 	printf("shaderProgramID is %d\n",shaderToon->GetProgramID());
 
 	std::string v3,f3;
-	shaderBlinnPhong->readShaderFile("BlinnPhong.vs",v3);
-	shaderBlinnPhong->readShaderFile("BlinnPhong.ps",f3);
+
+	shaderBlinnPhong->readShaderFile("../default.vs",v3);
+	shaderBlinnPhong->readShaderFile("../default.ps",f3);
 	GLuint vertexShaderID_T3 = shaderBlinnPhong->makeShader(v3.c_str(), GL_VERTEX_SHADER);
 	GLuint fragmentShaderID_T3 = shaderBlinnPhong->makeShader(f3.c_str(), GL_FRAGMENT_SHADER);
 	shaderBlinnPhong->makeShaderProgram(vertexShaderID_T3,fragmentShaderID_T3);
@@ -425,6 +449,7 @@ void RenderingLab1n2::keyControl()
 		stopTime = false;
 	}
 }
+
 
 void RenderingLab1n2::draw(GLuint vao, int size)
 {

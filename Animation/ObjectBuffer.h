@@ -39,7 +39,7 @@ public:
 		const std::vector<glm::vec3> & normals, 
 		const std::vector<glm::vec2> & texcoords,
 		const std::vector<glm::vec3> & indices
-	);
+		);
 	void LinkBufferToShader(GLuint shaderProgramID);
 	void LinkBufferToShaderWithNormal(GLuint shaderProgramID);
 	void ChangeColors( const std::vector<glm::vec4> &newColor);

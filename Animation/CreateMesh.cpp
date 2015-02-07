@@ -3,6 +3,17 @@
 #define CUBE 36
 #define PI 3.1415926
 
+
+CreateMesh::CreateMesh(void)
+{
+	isTextured = false;
+}
+
+CreateMesh::~CreateMesh(void)
+{
+
+}
+
 void CreateMesh::createCubeMesh()
 {
 	glm::vec3 v[] = {
@@ -236,10 +247,20 @@ void CreateMesh::createBoundingSphereMesh(float radius, int resolution)
 
 void CreateMesh::setColors(glm::vec4 c)
 {
-	for (int i=0; i<colors.size(); i++ )
+	for(int i = 0; i < vertices.size(); i++)
 	{
 		colors.push_back(c);
 	}
+
+	vSize = vertices.size() * sizeof(glm::vec3);
+	cSize = vertices.size() * sizeof(glm::vec4);
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, v_VBO);
+	glBufferSubData( GL_ARRAY_BUFFER, vSize, cSize, (const GLvoid*)(&colors[0]));
+
+	glBindVertexArray(0);
 }
 
 void CreateMesh::LoadMesh(const char* filename)
@@ -261,40 +282,138 @@ void CreateMesh::LoadMesh(const char* filename)
 	mesh = scene->mMeshes[0];
 	numElements = mesh->mNumFaces * 3;
 
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+
 	if(mesh->HasPositions())
 	{
 		for(int i = 0; i < mesh->mNumVertices; i++) 
 		{
-			vertices.push_back(glm::vec3(mesh->mVertices[i].x,mesh->mVertices[i].y,mesh->mVertices[i].z));
-			colors.push_back(glm::vec4(0.85f,  0.85f,  0.85f, 1.0f));
+			vertices.push_back(glm::vec3(mesh->mVertices[i].x,mesh->mVertices[i].y,mesh->mVertices[i].z));			
+			colors.push_back(glm::vec4(1,0,0,1));
 		}
+
+		vSize = vertices.size() * sizeof(glm::vec3);
+		cSize = vertices.size() * sizeof(glm::vec4);
+
+		glGenBuffers(1, &v_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, v_VBO);
+		glBufferData(GL_ARRAY_BUFFER, vSize + cSize, NULL, GL_STATIC_DRAW);
+		glBufferSubData( GL_ARRAY_BUFFER, 0, vSize, (const GLvoid*)(&vertices[0]));
+		glBufferSubData( GL_ARRAY_BUFFER, vSize, cSize, (const GLvoid*)(&colors[0]));
+		//Loc 0 = vPosition;
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray (0);
+
+		//Loc 1 = vColor
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0,  BUFFER_OFFSET(vSize));
+		glEnableVertexAttribArray (1);
 	}
 
 	if(mesh->HasTextureCoords(0))
 	{
+		//glm::vec2 t = glm::vec2();
+
+		//float *texcoords = new float[mesh->mNumVertices * 2];
+
 		glm::vec2 t = glm::vec2();
+
 		for(int i = 0; i < mesh->mNumVertices; i++)
 		{
+			//texcoords[i * 2] = mesh->mTextureCoords[0][i].x;
+			//texcoords[i * 2 + 1] = mesh->mTextureCoords[0][i].y;
 			t.x = mesh->mTextureCoords[0][i].x;
 			t.y = mesh->mTextureCoords[0][i].y;
 			texcoords.push_back(t);
 		}
+
+		glGenBuffers(1, &t_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, t_VBO);
+		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * 2 * sizeof(GLfloat), (const GLvoid*)&texcoords[0], GL_STATIC_DRAW);
+
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray (2);
+
+		//delete texcoords;
 	}
 
 	if(mesh->HasNormals())
 	{
+		//float *normals = new float[mesh->mNumVertices * 3];
 		for(int i = 0; i < mesh->mNumVertices; i++)
 		{
+			/*normals[i * 3] = mesh->mNormals[i].x;
+			normals[i * 3 + 1] = mesh->mNormals[i].y;
+			normals[i * 3 + 2] = mesh->mNormals[i].z;*/
 			normals.push_back(glm::vec3(mesh->mNormals[i].x,mesh->mNormals[i].y,mesh->mNormals[i].z));
 		}
+
+		glGenBuffers(1,&n_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, n_VBO);
+		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * 3 * sizeof(GLfloat), (const GLvoid*)&normals[0], GL_STATIC_DRAW);
+
+		// Loc 4 = vNormal
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray (4);
+
+		//delete normals;
 	}
 
 	if(mesh->HasFaces())
 	{
+		GLuint *indices = new GLuint[mesh->mNumFaces * 3];
 
 		for(int i = 0; i < mesh->mNumFaces; i++)
 		{
-			indices.push_back(glm::vec3(mesh->mFaces[i].mIndices[0],mesh->mFaces[i].mIndices[1],mesh->mFaces[i].mIndices[2]));
+			//indices.push_back(glm::vec3(mesh->mFaces[i].mIndices[0],mesh->mFaces[i].mIndices[1],mesh->mFaces[i].mIndices[2]));
+
+			indices[i * 3] = mesh->mFaces[i].mIndices[0];
+			indices[i * 3 + 1] = mesh->mFaces[i].mIndices[1];
+			indices[i * 3 + 2] = mesh->mFaces[i].mIndices[2];
 		}
+
+		glGenBuffers(1, &i_VBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, i_VBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->mNumFaces * 3 * sizeof(GLuint), indices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray (3);
+
+		delete indices;
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void CreateMesh::setTexture(const char* filename, GLuint shaderID)
+{
+	isTextured = true;
+	GLuint gSampler = glGetUniformLocation(shaderID, "gSampler");
+	glUniform1i(gSampler, 0);
+
+	texture = new TextureLoader(GL_TEXTURE_2D, filename);
+
+	if (!texture->Load()) 
+	{
+		std::cout << "Unable to load texture" << std::endl;
 	}
 }
+
+void CreateMesh::Render()
+{
+	if(isTextured)
+	{
+		texture->Bind(GL_TEXTURE0);
+	}
+	else
+	{
+		texture->UnBind();
+	}
+
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, NULL);
+	glBindVertexArray(0);
+}
+

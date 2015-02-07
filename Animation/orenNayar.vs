@@ -1,8 +1,9 @@
 #version 330                                                             
                                                               
-in vec3 vPosition;
-in vec4 vColor;
-in vec3 vNormal;					
+layout(location = 0) in vec3 vPosition;
+layout(location = 1) in vec4 vColor;
+layout(location = 2) in vec2 vTexCoord;
+layout(location = 4) in vec3 vNormal;			
 
 out vec3 fPosition;
 out vec4 fColor;

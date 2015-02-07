@@ -104,9 +104,10 @@ GLuint Shader::GetProgramID()
 
 void Shader::findAllShaderID()
 {
-	vPositionID = glGetAttribLocation(shaderProgramID, "vPosition");
-	vColorID = glGetAttribLocation(shaderProgramID, "vColor");
-	vNormalID = glGetAttribLocation(shaderProgramID, "vNormal");
+	// 	vPositionID = glGetAttribLocation(shaderProgramID, "vPosition");
+	// 	vColorID = glGetAttribLocation(shaderProgramID, "vColor");
+	// 	vNormalID = glGetAttribLocation(shaderProgramID, "vNormal");
+
 
 	eyeID = glGetUniformLocation(shaderProgramID, "vEye");
 
