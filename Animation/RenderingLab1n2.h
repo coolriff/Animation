@@ -18,7 +18,7 @@
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
 #define MAX 36
-#define MAXOBJECT 4
+#define MAXOBJECT 2
 #define MAXSHADERTYPE 3
 
 class RenderingLab1n2
@@ -33,10 +33,13 @@ public:
 	CreateMesh *m_bodyMesh[MAXOBJECT];
 	ObjectBuffer *m_bodyBuffer[MAXOBJECT];
 
-	Shader *shaderDefault;
 	Shader *shaderBlinnPhong;
 	Shader *shaderToon;
 	Shader *shaderOrenNayar;
+
+	Shader *shaderBlinnPhongTexture;
+	Shader *shaderToonTexture;
+	Shader *shaderOrenNayarTexture;
 
 	PhysicsLabCamera* m_physicsLabCamera;
 
@@ -88,10 +91,12 @@ public:
 	bool isTexture;
 
 	enum ShaderType {
-		DEFAULT, 
-		TOON, 
+		TOON,
+		TOONTEXTURE,
 		BLINNPHONG,
-		OREN_NAYAR
+		BLINNPHONGTEXTURE,
+		OREN_NAYAR,
+		OREN_NAYARTEXTURE
 	};
 
 	ShaderType shaderType[MAXOBJECT];
@@ -108,4 +113,5 @@ public:
 	void translateBody(float x, float y, float z);
 	void draw(GLuint vao, int size);
 	void drawLine(GLuint vao, int size);
+	void createShaders(Shader *shader, std::string v, std::string p);
 };

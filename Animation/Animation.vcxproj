@@ -119,8 +119,18 @@
     <ClCompile Include="TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Shader\defaultTexture.ps" />
-    <None Include="..\Shader\defaultTexture.vs" />
+    <None Include="..\Shader\BlinnPhong.ps" />
+    <None Include="..\Shader\BlinnPhong.vs" />
+    <None Include="..\Shader\BlinnPhongTexture.ps" />
+    <None Include="..\Shader\BlinnPhongTexture.vs" />
+    <None Include="..\Shader\orenNayar.ps" />
+    <None Include="..\Shader\orenNayar.vs" />
+    <None Include="..\Shader\orenNayarTexture.ps" />
+    <None Include="..\Shader\orenNayarTexture.vs" />
+    <None Include="..\Shader\toon.ps" />
+    <None Include="..\Shader\toon.vs" />
+    <None Include="..\Shader\toonTexture.ps" />
+    <None Include="..\Shader\toonTexture.vs" />
     <None Include="diffuse.ps" />
     <None Include="diffuse.vs" />
     <None Include="Particle.fragmentshader" />

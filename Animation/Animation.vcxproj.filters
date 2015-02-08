@@ -149,10 +149,40 @@
     <None Include="Particle.vertexshader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Shader\defaultTexture.ps">
+    <None Include="..\Shader\BlinnPhongTexture.ps">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="..\Shader\defaultTexture.vs">
+    <None Include="..\Shader\BlinnPhongTexture.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\BlinnPhong.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\BlinnPhong.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\toon.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\toon.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\toonTexture.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\toonTexture.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\orenNayar.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\orenNayar.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\orenNayarTexture.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\orenNayarTexture.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
   </ItemGroup>

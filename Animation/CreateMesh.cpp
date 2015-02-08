@@ -292,17 +292,17 @@ void CreateMesh::LoadMesh(const char* filename)
 		for(int i = 0; i < mesh->mNumVertices; i++) 
 		{
 			vertices.push_back(glm::vec3(mesh->mVertices[i].x,mesh->mVertices[i].y,mesh->mVertices[i].z));			
-			colors.push_back(glm::vec4(1,0,0,1));
+			colors.push_back(glm::vec4(0.85f,0.85f,0.85f,1));
 		}
 
 		vSize = vertices.size() * sizeof(glm::vec3);
-		cSize = vertices.size() * sizeof(glm::vec4);
+		cSize = colors.size() * sizeof(glm::vec4);
 
 		glGenBuffers(1, &v_VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, v_VBO);
 		glBufferData(GL_ARRAY_BUFFER, vSize + cSize, NULL, GL_STATIC_DRAW);
 		glBufferSubData( GL_ARRAY_BUFFER, 0, vSize, (const GLvoid*)(&vertices[0]));
-		//glBufferSubData( GL_ARRAY_BUFFER, vSize, cSize, (const GLvoid*)(&colors[0]));
+		glBufferSubData( GL_ARRAY_BUFFER, vSize, cSize, (const GLvoid*)(&colors[0]));
 		//Loc 0 = vPosition;
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 		glEnableVertexAttribArray (0);
