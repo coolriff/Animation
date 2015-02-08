@@ -136,6 +136,8 @@
     <None Include="Particles.vs" />
     <None Include="skinning.fs" />
     <None Include="skinning.vs" />
+    <None Include="texture.ps" />
+    <None Include="texture.vs" />
     <None Include="TextureBlinnPhong.ps" />
     <None Include="TextureBlinnPhong.vs" />
     <None Include="too.ps" />

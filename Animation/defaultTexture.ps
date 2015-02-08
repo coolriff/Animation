@@ -1,11 +1,30 @@
 #version 330       
 
+in vec3 position_eye;
+in vec3 normal_eye;
 in vec2 texCoord0;
-out vec4 FragColor;
 
 uniform sampler2D gSampler;
+out vec4 FragColor;
+uniform vec3 vLightDir;
+
+uniform vec3 ambientColor;
+uniform vec3 specularColor;
+uniform vec3 diffuseColor;
+
+uniform float ambientIntensity;
+uniform float specularIntensity;
+uniform float diffuseIntensity;
+uniform float specularShininess;
+
 
 void main() 
-{                     
-	 FragColor = vec4(texture(gSampler, texCoord0));
+{
+	float intensity;
+	vec4 color = texture(gSampler,texCoord0);
+
+    vec4 ambientC = vec4(ambientColor, 1.0f) * ambientIntensity;
+	vec4 diffuseC = vec4(diffuseColor, 1.0f) * diffuseIntensity * max(0.0, dot(normalize(normal_eye), -vLightDir));	
+
+	FragColor = color * (diffuseC + ambientC);
 }

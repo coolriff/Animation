@@ -9,10 +9,14 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-out vec2 texCoord0; 
+out vec3 position_eye;
+out vec3 normal_eye;
+out vec2 texCoord0;
 
 void main()
 {
-	gl_Position = projection * view * model * vec4(vPosition, 1.0);
 	texCoord0 = vTexCoord;
+    position_eye = vec3( view * model  * vec4(vPosition,1.0));
+	normal_eye = vec3( view * model * vec4(vNormal,0.0));
+	gl_Position = projection * vec4(position_eye, 1.0); 
 }

@@ -85,38 +85,18 @@ void RenderingLab1n2::run(void)
 	double lastTime = glfwGetTime();
 
 	m_bodyMesh[0]->LoadMesh("../Models/teapot2.obj");
-	m_bodyMesh[0]->setTexture("../Models/bricks.jpg",shaderDefault->GetProgramID());
-	//m_bodyMesh[0]->setColors(glm::vec4(1,0,0,1));
+	m_bodyMesh[0]->setTexture("../Models/brick1.jpg",shaderDefault->GetProgramID());
+	m_body[0]->SetPosition(glm::vec3(0,0,0));
 
-	//m_bodyMesh[0]->setTexture("../Models/bricks.jpg",shaderBlinnPhong->GetProgramID());
-	m_bodyMesh[1]->LoadMesh("../Models/teapot2.obj");
-	m_bodyMesh[1]->setTexture("../Models/gold.jpg",shaderDefault->GetProgramID());
-	//m_bodyMesh[1]->setColors(glm::vec4(1,0,0,1));
-	m_bodyMesh[2]->LoadMesh("../Models/head2.obj");
-	m_bodyMesh[2]->setTexture("../Models/bricks.jpg",shaderDefault->GetProgramID());
-	//m_bodyMesh[2]->setColors(glm::vec4(1,0,0,1));
-	m_bodyMesh[3]->LoadMesh("../Models/head2.obj");
-	m_bodyMesh[3]->setTexture("../Models/gold.jpg",shaderDefault->GetProgramID());
-	//m_bodyMesh[3]->setColors(glm::vec4(1,0,0,1));
-
-	/*
-	for (int i=0; i<MAXOBJECT; i++)
-	{
-		//m_bodyMesh[i]->LoadMesh("../Models/teapot2.obj");
-		m_bodyBuffer[i]->GenerateVBO(m_bodyMesh[i]->vertices, m_bodyMesh[i]->colors, m_bodyMesh[i]->normals);
-		m_bodyBuffer[i]->LinkBufferToShaderWithNormal(shaderDefault->GetProgramID());
-		m_bodyBuffer[i]->LinkBufferToShaderWithNormal(shaderToon->GetProgramID());
-		m_bodyBuffer[i]->LinkBufferToShaderWithNormal(shaderBlinnPhong->GetProgramID());
-		m_bodyBuffer[i]->LinkBufferToShaderWithNormal(shaderOrenNayar->GetProgramID());
-	}
-	*/
-	m_body[0]->SetPosition(glm::vec3(-5,0,0));
-	m_body[1]->SetPosition(glm::vec3(5,0,0));
-
-	m_body[2]->SetPosition(glm::vec3(-2,3,0));
-	m_body[3]->SetPosition(glm::vec3(2,3,0));
-	
-
+	vLightDirGLM = glm::vec3(0,0,-1);
+	ambientColorGLM = glm::vec3(1,1,1);
+	specularColorGLM =glm::vec3(1,1,1);
+	diffuseColorGLM = glm::vec3(1,1,1);
+	ambientIntensityGLM =  0.2f;
+	specularIntensityGLM =  0.6f;
+	diffuseIntensityGLM =  0.8f;
+	specularShininessGLM =  64.0f;
+	GLuint vLightDir, ambientColor, specularColor, diffuseColor, ambientIntensity, specularIntensity, diffuseIntensity, specularShininess;
 	do{
 		double currentTime = glfwGetTime();
 		double delta = currentTime - lastTime;
@@ -128,97 +108,48 @@ void RenderingLab1n2::run(void)
 		}
 
 		preDraw();
-		
-// 		if (glfwGetKey(window, GLFW_KEY_LEFT_BRACKET ) == GLFW_PRESS){
-// 			isTexture = true;
-// 		}
-// 
-// 		if (glfwGetKey(window, GLFW_KEY_RIGHT_BRACKET ) == GLFW_PRESS){
-// 			isTexture = false;
-// 		}
 
-
-
-		for (int i=0; i<MAXOBJECT; i++)
-		{
-			m_body[i]->Update(delta);
-		}
+		m_body[0]->Update(delta);
 
 		keyControl();
 
-		for (int i=0; i<MAXOBJECT; i++)
-		{
-			switch (shaderType[i])
-			{
-			case RenderingLab1n2::DEFAULT:
-				m_bodyMesh[i]->isTextured = true;
-				glUseProgram(shaderDefault->GetProgramID());
-				m_physicsLabCamera->computeMatricesFromInputs(window);
-				modelLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "model");
-				viewLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "view");
-				projLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "projection");
-				m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-				shaderDefault->findAllShaderID();
-				shaderDefault->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
-				shaderDefault->SetAmbientLight(ambientColor,ambientIntensity);
-				shaderDefault->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
-			
-				update(m_body[i]->GetTransformationMatrix(), shaderDefault->GetProgramID());
+		glUseProgram(shaderDefault->GetProgramID());
 
-				m_bodyMesh[i]->Render();
-				//draw(m_bodyBuffer[i]->vao, m_bodyMesh[i]->vertices.size()); 
+		vLightDir = glGetUniformLocation(shaderDefault->GetProgramID(), "vLightDir");
+		std::cout << vLightDir << std::endl;
+		ambientColor = glGetUniformLocation(shaderDefault->GetProgramID(), "ambientColor");
+		std::cout << ambientColor << std::endl;
+		specularColor = glGetUniformLocation(shaderDefault->GetProgramID(), "specularColor");
+		std::cout << specularColor << std::endl;
+		diffuseColor = glGetUniformLocation(shaderDefault->GetProgramID(), "diffuseColor");
+		std::cout << diffuseColor << std::endl;
 
- 				break;
-			case RenderingLab1n2::TOON:
-				m_bodyMesh[i]->isTextured = false;
-				glUseProgram(shaderToon->GetProgramID());
-				m_physicsLabCamera->computeMatricesFromInputs(window);
-				modelLoc = glGetUniformLocation(shaderToon->GetProgramID(), "model");
-				viewLoc = glGetUniformLocation(shaderToon->GetProgramID(), "view");
-				projLoc = glGetUniformLocation(shaderToon->GetProgramID(), "projection");
-				m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-				shaderToon->findAllShaderID();
-				shaderToon->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
-				shaderToon->SetAmbientLight(ambientColor,ambientIntensity);
-				shaderToon->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
-				//m_bodyMesh[i]->setColors(glm::vec4(1,0,0,1));
-				update(m_body[i]->GetTransformationMatrix(), shaderToon->GetProgramID());
+		ambientIntensity = glGetUniformLocation(shaderDefault->GetProgramID(), "ambientIntensity");
+		std::cout << ambientIntensity << std::endl;
+		specularIntensity = glGetUniformLocation(shaderDefault->GetProgramID(), "specularIntensity");
+		std::cout << specularIntensity << std::endl;
+		diffuseIntensity = glGetUniformLocation(shaderDefault->GetProgramID(), "diffuseIntensity");
+		std::cout << diffuseIntensity << std::endl;
+		specularShininess = glGetUniformLocation(shaderDefault->GetProgramID(), "specularShininess");
+		std::cout << specularShininess << std::endl;
 
-				m_bodyMesh[i]->Render();
-				break;
-			case RenderingLab1n2::BLINNPHONG:
-				m_bodyMesh[i]->isTextured = false;
-				glUseProgram(shaderBlinnPhong->GetProgramID());
-				m_physicsLabCamera->computeMatricesFromInputs(window);
-				modelLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "model");
-				viewLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "view");
-				projLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "projection");
-				m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-				shaderBlinnPhong->findAllShaderID();
-				shaderBlinnPhong->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
-				shaderBlinnPhong->SetAmbientLight(ambientColor,ambientIntensity);
-				shaderBlinnPhong->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
-				update(m_body[i]->GetTransformationMatrix(), shaderBlinnPhong->GetProgramID());
-				m_bodyMesh[i]->Render();
-				break;
-			case RenderingLab1n2::OREN_NAYAR:
-				m_bodyMesh[i]->isTextured = false;
-				glUseProgram(shaderOrenNayar->GetProgramID());
-				m_physicsLabCamera->computeMatricesFromInputs(window);
-				modelLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "model");
-				viewLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "view");
-				projLoc = glGetUniformLocation(shaderOrenNayar->GetProgramID(), "projection");
-				m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-				shaderOrenNayar->findAllShaderID();
-				shaderOrenNayar->SetDirectionalLight(diffuseDirection,diffuseColor,diffuseIntensity);
-				shaderOrenNayar->SetAmbientLight(ambientColor,ambientIntensity);
-				shaderOrenNayar->SetSpecularComponent(specularColor,specularIntensity,specularShininess);
-				//shaderOrenNayar->SetEyeVector(m_physicsLabCamera->position + m_physicsLabCamera->direction);
-				update(m_body[i]->GetTransformationMatrix(), shaderOrenNayar->GetProgramID());
-				m_bodyMesh[i]->Render();
-				break;
-			}
-		}
+		glUniform3f(vLightDir, vLightDirGLM.x,vLightDirGLM.y,vLightDirGLM.z);
+		glUniform3f(ambientColor,ambientColorGLM.x,ambientColorGLM.y,ambientColorGLM.z);
+		glUniform3f(specularColor,specularColorGLM.x,specularColorGLM.y,specularColorGLM.z);
+		glUniform3f(diffuseColor,diffuseColorGLM.x,diffuseColorGLM.y,diffuseColorGLM.z);
+		glUniform1f(ambientIntensity,ambientIntensityGLM);
+		glUniform1f(specularIntensity,specularIntensityGLM);
+		glUniform1f(diffuseIntensity,diffuseIntensityGLM);
+		glUniform1f(specularShininess,specularShininessGLM);
+
+		m_physicsLabCamera->computeMatricesFromInputs(window);
+		modelLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "model");
+		viewLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "view");
+		projLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "projection");
+		m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+
+		update(m_body[0]->GetTransformationMatrix(), shaderDefault->GetProgramID());
+		m_bodyMesh[0]->Render();
 
 		TwDraw();
 
@@ -238,45 +169,14 @@ void RenderingLab1n2::run(void)
 void RenderingLab1n2::initShaders()
 {
 	std::string v1,f1;
-	shaderDefault->readShaderFile("defaultTexture.vs",v1);
-	shaderDefault->readShaderFile("defaultTexture.ps",f1);
+	shaderDefault->readShaderFile("../Shader/defaultTexture.vs",v1);
+	shaderDefault->readShaderFile("../Shader/defaultTexture.ps",f1);
 	GLuint vertexShaderID_T1 = shaderDefault->makeShader(v1.c_str(), GL_VERTEX_SHADER);
 	GLuint fragmentShaderID_T1 = shaderDefault->makeShader(f1.c_str(), GL_FRAGMENT_SHADER);
 	shaderDefault->makeShaderProgram(vertexShaderID_T1,fragmentShaderID_T1);
 	printf("vertexShaderID is %d\n",vertexShaderID_T1);
 	printf("fragmentShaderID is %d\n",fragmentShaderID_T1);
 	printf("shaderProgramID is %d\n",shaderDefault->GetProgramID());
-
-	std::string v2,f2;
-	shaderToon->readShaderFile("too.vs",v2);
-	shaderToon->readShaderFile("too.ps",f2);
-	GLuint vertexShaderID_T2 = shaderToon->makeShader(v2.c_str(), GL_VERTEX_SHADER);
-	GLuint fragmentShaderID_T2 = shaderToon->makeShader(f2.c_str(), GL_FRAGMENT_SHADER);
-	shaderToon->makeShaderProgram(vertexShaderID_T2,fragmentShaderID_T2);
-	printf("vertexShaderID is %d\n",vertexShaderID_T2);
-	printf("fragmentShaderID is %d\n",fragmentShaderID_T2);
-	printf("shaderProgramID is %d\n",shaderToon->GetProgramID());
-
-	std::string v3,f3;
-
-	shaderBlinnPhong->readShaderFile("../default.vs",v3);
-	shaderBlinnPhong->readShaderFile("../default.ps",f3);
-	GLuint vertexShaderID_T3 = shaderBlinnPhong->makeShader(v3.c_str(), GL_VERTEX_SHADER);
-	GLuint fragmentShaderID_T3 = shaderBlinnPhong->makeShader(f3.c_str(), GL_FRAGMENT_SHADER);
-	shaderBlinnPhong->makeShaderProgram(vertexShaderID_T3,fragmentShaderID_T3);
-	printf("vertexShaderID is %d\n",vertexShaderID_T3);
-	printf("fragmentShaderID is %d\n",fragmentShaderID_T3);
-	printf("shaderProgramID is %d\n",shaderBlinnPhong->GetProgramID());
-
-	std::string v4,f4;
-	shaderOrenNayar->readShaderFile("orenNayar.vs",v4);
-	shaderOrenNayar->readShaderFile("orenNayar.ps",f4);
-	GLuint vertexShaderID_T4 = shaderOrenNayar->makeShader(v4.c_str(), GL_VERTEX_SHADER);
-	GLuint fragmentShaderID_T4 = shaderOrenNayar->makeShader(f4.c_str(), GL_FRAGMENT_SHADER);
-	shaderOrenNayar->makeShaderProgram(vertexShaderID_T4,fragmentShaderID_T4);
-	printf("vertexShaderID is %d\n",vertexShaderID_T4);
-	printf("fragmentShaderID is %d\n",fragmentShaderID_T4);
-	printf("shaderProgramID is %d\n",shaderOrenNayar->GetProgramID());
 }
 
 void RenderingLab1n2::setupGlfwGlew()
@@ -357,24 +257,15 @@ void RenderingLab1n2::initTweakBar()
 	bar = TwNewBar("Simulation");
 	TwDefine(" Simulation size='300 400' ");
 
+	TwAddVarRW(bar, "diffuseDirection", TW_TYPE_DIR3F, &vLightDirGLM, " label='vLightDir '");
+	TwAddVarRW(bar, "lightPosition", TW_TYPE_COLOR3F, &ambientColorGLM, " label='ambientColor '");
+	TwAddVarRW(bar, "lightIntensity",  TW_TYPE_COLOR3F, &specularColorGLM, " label='specularColor '");
+	TwAddVarRW(bar, "lightIntensdsdsity",  TW_TYPE_COLOR3F, &diffuseColorGLM, " label='diffuseColor '");
 
-	TwAddVarRW(bar, "def", TW_TYPE_BOOL8, &dShader, " label='Default(7) '");
-	TwAddVarRW(bar, "Too", TW_TYPE_BOOL8, &tShader, " label='Toon(8) '");
-	TwAddVarRW(bar, "bp", TW_TYPE_BOOL8, &bShader, " label='BlinnPhong(9) '");
-	TwAddVarRW(bar, "on", TW_TYPE_BOOL8, &oShader, " label='Oren Nayar(0) '");
-
-	TwAddVarRW(bar, "ambientColor", TW_TYPE_COLOR3F, &ambientColor, " label='AmbientColor '");
-	TwAddVarRW(bar, "ambientIntensity", TW_TYPE_FLOAT, &ambientIntensity,"step = 0.1" " label='AmbientIntensity '");
-
-	TwAddVarRW(bar, "diffuseColor", TW_TYPE_COLOR3F, &diffuseColor, " label='DiffuseColor '");
-	TwAddVarRW(bar, "diffuseIntensity", TW_TYPE_FLOAT, &diffuseIntensity,"step = 0.1" " label='DiffuseIntensity '");
-	TwAddVarRW(bar, "diffuseDirection", TW_TYPE_DIR3F, &diffuseDirection, " label='DiffuseDirection '");
-
-	TwAddVarRW(bar, "specularColor", TW_TYPE_COLOR3F, &specularColor, " label='SpecularColor '");
-	TwAddVarRW(bar, "specularIntensity", TW_TYPE_FLOAT, &specularIntensity, "step = 0.1" " label='SpecularIntensity '");
-	TwAddVarRW(bar, "specularShininess", TW_TYPE_FLOAT, &specularShininess, "step = 0.1" " label='SpecularShininess '");
-	TwAddVarRW(bar, "roughness", TW_TYPE_FLOAT, &roughness, "step = 0.1" " label='Roughness '");
-
+	TwAddVarRW(bar, "materialAmbient", TW_TYPE_FLOAT, &ambientIntensityGLM, "step = 0.1" " label='ambientIntensity '");
+	TwAddVarRW(bar, "materialDiffuse", TW_TYPE_FLOAT, &specularIntensityGLM, "step = 0.1" " label='specularIntensity '");
+	TwAddVarRW(bar, "materiaSpecular", TW_TYPE_FLOAT, &diffuseIntensityGLM, "step = 0.1" " label='diffuseIntensity '");
+	TwAddVarRW(bar, "roughness", TW_TYPE_FLOAT, &specularShininessGLM, "step = 0.1" " label='specularShininess '");
 }
 
 void RenderingLab1n2::update(glm::mat4 ModelMatrix, GLuint shaderProgramID)
@@ -385,41 +276,6 @@ void RenderingLab1n2::update(glm::mat4 ModelMatrix, GLuint shaderProgramID)
 
 void RenderingLab1n2::keyControl()
 {
-	if (glfwGetKey(window, GLFW_KEY_R ) == GLFW_PRESS){
-		shaderType[0] = DEFAULT;
-		shaderType[2] = DEFAULT;
-	}
-	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
-		shaderType[0] = TOON;
-		shaderType[2] = TOON;
-	}
-	if (glfwGetKey(window, GLFW_KEY_Y ) == GLFW_PRESS){
-		shaderType[0] = BLINNPHONG;
-		shaderType[2] = BLINNPHONG;
-	}
-	if (glfwGetKey(window, GLFW_KEY_U ) == GLFW_PRESS){
-		shaderType[0] = OREN_NAYAR;
-		shaderType[2] = OREN_NAYAR;
-	}
-
-
-	if (glfwGetKey(window, GLFW_KEY_F ) == GLFW_PRESS){
-		shaderType[1] = DEFAULT;
-		shaderType[3] = DEFAULT;
-	}
-	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS){
-		shaderType[1] = TOON;
-		shaderType[3] = TOON;
-	}
-	if (glfwGetKey(window, GLFW_KEY_H ) == GLFW_PRESS){
-		shaderType[1] = BLINNPHONG;
-		shaderType[3] = BLINNPHONG;
-	}
-	if (glfwGetKey(window, GLFW_KEY_J ) == GLFW_PRESS){
-		shaderType[1] = OREN_NAYAR;
-		shaderType[3] = OREN_NAYAR;
-	}
-
 	//transfer
 	if (glfwGetKey(window, GLFW_KEY_Z ) == GLFW_PRESS){
 		for (int i=0; i<MAXOBJECT; i++)

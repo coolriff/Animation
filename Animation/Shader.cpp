@@ -104,25 +104,16 @@ GLuint Shader::GetProgramID()
 
 void Shader::findAllShaderID()
 {
-	// 	vPositionID = glGetAttribLocation(shaderProgramID, "vPosition");
-	// 	vColorID = glGetAttribLocation(shaderProgramID, "vColor");
-	// 	vNormalID = glGetAttribLocation(shaderProgramID, "vNormal");
+// 	vPositionID = glGetAttribLocation(shaderProgramID, "vPosition");
+// 	vColorID = glGetAttribLocation(shaderProgramID, "vColor");
+// 	vNormalID = glGetAttribLocation(shaderProgramID, "vNormal");
 
-
-	eyeID = glGetUniformLocation(shaderProgramID, "vEye");
-
-	ambientColorID = glGetUniformLocation(shaderProgramID, "ambientColor");
-	ambientIntensityID = glGetUniformLocation(shaderProgramID, "ambientIntensity");
-
-	diffuseColorID = glGetUniformLocation(shaderProgramID, "diffuseColor");
-	diffuseIntensityID = glGetUniformLocation(shaderProgramID, "diffuseIntensity");
-	diffuseDirectionID = glGetUniformLocation(shaderProgramID, "vDiffuseDirection");
-
-	specularColorID = glGetUniformLocation(shaderProgramID, "specularColor");
-	specularIntensityID = glGetUniformLocation(shaderProgramID, "specularIntensity");
-	specularShininessID = glGetUniformLocation(shaderProgramID, "specularShininess");
-
-	roughnessID = glGetUniformLocation(shaderProgramID, "roughness");
+// 	lightPosition = glGetUniformLocation(shaderProgramID, "Light.Position");
+// 	lightIntensity = glGetUniformLocation(shaderProgramID, "Light.Intensity");
+// 	materialAmbient = glGetUniformLocation(shaderProgramID, "Material.Ka");
+// 	materialDiffuse = glGetUniformLocation(shaderProgramID, "Material.Kd");
+// 	materiaSpecular = glGetUniformLocation(shaderProgramID, "Material.Ks");
+// 	materiaShininess = glGetUniformLocation(shaderProgramID, "Material.Shininess");
 }
 
 void Shader::SetRoughness(float roughness)

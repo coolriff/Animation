@@ -56,6 +56,27 @@ public:
 	float roughness;
 
 
+	glm::vec3 lightPositionhGLM;
+	glm::vec3 lightIntensityGLM;
+	glm::vec3 materialAmbientGLM;
+	glm::vec3 materialDiffuseGLM;
+	glm::vec3 materiaSpecularGLM;
+	float materiaShininessGLM;
+
+
+	glm::vec3 s;
+	glm::vec3 a;
+
+	glm::vec3 vLightDirGLM;
+	glm::vec3 ambientColorGLM;
+	glm::vec3 specularColorGLM;
+	glm::vec3 diffuseColorGLM;
+	float ambientIntensityGLM;
+	float specularIntensityGLM; 
+	float diffuseIntensityGLM;
+	float specularShininessGLM; 
+
+
 	bool stopTime;
 	bool useForce;
 

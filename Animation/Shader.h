@@ -15,6 +15,7 @@ public:
 
 	GLuint shaderProgramID;
 
+
 	GLuint vPositionID;
 	GLuint vColorID;
 	GLuint vNormalID;

@@ -1,0 +1,32 @@
+#version 330       
+
+in vec3 Position;
+in vec3 Normal;
+in vec2 TexCoord;
+
+uniform sampler2D gSampler;
+
+struct LightInfo {
+  vec4 Position;  // Light position in eye coords.
+  vec3 Intensity; // A,D,S intensity
+};
+uniform LightInfo Light;
+
+struct MaterialInfo {
+  vec3 Ka;            // Ambient reflectivity
+  vec3 Kd;            // Diffuse reflectivity
+  vec3 Ks;            // Specular reflectivity
+  float Shininess;    // Specular shininess factor
+};
+uniform MaterialInfo Material;
+
+out vec4 FragColor;
+in vec3 diffuseDirection;
+
+
+
+void main() 
+{
+
+	FragColor = texture( gSampler, TexCoord );
+}

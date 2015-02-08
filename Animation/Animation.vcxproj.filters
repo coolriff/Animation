@@ -188,6 +188,12 @@
     <None Include="orenNayar.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
+    <None Include="texture.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="texture.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lab1.h">
