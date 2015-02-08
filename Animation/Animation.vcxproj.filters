@@ -96,9 +96,6 @@
     <ClCompile Include="FountainEffect.cpp">
       <Filter>Physics Lab1</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsLab_2.cpp">
-      <Filter>Physics Lab2</Filter>
-    </ClCompile>
     <ClCompile Include="PhysicsLabCamera.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
@@ -152,46 +149,10 @@
     <None Include="Particle.vertexshader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="too.vs">
+    <None Include="..\Shader\defaultTexture.ps">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="too.ps">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="BlinnPhong.ps">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="BlinnPhong.vs">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="default.vs">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="default.ps">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="TextureBlinnPhong.vs">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="TextureBlinnPhong.ps">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="defaultTexture.ps">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="defaultTexture.vs">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="orenNayar.ps">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="orenNayar.vs">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="texture.vs">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="texture.ps">
+    <None Include="..\Shader\defaultTexture.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
   </ItemGroup>
@@ -276,9 +237,6 @@
     </ClInclude>
     <ClInclude Include="FountainEffect.h">
       <Filter>Physics Lab1</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsLab_2.h">
-      <Filter>Physics Lab2</Filter>
     </ClInclude>
     <ClInclude Include="PhysicsLabCamera.h">
       <Filter>Physics Lab2</Filter>

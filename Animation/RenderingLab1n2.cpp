@@ -96,7 +96,7 @@ void RenderingLab1n2::run(void)
 	specularIntensityGLM =  0.6f;
 	diffuseIntensityGLM =  0.8f;
 	specularShininessGLM =  64.0f;
-	GLuint vLightDir, ambientColor, specularColor, diffuseColor, ambientIntensity, specularIntensity, diffuseIntensity, specularShininess;
+	
 	do{
 		double currentTime = glfwGetTime();
 		double delta = currentTime - lastTime;
@@ -115,32 +115,8 @@ void RenderingLab1n2::run(void)
 
 		glUseProgram(shaderDefault->GetProgramID());
 
-		vLightDir = glGetUniformLocation(shaderDefault->GetProgramID(), "vLightDir");
-		std::cout << vLightDir << std::endl;
-		ambientColor = glGetUniformLocation(shaderDefault->GetProgramID(), "ambientColor");
-		std::cout << ambientColor << std::endl;
-		specularColor = glGetUniformLocation(shaderDefault->GetProgramID(), "specularColor");
-		std::cout << specularColor << std::endl;
-		diffuseColor = glGetUniformLocation(shaderDefault->GetProgramID(), "diffuseColor");
-		std::cout << diffuseColor << std::endl;
-
-		ambientIntensity = glGetUniformLocation(shaderDefault->GetProgramID(), "ambientIntensity");
-		std::cout << ambientIntensity << std::endl;
-		specularIntensity = glGetUniformLocation(shaderDefault->GetProgramID(), "specularIntensity");
-		std::cout << specularIntensity << std::endl;
-		diffuseIntensity = glGetUniformLocation(shaderDefault->GetProgramID(), "diffuseIntensity");
-		std::cout << diffuseIntensity << std::endl;
-		specularShininess = glGetUniformLocation(shaderDefault->GetProgramID(), "specularShininess");
-		std::cout << specularShininess << std::endl;
-
-		glUniform3f(vLightDir, vLightDirGLM.x,vLightDirGLM.y,vLightDirGLM.z);
-		glUniform3f(ambientColor,ambientColorGLM.x,ambientColorGLM.y,ambientColorGLM.z);
-		glUniform3f(specularColor,specularColorGLM.x,specularColorGLM.y,specularColorGLM.z);
-		glUniform3f(diffuseColor,diffuseColorGLM.x,diffuseColorGLM.y,diffuseColorGLM.z);
-		glUniform1f(ambientIntensity,ambientIntensityGLM);
-		glUniform1f(specularIntensity,specularIntensityGLM);
-		glUniform1f(diffuseIntensity,diffuseIntensityGLM);
-		glUniform1f(specularShininess,specularShininessGLM);
+		shaderDefault->findAllShaderID();
+		shaderDefault->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
 
 		m_physicsLabCamera->computeMatricesFromInputs(window);
 		modelLoc = glGetUniformLocation(shaderDefault->GetProgramID(), "model");
@@ -303,6 +279,15 @@ void RenderingLab1n2::keyControl()
 
 	if (glfwGetKey(window, GLFW_KEY_O ) == GLFW_PRESS){
 		stopTime = false;
+	}
+
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_BRACKET ) == GLFW_PRESS){
+		m_bodyMesh[0]->isTextured = true;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_RIGHT_BRACKET ) == GLFW_PRESS){
+		m_bodyMesh[0]->isTextured = false;
 	}
 }
 

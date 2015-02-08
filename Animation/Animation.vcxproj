@@ -109,7 +109,6 @@
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PhysicsLabCamera.cpp" />
     <ClCompile Include="PhysicsLab_1.cpp" />
-    <ClCompile Include="PhysicsLab_2.cpp" />
     <ClCompile Include="RenderingLab1n2.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="Setup.cpp" />
@@ -120,28 +119,16 @@
     <ClCompile Include="TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="BlinnPhong.ps" />
-    <None Include="BlinnPhong.vs" />
-    <None Include="default.ps" />
-    <None Include="default.vs" />
-    <None Include="defaultTexture.ps" />
-    <None Include="defaultTexture.vs" />
+    <None Include="..\Shader\defaultTexture.ps" />
+    <None Include="..\Shader\defaultTexture.vs" />
     <None Include="diffuse.ps" />
     <None Include="diffuse.vs" />
-    <None Include="orenNayar.ps" />
-    <None Include="orenNayar.vs" />
     <None Include="Particle.fragmentshader" />
     <None Include="Particle.vertexshader" />
     <None Include="Particles.ps" />
     <None Include="Particles.vs" />
     <None Include="skinning.fs" />
     <None Include="skinning.vs" />
-    <None Include="texture.ps" />
-    <None Include="texture.vs" />
-    <None Include="TextureBlinnPhong.ps" />
-    <None Include="TextureBlinnPhong.vs" />
-    <None Include="too.ps" />
-    <None Include="too.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArmSkeleton.h" />
@@ -171,7 +158,6 @@
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="PhysicsLabCamera.h" />
     <ClInclude Include="PhysicsLab_1.h" />
-    <ClInclude Include="PhysicsLab_2.h" />
     <ClInclude Include="RenderingLab1n2.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Setup.h" />

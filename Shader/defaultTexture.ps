@@ -1,32 +1,30 @@
 #version 330       
 
-in vec3 Position;
-in vec3 Normal;
-in vec2 TexCoord;
+in vec3 position_eye;
+in vec3 normal_eye;
+in vec2 texCoord0;
 
 uniform sampler2D gSampler;
-
-struct LightInfo {
-  vec4 Position;  // Light position in eye coords.
-  vec3 Intensity; // A,D,S intensity
-};
-uniform LightInfo Light;
-
-struct MaterialInfo {
-  vec3 Ka;            // Ambient reflectivity
-  vec3 Kd;            // Diffuse reflectivity
-  vec3 Ks;            // Specular reflectivity
-  float Shininess;    // Specular shininess factor
-};
-uniform MaterialInfo Material;
-
 out vec4 FragColor;
-in vec3 diffuseDirection;
+uniform vec3 vLightDir;
 
+uniform vec3 ambientColor;
+uniform vec3 specularColor;
+uniform vec3 diffuseColor;
+
+uniform float ambientIntensity;
+uniform float specularIntensity;
+uniform float diffuseIntensity;
+uniform float specularShininess;
 
 
 void main() 
 {
+	float intensity;
+	vec4 color = texture(gSampler,texCoord0);
 
-	FragColor = texture( gSampler, TexCoord );
+    vec4 ambientC = vec4(ambientColor, 1.0f) * ambientIntensity;
+	vec4 diffuseC = vec4(diffuseColor, 1.0f) * diffuseIntensity * max(0.0, dot(normalize(normal_eye), -vLightDir));	
+
+	FragColor = color * (diffuseC + ambientC);
 }

@@ -114,35 +114,67 @@ void Shader::findAllShaderID()
 // 	materialDiffuse = glGetUniformLocation(shaderProgramID, "Material.Kd");
 // 	materiaSpecular = glGetUniformLocation(shaderProgramID, "Material.Ks");
 // 	materiaShininess = glGetUniformLocation(shaderProgramID, "Material.Shininess");
+
+	vLightDir = glGetUniformLocation(shaderProgramID, "vLightDir");
+	std::cout << vLightDir << std::endl;
+	ambientColor = glGetUniformLocation(shaderProgramID, "ambientColor");
+	std::cout << ambientColor << std::endl;
+	specularColor = glGetUniformLocation(shaderProgramID, "specularColor");
+	std::cout << specularColor << std::endl;
+	diffuseColor = glGetUniformLocation(shaderProgramID, "diffuseColor");
+	std::cout << diffuseColor << std::endl;
+
+	ambientIntensity = glGetUniformLocation(shaderProgramID, "ambientIntensity");
+	std::cout << ambientIntensity << std::endl;
+	specularIntensity = glGetUniformLocation(shaderProgramID, "specularIntensity");
+	std::cout << specularIntensity << std::endl;
+	diffuseIntensity = glGetUniformLocation(shaderProgramID, "diffuseIntensity");
+	std::cout << diffuseIntensity << std::endl;
+	specularShininess = glGetUniformLocation(shaderProgramID, "specularShininess");
+	std::cout << specularShininess << std::endl;
 }
 
 void Shader::SetRoughness(float roughness)
 {
-	glUniform1f(roughnessID, roughness);
+/*	glUniform1f(roughnessID, roughness);*/
 }
 
 
 void Shader::SetEyeVector(const glm::vec3 &eye)
 {
-	glUniform3f(eyeID, eye.x, eye.y, eye.z);
+/*	glUniform3f(eyeID, eye.x, eye.y, eye.z);*/
 }
 
 void Shader::SetAmbientLight(glm::vec3 color, float intensity)
 {
-	glUniform3f(ambientColorID, color.r, color.g, color.b);
-	glUniform1f(ambientIntensityID, intensity);
+// 	glUniform3f(ambientColorID, color.r, color.g, color.b);
+// 	glUniform1f(ambientIntensityID, intensity);
 }
 
 void Shader::SetDirectionalLight(glm::vec3 direction, glm::vec3 color, float intensity)
 {
-	glUniform3f(diffuseColorID, color.r, color.g, color.b);
-	glUniform1f(diffuseIntensityID, intensity);
-	glUniform3f(diffuseDirectionID, direction.x, direction.y, direction.z);
+// 	glUniform3f(diffuseColorID, color.r, color.g, color.b);
+// 	glUniform1f(diffuseIntensityID, intensity);
+// 	glUniform3f(diffuseDirectionID, direction.x, direction.y, direction.z);
 }
 
 void Shader::SetSpecularComponent(glm::vec3 color, float intensity, float shininess)
 {
-	glUniform3f(specularColorID, color.r, color.g, color.b);
-	glUniform1f(specularIntensityID, intensity);
-	glUniform1f(specularShininessID, shininess);
+// 	glUniform3f(specularColorID, color.r, color.g, color.b);
+// 	glUniform1f(specularIntensityID, intensity);
+// 	glUniform1f(specularShininessID, shininess);
+}
+
+
+void Shader::SetAll(glm::vec3 vLightDirGLM,glm::vec3 ambientColorGLM,glm::vec3 specularColorGLM,glm::vec3 diffuseColorGLM,
+					float ambientIntensityGLM,float specularIntensityGLM,float diffuseIntensityGLM,float specularShininessGLM)
+{
+	glUniform3f(vLightDir, vLightDirGLM.x,vLightDirGLM.y,vLightDirGLM.z);
+	glUniform3f(ambientColor,ambientColorGLM.x,ambientColorGLM.y,ambientColorGLM.z);
+	glUniform3f(specularColor,specularColorGLM.x,specularColorGLM.y,specularColorGLM.z);
+	glUniform3f(diffuseColor,diffuseColorGLM.x,diffuseColorGLM.y,diffuseColorGLM.z);
+	glUniform1f(ambientIntensity,ambientIntensityGLM);
+	glUniform1f(specularIntensity,specularIntensityGLM);
+	glUniform1f(diffuseIntensity,diffuseIntensityGLM);
+	glUniform1f(specularShininess,specularShininessGLM);
 }

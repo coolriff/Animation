@@ -9,22 +9,14 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-out vec3 Position;
-out vec3 Normal;
-out vec2 TexCoord;
-
-uniform vec3 vDiffuseDirection;
-out vec3 diffuseDirection;
+out vec3 position_eye;
+out vec3 normal_eye;
+out vec2 texCoord0;
 
 void main()
 {
-	TexCoord = vTexCoord;
-
-	Normal = vec3( (view * model) * vec4(vNormal,0.0));
-    Position = vec3( (view * model)  * vec4(vPosition,1.0));
-
-	diffuseDirection = (view * vec4(vDiffuseDirection, 0.0)).xyz; 
-
-	gl_Position = projection * vec4(Position, 1.0); 
-
+	texCoord0 = vTexCoord;
+    position_eye = vec3( view * model  * vec4(vPosition,1.0));
+	normal_eye = vec3( view * model * vec4(vNormal,0.0));
+	gl_Position = projection * vec4(position_eye, 1.0); 
 }
