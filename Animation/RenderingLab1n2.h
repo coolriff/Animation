@@ -108,4 +108,5 @@ public:
 	void translateBody(float x, float y, float z);
 	void draw(GLuint vao, int size);
 	void drawLine(GLuint vao, int size);
+	void createShaders(Shader *shader, std::string v, std::string p);
 };

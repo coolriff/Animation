@@ -144,15 +144,20 @@ void RenderingLab1n2::run(void)
 
 void RenderingLab1n2::initShaders()
 {
+	createShaders(shaderDefault, "../Shader/defaultTexture.vs", "../Shader/defaultTexture.ps");
+}
+
+void RenderingLab1n2::createShaders(Shader *shader, std::string v, std::string p)
+{
 	std::string v1,f1;
-	shaderDefault->readShaderFile("../Shader/defaultTexture.vs",v1);
-	shaderDefault->readShaderFile("../Shader/defaultTexture.ps",f1);
-	GLuint vertexShaderID_T1 = shaderDefault->makeShader(v1.c_str(), GL_VERTEX_SHADER);
-	GLuint fragmentShaderID_T1 = shaderDefault->makeShader(f1.c_str(), GL_FRAGMENT_SHADER);
-	shaderDefault->makeShaderProgram(vertexShaderID_T1,fragmentShaderID_T1);
-	printf("vertexShaderID is %d\n",vertexShaderID_T1);
-	printf("fragmentShaderID is %d\n",fragmentShaderID_T1);
-	printf("shaderProgramID is %d\n",shaderDefault->GetProgramID());
+	shader->readShaderFile(v,v1);
+	shader->readShaderFile(p,f1);
+	GLuint vertexShaderID = shader->makeShader(v1.c_str(), GL_VERTEX_SHADER);
+	GLuint fragmentShaderID = shader->makeShader(f1.c_str(), GL_FRAGMENT_SHADER);
+	shader->makeShaderProgram(vertexShaderID,fragmentShaderID);
+	printf("vertexShaderID is %d\n",vertexShaderID);
+	printf("fragmentShaderID is %d\n",fragmentShaderID);
+	printf("shaderProgramID is %d\n",shader->GetProgramID());
 }
 
 void RenderingLab1n2::setupGlfwGlew()
