@@ -33,13 +33,7 @@ public:
 	CreateMesh *m_bodyMesh[MAXOBJECT];
 	ObjectBuffer *m_bodyBuffer[MAXOBJECT];
 
-	Shader *shaderBlinnPhong;
-	Shader *shaderToon;
-	Shader *shaderOrenNayar;
-
-	Shader *shaderBlinnPhongTexture;
-	Shader *shaderToonTexture;
-	Shader *shaderOrenNayarTexture;
+	Shader *shaderSkyBox;
 
 	PhysicsLabCamera* m_physicsLabCamera;
 
@@ -47,28 +41,6 @@ public:
 	GLuint viewLoc;
 	GLuint projLoc;
 
-	glm::vec3 eye;
-	glm::vec3 ambientColor;
-	float ambientIntensity;	
-	glm::vec3 diffuseColor; 
-	float diffuseIntensity;
-	glm::vec3 diffuseDirection;
-	glm::vec3 specularColor;
-	float specularIntensity;
-	float specularShininess;
-	float roughness;
-
-
-	glm::vec3 lightPositionhGLM;
-	glm::vec3 lightIntensityGLM;
-	glm::vec3 materialAmbientGLM;
-	glm::vec3 materialDiffuseGLM;
-	glm::vec3 materiaSpecularGLM;
-	float materiaShininessGLM;
-
-
-	glm::vec3 s;
-	glm::vec3 a;
 
 	glm::vec3 vLightDirGLM;
 	glm::vec3 ambientColorGLM;
@@ -83,23 +55,7 @@ public:
 	bool stopTime;
 	bool useForce;
 
-	bool dShader[MAXOBJECT];
-	bool tShader[MAXOBJECT];
-	bool bShader[MAXOBJECT];
-	bool oShader[MAXOBJECT];
-
 	bool isTexture;
-
-	enum ShaderType {
-		TOON,
-		TOONTEXTURE,
-		BLINNPHONG,
-		BLINNPHONGTEXTURE,
-		OREN_NAYAR,
-		OREN_NAYARTEXTURE
-	};
-
-	ShaderType shaderType[MAXOBJECT];
 
 	void run(void);
 	void initShaders();
