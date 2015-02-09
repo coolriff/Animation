@@ -15,6 +15,10 @@
 #include <glm/gtx/transform.hpp>
 #include <algorithm>
 
+#include "vboteapot.h"
+#include "skybox.h"
+#include "tgaio.h"
+
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
 #define MAX 36
@@ -40,32 +44,12 @@ public:
 
 	PhysicsLabCamera* m_physicsLabCamera;
 
+	VBOTeapot *teapot;
+	SkyBox *sky;
+
 	GLuint modelLoc;
 	GLuint viewLoc;
 	GLuint projLoc;
-
-	glm::vec3 eye;
-	glm::vec3 ambientColor;
-	float ambientIntensity;	
-	glm::vec3 diffuseColor; 
-	float diffuseIntensity;
-	glm::vec3 diffuseDirection;
-	glm::vec3 specularColor;
-	float specularIntensity;
-	float specularShininess;
-	float roughness;
-
-
-	glm::vec3 lightPositionhGLM;
-	glm::vec3 lightIntensityGLM;
-	glm::vec3 materialAmbientGLM;
-	glm::vec3 materialDiffuseGLM;
-	glm::vec3 materiaSpecularGLM;
-	float materiaShininessGLM;
-
-
-	glm::vec3 s;
-	glm::vec3 a;
 
 	glm::vec3 vLightDirGLM;
 	glm::vec3 ambientColorGLM;
@@ -109,4 +93,5 @@ public:
 	void draw(GLuint vao, int size);
 	void drawLine(GLuint vao, int size);
 	void createShaders(Shader *shader, std::string v, std::string p);
+	void loadCubeMap( const char * baseFileName );
 };

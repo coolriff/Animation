@@ -123,6 +123,15 @@
     <ClCompile Include="RenderingLab1n2.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
+    <ClCompile Include="vboteapot.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
+    <ClCompile Include="tgaio.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="diffuse.ps">
@@ -153,6 +162,12 @@
       <Filter>Physics Lab2\Shader</Filter>
     </None>
     <None Include="..\Shader\defaultTexture.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\cubemap_reflect.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\cubemap_reflect.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
   </ItemGroup>
@@ -263,6 +278,18 @@
       <Filter>Physics Lab2</Filter>
     </ClInclude>
     <ClInclude Include="RenderingLab1n2.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="teapotdata.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="vboteapot.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="tgaio.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
   </ItemGroup>
