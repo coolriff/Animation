@@ -22,8 +22,8 @@ SkyBox::SkyBox()
         side2, -side2, -side2,
        // Left
        -side2, -side2, side2,
-        side2,  side2, side2,
-       -side2,  side2, -side2,
+       -side2,  side2, side2,
+	   -side2,  side2, -side2,
        -side2, -side2, -side2,
        // Bottom
        -side2, -side2, side2,
