@@ -211,15 +211,15 @@ void PhysicsLab_2::run(void)
 			boundingSphereCubeBuffers[i]->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
 
 		}
+	}
 
-		for (int j=0; j<cubes[i]->m_points.size(); j++)
-		{
-			boundingSpheres[j]->createBoundingSphereMesh(0.05, 5);
-			boundingSphereBuffers[j]->GenerateVBO(boundingSpheres[j]->vertices,boundingSpheres[j]->redColors,boundingSpheres[j]->normals);
-			boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
-			boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
-			boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
-		}
+	for (int j=0; j<MAXOBJECT * 8; j++)
+	{
+		boundingSpheres[j]->createBoundingSphereMesh(0.05, 5);
+		boundingSphereBuffers[j]->GenerateVBO(boundingSpheres[j]->vertices,boundingSpheres[j]->redColors,boundingSpheres[j]->normals);
+		boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+		boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
+		boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
 	}
 
 	initTweakBar();
