@@ -136,12 +136,18 @@ PhysicsLab_2::PhysicsLab_2(void)
 		cubes[i] = new Cube();
 		cubesMesh[i] = new CreateMesh();
 		cubesBuffer[i] = new ObjectBuffer();
-		boundingSpheres[i] = new CreateMesh();
-		boundingSphereBuffers[i] = new ObjectBuffer();
+		boundingSpheresCube[i] = new CreateMesh();
+		boundingSphereCubeBuffers[i] = new ObjectBuffer();
 		AABBcubes[i] = new Cube();
 		AABBMeshs[i] = new CreateMesh();
 		AABBBuffers[i] = new ObjectBuffer();
 
+	}
+
+	for (int i=0; i<MAXOBJECT * 8; i++)
+	{
+		boundingSpheres[i] = new CreateMesh();
+		boundingSphereBuffers[i] = new ObjectBuffer();
 	}
 }
 
@@ -157,7 +163,7 @@ void PhysicsLab_2::run(void)
 {
 	setupGlfwGlew();
 	initShaders();
-	initTweakBar();
+
 
 	directionalLightDirection = glm::vec3(0, 0, -1);
 
@@ -190,6 +196,33 @@ void PhysicsLab_2::run(void)
 	}
 
 	double lastTime = glfwGetTime();
+
+	for (int i=0; i<MAXOBJECT; i++)
+	{
+		cubes[i]->Update(0.001f);
+		cubes[i]->updateCurrentVertices(MAX,cubesMesh[i]->vertices);
+		cubes[i]->CalculateCentreOfMess(MAX);
+
+		if (!cubes[i]->distanceFromCentreMessToPoint)
+		{
+			cubes[i]->CalculateDistanceFromCentreOfMessToPoint();
+			boundingSpheresCube[i]->createBoundingSphereMesh(cubes[i]->distanceFromCentreMessToPoint, 10);
+			boundingSphereCubeBuffers[i]->GenerateVBO(boundingSpheresCube[i]->vertices,boundingSpheresCube[i]->colors,boundingSpheresCube[i]->normals);
+			boundingSphereCubeBuffers[i]->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+
+		}
+
+		for (int j=0; j<cubes[i]->m_points.size(); j++)
+		{
+			boundingSpheres[j]->createBoundingSphereMesh(0.05, 5);
+			boundingSphereBuffers[j]->GenerateVBO(boundingSpheres[j]->vertices,boundingSpheres[j]->redColors,boundingSpheres[j]->normals);
+			boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+			boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
+			boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
+		}
+	}
+
+	initTweakBar();
 
 	do{
 		double currentTime = glfwGetTime();
@@ -256,17 +289,6 @@ void PhysicsLab_2::run(void)
 			cubes[i]->Update(delta);
 			cubes[i]->updateCurrentVertices(MAX,cubesMesh[i]->vertices);
 			cubes[i]->CalculateCentreOfMess(MAX);
-
-			if (!cubes[i]->distanceFromCentreMessToPoint)
-			{
-				cubes[i]->CalculateDistanceFromCentreOfMessToPoint();
-				boundingSpheres[i]->createBoundingSphereMesh(cubes[i]->distanceFromCentreMessToPoint, 10);
-				boundingSphereBuffers[i]->GenerateVBO(boundingSpheres[i]->vertices,boundingSpheres[i]->colors,boundingSpheres[i]->normals);
-				boundingSphereBuffers[i]->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
-				boundingSphereBuffers[i]->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
-				boundingSphereBuffers[i]->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
-				//printf("%f",cubes[i]->distanceFromCentreMessToPoint);
-			}
 		}
 
 		updateInBox();
@@ -286,7 +308,7 @@ void PhysicsLab_2::run(void)
 			{
 				for (int i=0; i<MAXOBJECT; i++)
 				{
-					boundingSphereBuffers[i]->ChangeColors(boundingSpheres[i]->colors);
+					boundingSphereCubeBuffers[i]->ChangeColors(boundingSpheresCube[i]->colors);
 				}
 				distanceCheck();
 			}
@@ -297,11 +319,23 @@ void PhysicsLab_2::run(void)
 				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
 
 				update(cubes[i]->GetTransformationMatrix(),m_shader->GetProgramID());
-				drawLine(boundingSphereBuffers[i]->vao, boundingSpheres[i]->vertices.size());
+				drawLine(boundingSphereCubeBuffers[i]->vao, boundingSpheresCube[i]->vertices.size());
+
+				for (int j=0; j<cubes[i]->m_points.size(); j++)
+				{
+					glm::mat4 tPos = glm::mat4(1);
+					tPos[3][0] = cubes[i]->m_points[j].x;
+					tPos[3][1] = cubes[i]->m_points[j].y;
+					tPos[3][2] = cubes[i]->m_points[j].z;
+
+					update(tPos,m_shader->GetProgramID());
+					draw(boundingSphereBuffers[j]->vao, boundingSpheres[j]->vertices.size());
+				}
 			}
 
 		}
 
+		//9
 		//AABB with SWEEP AND PRUNE
 		if (shaderType == CARTOON)
 		{
@@ -328,16 +362,25 @@ void PhysicsLab_2::run(void)
 				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
 
 				glm::mat4 tempPos = glm::mat4(1);
-				tempPos[3][0] = cubes[i]->m_position.x;
-				tempPos[3][1] = cubes[i]->m_position.y;
-				tempPos[3][2] = cubes[i]->m_position.z;
+				tempPos[3][0] = cubes[i]->centre_of_mass.x;
+				tempPos[3][1] = cubes[i]->centre_of_mass.y;
+				tempPos[3][2] = cubes[i]->centre_of_mass.z;
 
-				glm::mat4 r = glm::toMat4(glm::quat());
+				tempPos = glm::scale(tempPos,glm::vec3(cubes[i]->maxAABBx  * 2,cubes[i]->maxAABBy * 2,cubes[i]->maxAABBz * 2));
 
-				glm::mat4 tempScale = glm::scale(glm::vec3(cubes[i]->maxAABBx  * 2,cubes[i]->maxAABBy * 2,cubes[i]->maxAABBz * 2));
-
-				update((tempPos * r * tempScale),too_shader->GetProgramID());
+				update(tempPos,too_shader->GetProgramID());
 				drawLine(AABBBuffers[i]->vao, AABBMeshs[i]->vertices.size());
+
+				for (int j=0; j<cubes[i]->m_points.size(); j++)
+				{
+					glm::mat4 tPos = glm::mat4(1);
+					tPos[3][0] = cubes[i]->m_points[j].x;
+					tPos[3][1] = cubes[i]->m_points[j].y;
+					tPos[3][2] = cubes[i]->m_points[j].z;
+
+					update(tPos,m_shader->GetProgramID());
+					draw(boundingSphereBuffers[j]->vao, boundingSpheres[j]->vertices.size());
+				}
 			}
 			//BroadPhase update end
 		}
@@ -368,38 +411,32 @@ void PhysicsLab_2::run(void)
 				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
 
 				glm::mat4 tempPos = glm::mat4(1);
-				tempPos[3][0] = cubes[i]->m_position.x;
-				tempPos[3][1] = cubes[i]->m_position.y;
-				tempPos[3][2] = cubes[i]->m_position.z;
+				tempPos[3][0] = cubes[i]->centre_of_mass.x;
+				tempPos[3][1] = cubes[i]->centre_of_mass.y;
+				tempPos[3][2] = cubes[i]->centre_of_mass.z;
 
-				glm::mat4 r = glm::toMat4(glm::quat());
+				tempPos = glm::scale(tempPos,glm::vec3(cubes[i]->maxAABBx  * 2,cubes[i]->maxAABBy * 2,cubes[i]->maxAABBz * 2));
 
-				glm::mat4 tempScale = glm::scale(glm::vec3(cubes[i]->maxAABBx  * 2,cubes[i]->maxAABBy * 2,cubes[i]->maxAABBz * 2));
-
-				update((tempPos * r * tempScale),b_shader->GetProgramID());
+				update(tempPos,b_shader->GetProgramID());
 				drawLine(AABBBuffers[i]->vao, AABBMeshs[i]->vertices.size());
+
+				for (int j=0; j<cubes[i]->m_points.size(); j++)
+				{
+					glm::mat4 tPos = glm::mat4(1);
+					tPos[3][0] = cubes[i]->m_points[j].x;
+					tPos[3][1] = cubes[i]->m_points[j].y;
+					tPos[3][2] = cubes[i]->m_points[j].z;
+
+					update(tPos,m_shader->GetProgramID());
+					draw(boundingSphereBuffers[j]->vao, boundingSpheres[j]->vertices.size());
+				}
 			}
 		}
 
 		if (shaderType == NUMBER4)
 		{
-			// 			m_physicsLabCamera->computeMatricesFromInputs(window);
-			// 			GLuint modelLoc = glGetUniformLocation(cylinderShader->GetProgramID(), "model");
-			// 			GLuint viewLoc = glGetUniformLocation(cylinderShader->GetProgramID(), "view");
-			// 			GLuint projLoc = glGetUniformLocation(cylinderShader->GetProgramID(), "projection");
-			// 			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-			// 			update(cube->GetTransformationMatrix(),cylinderShader->GetProgramID());
-			// 			draw(m_objectBuffer->vao,createMesh->vertices.size());
-			// 			update(cube2->GetTransformationMatrix(),cylinderShader->GetProgramID());
-			// 			draw(m_objectBuffer2->vao,createMesh2->vertices.size());	
-			// 			cylinderShader->SetDirectionalLight(directionalLightDirection);
+			//TODO
 		}
-
-
-
-
-
-		//check distance and change colors
 
 
 		if (glfwGetKey(window, GLFW_KEY_5 ) == GLFW_PRESS){
@@ -449,7 +486,7 @@ void PhysicsLab_2::update8VerticesOnCube()
 void PhysicsLab_2::rotateBody(float x, float y, float z)
 {
 	glm::quat q(glm::vec3(x, y, z));
-	//cube->SetOrientation(cube->GetOrientation() * q);
+	cubes[0]->SetOrientation(cubes[0]->GetOrientation() * q);
 }
 
 void PhysicsLab_2::translateBody(float x, float y, float z)
@@ -490,16 +527,6 @@ void PhysicsLab_2::initShaders()
 	printf("vertexShaderID is %d\n",vertexShaderID_3);
 	printf("fragmentShaderID is %d\n",fragmentShaderID_3);
 	printf("shaderProgramID is %d\n",b_shader->GetProgramID());
-
-	// 	std::string vertexShaderSourceCodeCy,fragmentShaderSourceCodeCy;
-	// 	cylinderShader->readShaderFile("Gooch.vs",vertexShaderSourceCodeCy);
-	// 	cylinderShader->readShaderFile("Gooch.ps",fragmentShaderSourceCodeCy);
-	// 	GLuint vertexShaderIDCy = cylinderShader->makeShader(vertexShaderSourceCodeCy.c_str(), GL_VERTEX_SHADER);
-	// 	GLuint fragmentShaderIDCy = cylinderShader->makeShader(fragmentShaderSourceCodeCy.c_str(), GL_FRAGMENT_SHADER);
-	// 	cylinderShader->makeShaderProgram(vertexShaderIDCy,fragmentShaderIDCy);
-	// 	printf("vertexShaderID is %d\n",vertexShaderIDCy);
-	// 	printf("fragmentShaderID is %d\n",fragmentShaderIDCy);
-	// 	printf("shaderProgramID is %d\n",cylinderShader->GetProgramID());
 }
 
 void PhysicsLab_2::setupGlfwGlew()
@@ -589,15 +616,22 @@ void PhysicsLab_2::initTweakBar()
 
 	TwAddVarRW(bar, "Camera", TW_TYPE_DIR3F, &m_physicsLabCamera->position, " label='Camera Pos: '");
 
-	// 	TwAddVarRO(bar, "boxPoint0", TW_TYPE_DIR3F, &cubes[0]->m_points.at(0), " label='p0: '");
-	// 	TwAddVarRO(bar, "boxPoint1", TW_TYPE_DIR3F, &cubes[0]->m_points.at(1), " label='p1: '");
-	// 	TwAddVarRO(bar, "boxPoint2", TW_TYPE_DIR3F, &cubes[0]->m_points.at(2), " label='p2: '");
-	// 	TwAddVarRO(bar, "boxPoint3", TW_TYPE_DIR3F, &cubes[0]->m_points.at(3), " label='p3: '");
-	// 	TwAddVarRO(bar, "boxPoint4", TW_TYPE_DIR3F, &cubes[0]->m_points.at(4), " label='p4: '");
-	// 	TwAddVarRO(bar, "boxPoint5", TW_TYPE_DIR3F, &cubes[0]->m_points.at(5), " label='p5: '");
-	// 	TwAddVarRO(bar, "boxPoint6", TW_TYPE_DIR3F, &cubes[0]->m_points.at(6), " label='p6: '");
-	// 	TwAddVarRO(bar, "boxPoint7", TW_TYPE_DIR3F, &cubes[0]->m_points.at(7), " label='p7: '");
-	// 	TwAddVarRO(bar, "cmass", TW_TYPE_DIR3F, &cube->centre_of_mess, " label='centre of mess: '");
+	TwAddVarRO(bar, "boxPoint0", TW_TYPE_DIR3F, &cubes[0]->m_points.at(0), " label='p0: '");
+	TwAddVarRO(bar, "boxPoint1", TW_TYPE_DIR3F, &cubes[0]->m_points.at(1), " label='p1: '");
+	TwAddVarRO(bar, "boxPoint2", TW_TYPE_DIR3F, &cubes[0]->m_points.at(2), " label='p2: '");
+	TwAddVarRO(bar, "boxPoint3", TW_TYPE_DIR3F, &cubes[0]->m_points.at(3), " label='p3: '");
+	TwAddVarRO(bar, "boxPoint4", TW_TYPE_DIR3F, &cubes[0]->m_points.at(4), " label='p4: '");
+	TwAddVarRO(bar, "boxPoint5", TW_TYPE_DIR3F, &cubes[0]->m_points.at(5), " label='p5: '");
+	TwAddVarRO(bar, "boxPoint6", TW_TYPE_DIR3F, &cubes[0]->m_points.at(6), " label='p6: '");
+	TwAddVarRO(bar, "boxPoint7", TW_TYPE_DIR3F, &cubes[0]->m_points.at(7), " label='p7: '");
+	TwAddVarRO(bar, "cmass", TW_TYPE_DIR3F, &cubes[0]->centre_of_mass, " label='centre of mass: '");
+	TwAddVarRO(bar, "cpos", TW_TYPE_DIR3F, &cubes[0]->m_position, " label='Pos: '");
+	TwAddVarRO(bar, "AABBmAX", TW_TYPE_DIR3F, &cubes[0]->AABBmax, " label='AABBmax: '");
+	TwAddVarRO(bar, "AABBmin", TW_TYPE_DIR3F, &cubes[0]->AABBmin, " label='AABBmin: '");
+	TwAddVarRO(bar, "maxAABBx", TW_TYPE_FLOAT, &cubes[0]->maxAABBx, " label='maxAABBx: '");
+	TwAddVarRO(bar, "maxAABBy", TW_TYPE_FLOAT, &cubes[0]->maxAABBy, " label='maxAABBy: '");
+	TwAddVarRO(bar, "maxAABBz", TW_TYPE_FLOAT, &cubes[0]->maxAABBz, " label='maxAABBz: '");
+
 	TwAddVarRW(bar, "force", TW_TYPE_DIR3F, &applyForcePoint, " label='Force Pos: '");
 	TwAddVarRW(bar, "forceD", TW_TYPE_DIR3F, &applyForceF, " label='Force Dir: '");
 }
@@ -690,6 +724,14 @@ void PhysicsLab_2::keyControl()
 		}
 	}
 
+	if (glfwGetKey(window, GLFW_KEY_LEFT_BRACKET ) == GLFW_PRESS){
+		m_physicsLabCamera->enabled = true;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_RIGHT_BRACKET ) == GLFW_PRESS){
+		m_physicsLabCamera->enabled = false;
+	}
+
 }
 
 void PhysicsLab_2::draw(GLuint vao, int size)
@@ -757,8 +799,8 @@ void PhysicsLab_2::distanceCheck()
 
 				if (dis < (cubes[i]->distanceFromCentreMessToPoint + cubes[j]->distanceFromCentreMessToPoint))
 				{
-					boundingSphereBuffers[i]->ChangeColors(boundingSpheres[i]->redColors);
-					boundingSphereBuffers[j]->ChangeColors(boundingSpheres[j]->redColors);
+					boundingSphereCubeBuffers[i]->ChangeColors(boundingSpheresCube[i]->redColors);
+					boundingSphereCubeBuffers[j]->ChangeColors(boundingSpheresCube[j]->redColors);
 					//stopTime = true;
 				}
 			}
@@ -944,10 +986,10 @@ bool PhysicsLab_2::AABBOverlap(const Cube &a, const Cube &b)
 	if (std::fabs(a.centre_of_mass.y - b.centre_of_mass.y) > (a.maxAABBy + b.maxAABBy )) return false;
 	if (std::fabs(a.centre_of_mass.z - b.centre_of_mass.z) > (a.maxAABBz + b.maxAABBz )) return false;
 
-// 
-// 	if (a.AABBmax.x < b.AABBmin.x || a.AABBmin.x > b.AABBmax.x) return false;
-// 	if (a.AABBmax.y < b.AABBmin.y || a.AABBmin.y > b.AABBmax.y) return false;
-// 	if (a.AABBmax.z < b.AABBmin.z || a.AABBmin.z > b.AABBmax.z) return false;
+	// 
+	// 	if (a.AABBmax.x < b.AABBmin.x || a.AABBmin.x > b.AABBmax.x) return false;
+	// 	if (a.AABBmax.y < b.AABBmin.y || a.AABBmin.y > b.AABBmax.y) return false;
+	// 	if (a.AABBmax.z < b.AABBmin.z || a.AABBmin.z > b.AABBmax.z) return false;
 
 	return true;
 }

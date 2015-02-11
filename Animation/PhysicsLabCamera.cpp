@@ -20,6 +20,8 @@ PhysicsLabCamera::PhysicsLabCamera()
 	direction = glm::vec3(0,0,-1);
 
 	right = glm::vec3(1,0,0);
+
+	enabled = true;
 }
 
 
@@ -40,33 +42,38 @@ void PhysicsLabCamera::computeMatricesFromInputs(GLFWwindow* window)
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
 
-	// Reset mouse position for next frame
-	glfwSetCursorPos(window, 1200/2, 900/2);
+	if (enabled)
+	{
+		// Reset mouse position for next frame
+		glfwSetCursorPos(window, 1200/2, 900/2);
 
-	// Compute new orientation
-	horizontalAngle += mouseSpeed * float(1200/2 - xpos);
-	verticalAngle   += mouseSpeed * float( 900/2 - ypos);
+		// Compute new orientation
+		horizontalAngle += mouseSpeed * float(1200/2 - xpos);
+		verticalAngle   += mouseSpeed * float( 900/2 - ypos);
 
-	// Direction : Spherical coordinates to Cartesian coordinates conversion
-	direction = glm::vec3(
-		cos(verticalAngle) * sin(horizontalAngle),
-		sin(verticalAngle),
-		cos(verticalAngle) * cos(horizontalAngle)
-		);
+		// Direction : Spherical coordinates to Cartesian coordinates conversion
+		direction = glm::vec3(
+			cos(verticalAngle) * sin(horizontalAngle),
+			sin(verticalAngle),
+			cos(verticalAngle) * cos(horizontalAngle)
+			);
 
 
-// 	direction = glm::vec3(
-// 		sin(horizontalAngle),
-// 		0,
-// 		 cos(horizontalAngle)
-// 		);
+		// 	direction = glm::vec3(
+		// 		sin(horizontalAngle),
+		// 		0,
+		// 		 cos(horizontalAngle)
+		// 		);
 
-	// Right vector
-	right = glm::vec3(
-		sin(horizontalAngle - 3.14f/2.0f), 
-		0,
-		cos(horizontalAngle - 3.14f/2.0f)
-		);
+		// Right vector
+		right = glm::vec3(
+			sin(horizontalAngle - 3.14f/2.0f), 
+			0,
+			cos(horizontalAngle - 3.14f/2.0f)
+			);
+	}
+
+
 
 
 	// Up vector

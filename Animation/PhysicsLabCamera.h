@@ -29,6 +29,7 @@ public:
 
 	float deltaTime;
 	double currentTime;
+	bool enabled;
 
 	void cameraUpdate(glm::vec3 pos, glm::vec3 direction);
 	void computeMatricesFromInputs(GLFWwindow* window);

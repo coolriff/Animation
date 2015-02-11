@@ -18,7 +18,7 @@
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
 #define MAX 36
-#define MAXOBJECT 40
+#define MAXOBJECT 20
 
 struct AABB
 {
@@ -39,7 +39,7 @@ public:
 
 	GLFWwindow* window;
 
-	
+
 
 	struct cPair
 	{
@@ -56,8 +56,12 @@ public:
 	Cube* cubes[MAXOBJECT];
 	CreateMesh* cubesMesh[MAXOBJECT];
 	ObjectBuffer* cubesBuffer[MAXOBJECT];
-	CreateMesh* boundingSpheres[MAXOBJECT];
-	ObjectBuffer* boundingSphereBuffers[MAXOBJECT];
+
+	CreateMesh* boundingSpheresCube[MAXOBJECT];
+	ObjectBuffer* boundingSphereCubeBuffers[MAXOBJECT];
+
+	CreateMesh* boundingSpheres[MAXOBJECT * 8];
+	ObjectBuffer* boundingSphereBuffers[MAXOBJECT * 8];
 	AABB* SAP[MAXOBJECT];
 
 	Cube* AABBcubes[MAXOBJECT];
