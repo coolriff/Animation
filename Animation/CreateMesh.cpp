@@ -9,6 +9,7 @@ void CreateMesh::createCubeMesh()
 		glm::vec3(-0.5f,-0.5f,-0.5f),  
 		glm::vec3(-0.5f,-0.5f, 0.5f),
 		glm::vec3(-0.5f, 0.5f, 0.5f),
+
 		glm::vec3(0.5f, 0.5f,-0.5f),
 		glm::vec3(-0.5f,-0.5f,-0.5f),
 		glm::vec3(-0.5f, 0.5f,-0.5f),

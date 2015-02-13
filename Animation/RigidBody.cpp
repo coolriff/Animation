@@ -143,3 +143,40 @@ void RigidBody::CalculateDistanceFromCentreOfMessToPoint(void)
 	distanceFromCentreMessToPoint = glm::abs(distanceFromCentreMessToPoint);
 }
 
+glm::vec3 RigidBody::getFurthestPoint(glm::vec3 &direction)
+{
+	int furthestPoint = 0;
+	float max = FLT_MIN;
+
+	glm::vec3 d = glm::normalize(glm::vec3(glm::toMat4(m_orientation) * glm::vec4(direction, 0.0f)));
+	for(unsigned int i=0; i<m_points.size(); ++i)
+	{
+		glm::vec3 vertex = m_scale * m_points[i];
+		float projection = glm::dot(vertex, d);
+
+		if(projection > max)
+		{
+			furthestPoint = i;
+			max = projection;
+		}
+	}
+
+	printf("%f, %f, %f /n",m_points[furthestPoint].x,m_points[furthestPoint].y,m_points[furthestPoint].z);
+
+// 	for(unsigned int i=0; i<m_points.size(); ++i)
+// 	{
+// 		glm::vec3 vertex = m_scale * m_points[i];
+// 		float projection = glm::dot(vertex, direction);
+// 
+// 		if(projection > max)
+// 		{
+// 			furthestPoint = i;
+// 			max = projection;
+// 		}
+// 	}
+// 
+// 	printf("%f, %f, %f",m_points[furthestPoint].x,m_points[furthestPoint].y,m_points[furthestPoint].z);
+
+	return m_points[furthestPoint];
+}
+

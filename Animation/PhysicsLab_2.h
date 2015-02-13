@@ -18,7 +18,8 @@
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
 #define MAX 36
-#define MAXOBJECT 20
+#define MAXOBJECT 2
+#define SPACE 2.0f
 
 struct AABB
 {
@@ -47,11 +48,13 @@ public:
 		int collidingWith;
 	};
 
+
+
 	std::vector<AABB> axisX;
 	std::vector<AABB> axisY;
 	std::vector<AABB> axisZ;
 
-	std::vector<cPair*> collidingPair;
+	std::vector<cPair> collidingPair;
 
 	Cube* cubes[MAXOBJECT];
 	CreateMesh* cubesMesh[MAXOBJECT];
@@ -126,4 +129,8 @@ public:
 	void UpdatingAABBMaxMin();
 	void computAABBOverLapWithSweepAndPrune();
 	bool AABBOverlap(const Cube &a, const Cube &b);
+	bool CheckCollisionNarrow(Cube &body1, Cube &body2);
+	bool checkSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &direction);
+	bool checkTriangle(std::vector<glm::vec3> &simplex, glm::vec3 &direction);
+	glm::vec3 support(glm::vec3 direction, const std::vector<glm::vec3>& vertices);
 };

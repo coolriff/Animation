@@ -169,9 +169,9 @@ void PhysicsLab_2::run(void)
 
 	for (int i=0; i<MAXOBJECT; i++)
 	{
-		float f1 = -7.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(7.0f-(-7.0f))));
-		float f2 = -7.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(7.0f-(-7.0f))));
-		float f3 = -7.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(7.0f-(-7.0f))));
+		float f1 = -SPACE + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(SPACE-(-SPACE))));
+		float f2 = -SPACE + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(SPACE-(-SPACE))));
+		float f3 = -SPACE + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(SPACE-(-SPACE))));
 
 		cubes[i]->m_position = glm::vec3(f1,f2,f3);
 		cubes[i]->m_orientation = glm::quat();
@@ -309,6 +309,7 @@ void PhysicsLab_2::run(void)
 				for (int i=0; i<MAXOBJECT; i++)
 				{
 					boundingSphereCubeBuffers[i]->ChangeColors(boundingSpheresCube[i]->colors);
+					cubesBuffer[i]->ChangeColors(cubesMesh[i]->colors);
 				}
 				distanceCheck();
 			}
@@ -352,6 +353,7 @@ void PhysicsLab_2::run(void)
 			for (int i=0; i<MAXOBJECT; i++)
 			{
 				AABBBuffers[i]->ChangeColors(AABBMeshs[i]->greenColors);
+				cubesBuffer[i]->ChangeColors(cubesMesh[i]->colors);
 			}
 
 			computAABBOverLapWithSweepAndPrune();
@@ -401,6 +403,7 @@ void PhysicsLab_2::run(void)
 			for (int i=0; i<MAXOBJECT; i++)
 			{
 				AABBBuffers[i]->ChangeColors(AABBMeshs[i]->blueColors);
+				cubesBuffer[i]->ChangeColors(cubesMesh[i]->colors);
 			}
 			computAABBOverLap();
 			//BroadPhase update end
@@ -625,7 +628,7 @@ void PhysicsLab_2::initTweakBar()
 	TwAddVarRO(bar, "boxPoint6", TW_TYPE_DIR3F, &cubes[0]->m_points.at(6), " label='p6: '");
 	TwAddVarRO(bar, "boxPoint7", TW_TYPE_DIR3F, &cubes[0]->m_points.at(7), " label='p7: '");
 	TwAddVarRO(bar, "cmass", TW_TYPE_DIR3F, &cubes[0]->centre_of_mass, " label='centre of mass: '");
-	TwAddVarRO(bar, "cpos", TW_TYPE_DIR3F, &cubes[0]->m_position, " label='Pos: '");
+	TwAddVarRW(bar, "cpos", TW_TYPE_DIR3F, &cubes[0]->m_position, " label='Pos: '");
 	TwAddVarRO(bar, "AABBmAX", TW_TYPE_DIR3F, &cubes[0]->AABBmax, " label='AABBmax: '");
 	TwAddVarRO(bar, "AABBmin", TW_TYPE_DIR3F, &cubes[0]->AABBmin, " label='AABBmin: '");
 	TwAddVarRO(bar, "maxAABBx", TW_TYPE_FLOAT, &cubes[0]->maxAABBx, " label='maxAABBx: '");
@@ -752,29 +755,29 @@ void PhysicsLab_2::updateInBox()
 {
 	for (int i=0; i<MAXOBJECT; i++)
 	{
-		if (cubes[i]->m_position.x < -8)
+		if (cubes[i]->m_position.x < -SPACE)
 		{
 			cubes[i]->m_linearMomentum.x *= -1.0f;
 		}
-		if (cubes[i]->m_position.x > 8)
+		if (cubes[i]->m_position.x > SPACE)
 		{
 			cubes[i]->m_linearMomentum.x *= -1.0f;
 		}
 
-		if (cubes[i]->m_position.y < -8)
+		if (cubes[i]->m_position.y < -SPACE)
 		{
 			cubes[i]->m_linearMomentum.y *= -1.0f;
 		}
-		if (cubes[i]->m_position.y > 8)
+		if (cubes[i]->m_position.y > SPACE)
 		{
 			cubes[i]->m_linearMomentum.y *= -1.0f;
 		}
 
-		if (cubes[i]->m_position.z < -8)
+		if (cubes[i]->m_position.z < -SPACE)
 		{
 			cubes[i]->m_linearMomentum.z *= -1.0f;
 		}
-		if (cubes[i]->m_position.z > 8)
+		if (cubes[i]->m_position.z > SPACE)
 		{
 			cubes[i]->m_linearMomentum.z *= -1.0f;
 		}
@@ -801,6 +804,9 @@ void PhysicsLab_2::distanceCheck()
 				{
 					boundingSphereCubeBuffers[i]->ChangeColors(boundingSpheresCube[i]->redColors);
 					boundingSphereCubeBuffers[j]->ChangeColors(boundingSpheresCube[j]->redColors);
+
+					cubesBuffer[i]->ChangeColors(cubesMesh[i]->redColors);
+					cubesBuffer[j]->ChangeColors(cubesMesh[j]->redColors);
 					//stopTime = true;
 				}
 			}
@@ -866,6 +872,7 @@ void PhysicsLab_2::UpdatingAABBMaxMin()
 
 void PhysicsLab_2::computAABBOverLap()
 {
+	//CheckCollisionBroad
 	collidingPair.clear();
 	for (int i=0; i<MAXOBJECT; i++)
 	{
@@ -879,15 +886,218 @@ void PhysicsLab_2::computAABBOverLap()
 				{
 					AABBBuffers[i]->ChangeColors(AABBMeshs[i]->redColors);
 					AABBBuffers[j]->ChangeColors(AABBMeshs[j]->redColors);
-					cPair* t = new cPair();
-					t->ID = i;
-					t->collidingWith = j;
+
+					cPair t;
+					t.ID = i;
+					t.collidingWith = j;
 					collidingPair.push_back(t);
+
+					//CheckCollisionNarrow
+					if (!collidingPair.empty())
+					{
+						CheckCollisionNarrow(*cubes[i],*cubes[j]);
+					}
+
+					//cubesBuffer[i]->ChangeColors(cubesMesh[i]->redColors);
+					//cubesBuffer[j]->ChangeColors(cubesMesh[j]->redColors);
 				}
 			}
 		}
 	}
 }
+
+
+bool PhysicsLab_2::CheckCollisionNarrow(Cube &body1, Cube &body2)
+{
+	int id1 = body1.ID;
+	int id2 = body2.ID;
+
+	glm::vec3 direction = body1.m_position - body2.m_position;
+
+// 	glm::vec3 furthestPointBody1 = body1.getFurthestPoint(direction);
+// 	glm::vec3 furthestPointBody2 = body2.getFurthestPoint(-direction);
+
+	glm::vec3 furthestPointBody1 = support(direction, cubes[id1]->m_points);
+	glm::vec3 furthestPointBody2 = support(-direction, cubes[id2]->m_points);
+
+	glm::vec3 minkowskiDifference = furthestPointBody1 - furthestPointBody2;
+
+	std::vector<glm::vec3> simplex;
+	simplex.push_back(minkowskiDifference);
+
+	direction = -minkowskiDifference;
+
+	int counter = 100;
+
+	while (counter > 0)
+	{
+		furthestPointBody1 = support(direction, cubes[id1]->m_points);
+		furthestPointBody2 = support(-direction, cubes[id2]->m_points);
+		minkowskiDifference = furthestPointBody1 - furthestPointBody2;
+
+		if(glm::dot(minkowskiDifference, direction) < 0)
+		{
+			return NULL;
+		}
+		simplex.push_back(minkowskiDifference);
+
+		if (checkSimplex(simplex, direction))
+		{
+			cubesBuffer[id1]->ChangeColors(cubesMesh[id1]->redColors);
+			cubesBuffer[id2]->ChangeColors(cubesMesh[id2]->redColors);
+		}
+		counter--;
+	}
+
+}
+
+glm::vec3 PhysicsLab_2::support(glm::vec3 direction, const std::vector<glm::vec3>& vertices)
+{
+	float maxDot = glm::dot(vertices[0],direction);
+
+	int   indexDot = 0;
+	float currentDot;
+	for (int i = 1; i < vertices.size(); i++)
+	{
+		currentDot = glm::dot(direction,vertices[i]);
+		if (currentDot > maxDot){
+			maxDot = currentDot;
+			indexDot = i;
+		}
+	}
+
+	return vertices[indexDot];
+}
+
+bool PhysicsLab_2::checkSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &direction)
+{
+	glm::vec3 faceA, faceB, faceC, faceD;
+
+	switch(simplex.size())
+	{
+	case 2:
+		faceB = simplex[0];
+		faceA = simplex[1];
+
+		if(glm::dot(faceB-faceA, -faceA) > 0)
+		{
+			direction = glm::cross(glm::cross(faceB-faceA, -faceA), faceB-faceA);
+		}
+		else
+		{
+			direction = -faceA;
+		}
+
+		return false;
+	case 3:
+
+		//simplex.erase(simplex.begin());
+
+		return checkTriangle(simplex, direction);
+
+		return false;
+	case 4:
+
+		faceD = simplex[0];
+		faceC = simplex[1];
+		faceB = simplex[2];
+		faceA = simplex[3];
+
+		glm::vec3 ABC = glm::cross(faceB-faceA, faceC-faceA);
+		glm::vec3 ADB = glm::cross(faceD-faceA, faceB-faceA);
+		glm::vec3 ACD = glm::cross(faceC-faceA, faceD-faceA);
+
+		if(glm::dot(ABC, -faceA) > 0)
+		{			
+			simplex.erase(simplex.begin());
+
+			return checkTriangle(simplex, direction);
+		}
+		else if(glm::dot(ADB, -faceA) > 0)
+		{
+			simplex.erase(simplex.begin() + 1);
+			simplex[0] = faceB;
+			simplex[1] = faceD;
+
+			return checkTriangle(simplex, direction);
+		}
+		else if(glm::dot(ACD, -faceA) > 0)
+		{
+			simplex.erase(simplex.begin() + 2);
+
+			return checkTriangle(simplex, direction);
+		}
+
+		return true;
+	}
+}
+
+bool PhysicsLab_2::checkTriangle(std::vector<glm::vec3> &simplex, glm::vec3 &direction)
+{
+	glm::vec3 C = simplex[0];
+	glm::vec3 B = simplex[1];
+	glm::vec3 A = simplex[2];
+
+	// face
+	glm::vec3 ABC = glm::cross(B-A, C-A);
+
+	if(glm::dot(glm::cross(ABC, C-A), -A) > 0) // AC plane 
+	{
+		if(glm::dot(C-A, -A) > 0) // outside AC edge
+		{
+			direction = glm::cross(glm::cross(C-A, -A), C-A);
+			simplex.erase(simplex.begin() + 1);
+		}
+		else
+		{
+			if(glm::dot(B-A, -A) > 0) // outside AB edge
+			{
+				direction = glm::cross(glm::cross(B-A, -A), B-A);
+				simplex.erase(simplex.begin());
+			}
+			else // outside A
+			{
+				direction = -A;
+				simplex.erase(simplex.begin());
+				simplex.erase(simplex.begin());
+			}
+		}
+	}
+	else // inside AC 
+	{
+		if(glm::dot(glm::cross(B-A, ABC), -A) > 0) // AB plane 
+		{
+			if(glm::dot(B-A, -A) > 0) // outside AB plane
+			{
+				direction = glm::cross(glm::cross(B-A, -A), B-A);
+				simplex.erase(simplex.begin());
+			}
+			else // outside A
+			{
+				direction = -A;
+				simplex.erase(simplex.begin());
+				simplex.erase(simplex.begin());
+			}
+		}
+		else // orthogonal to face
+		{
+			if(glm::dot(ABC, -A) > 0) // outside face
+			{
+				direction = ABC;
+			}
+			else // inside face
+			{
+				simplex[0] = B;
+				simplex[1] = C;
+
+				direction = -ABC;
+			}
+		}
+	}
+
+	return false;
+}
+
 
 // based on book "Real-Time Collision Detection" page 336.
 void PhysicsLab_2::computAABBOverLapWithSweepAndPrune()
@@ -958,10 +1168,13 @@ void PhysicsLab_2::computAABBOverLapWithSweepAndPrune()
 					AABBBuffers[i]->ChangeColors(AABBMeshs[i]->redColors);
 					AABBBuffers[j]->ChangeColors(AABBMeshs[j]->redColors);
 
-					cPair* t = new cPair();
-					t->ID = i;
-					t->collidingWith = j;
+					cPair t;
+					t.ID = i;
+					t.collidingWith = j;
 					collidingPair.push_back(t);
+
+					cubesBuffer[i]->ChangeColors(cubesMesh[i]->redColors);
+					cubesBuffer[j]->ChangeColors(cubesMesh[j]->redColors);
 				}
 			}
 		}
