@@ -1,91 +1,5 @@
 #include "PhysicsLab_2.h"
 
-// #define WINDOW_WIDTH 1440
-// #define WINDOW_HIGH 1080
-
-
-
-// PhysicsLab_2* physicsLab_2 = new PhysicsLab_2();
-// 
-// int cmpAABBs(const void *a, const void *b)
-// {
-// 	// Sort on minimum value along either x, y, or z (specified in gSortAxis)
-// 	float minA = (*(AABB **)a)->minAABB[physicsLab_2->gSortAxis];
-// 	float minB = (*(AABB **)b)->minAABB[physicsLab_2->gSortAxis];
-// 	if (minA < minB) return -1;
-// 	if (minA > minB) return 1;
-// 	return 0;
-// }
-// 
-// int AABBOverlap(AABB *a, AABB *b)
-// {
-// 	AABB* A = a;
-// 	AABB* B = b;
-// 	// Exit with no intersection if separated along an axis
-// 	if (a->maxAABB[0] < b->minAABB[0] || a->minAABB[0] > b->maxAABB[0]) return 0;
-// 	if (a->maxAABB[1] < b->minAABB[1] || a->minAABB[1] > b->maxAABB[1]) return 0;
-// 	if (a->maxAABB[2] < b->minAABB[2] || a->minAABB[2] > b->maxAABB[2]) return 0;
-// 	// Overlapping on all axes means AABBs are intersecting
-// 	return 1;
-// }
-// 
-// void SortAndSweepAABBArray(void)
-// {
-// 	// Sort the array on currently selected sorting axis (gSortAxis)
-// 	std::qsort(physicsLab_2->gAABBArray, MAXOBJECT, sizeof(AABB *), cmpAABBs);
-// 
-// 	//std::sort(physicsLab_2->gAABBArray, physicsLab_2->gAABBArray + MAXOBJECT,[](const AABB &a, const AABB &b){return a.minAABB.x < b.minAABB.x;});
-// 	
-// 	// Sweep the array for collisions
-// 	float s[3] = { 0.0f, 0.0f, 0.0f }, s2[3] = { 0.0f, 0.0f, 0.0f }, v[3];
-// 	for (int i = 0; i < MAXOBJECT; i++) 
-// 	{
-// 		// Determine AABB center point
-// 		glm::vec3 minmin = glm::vec3(physicsLab_2->gAABBArray[i]->minAABB[0],physicsLab_2->gAABBArray[i]->minAABB[1],physicsLab_2->gAABBArray[i]->minAABB[2]);
-// 		glm::vec3 maxmax = glm::vec3(physicsLab_2->gAABBArray[i]->maxAABB[0],physicsLab_2->gAABBArray[i]->maxAABB[1],physicsLab_2->gAABBArray[i]->maxAABB[2]);
-// 
-// 		glm::vec3 p = 0.5f * (minmin + maxmax);
-// 		// Update sum and sum2 for computing variance of AABB centers
-// 		for (int c = 0; c < 3; c++) 
-// 		{
-// 			s[c] += p[c];
-// 			s2[c] += p[c] * p[c];
-// 		}
-// 		// Test collisions against all possible overlapping AABBs following current one
-// 		for (int j = i + 1; j < MAXOBJECT; j++) {
-// 			// Stop when tested AABBs are beyond the end of current AABB
-// 			if (physicsLab_2->gAABBArray[j]->minAABB[physicsLab_2->gSortAxis] > physicsLab_2->gAABBArray[i]->maxAABB[physicsLab_2->gSortAxis])
-// 			{
-// 				break;
-// 			}
-// 			if (AABBOverlap(physicsLab_2->gAABBArray[i], physicsLab_2->gAABBArray[j]))
-// 			{
-// 				//TestCollision(gAABBArray[i], gAABBArray[j]);
-// 
-// 				physicsLab_2->AABBBuffers[i]->ChangeColors(physicsLab_2->AABBMeshs[i]->newColors);
-// 			}
-// 		}
-// 	}
-// 	// Compute variance (less a, for comparison unnecessary, constant factor)
-// 	for (int c = 0; c < 3; c++)
-// 	{
-// 		v[c] = s2[c] - s[c] * s[c] / MAXOBJECT;
-// 	}
-// 	// Update axis sorted to be the one with greatest AABB variance
-// 	physicsLab_2->gSortAxis = 0;
-// 	if (v[1] > v[0])
-// 	{
-// 		physicsLab_2->gSortAxis = 1;
-// 	}
-// 	if (v[2] > v[physicsLab_2->gSortAxis])
-// 	{
-// 		physicsLab_2->gSortAxis = 2;
-// 	}
-// }
-
-
-
-
 //typedef void (* GLFWmousebuttonfun)(GLFWwindow*,int,int,int);
 void MouseButtonCB( GLFWwindow*,int button ,int action ,int mods)
 {
@@ -149,6 +63,8 @@ PhysicsLab_2::PhysicsLab_2(void)
 		boundingSpheres[i] = new CreateMesh();
 		boundingSphereBuffers[i] = new ObjectBuffer();
 	}
+
+	drawPoints = false;
 }
 
 
@@ -236,35 +152,7 @@ void PhysicsLab_2::run(void)
 
 		preDraw();
 
-		if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
-			shaderType = STANDARD;
-			stdShader = true;
-			tooShader = false;
-			bShader = false;
-			MMShader = false;
-		}
-		if (glfwGetKey(window, GLFW_KEY_9 ) == GLFW_PRESS){
-			shaderType = CARTOON;
-			stdShader = false;
-			tooShader = true;
-			bShader = false;
-			MMShader = false;
-		}
-		if (glfwGetKey(window, GLFW_KEY_0 ) == GLFW_PRESS){
-			shaderType = WHATEVER;
-			stdShader = false;
-			tooShader = false;
-			bShader = true;
-			MMShader = false;
-		}
-		if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
-			shaderType = NUMBER4;
-			stdShader = false;
-			tooShader = false;
-			bShader = false;
-			MMShader = true;
-		}
-
+		keyControl();
 
 		switch (shaderType)
 		{
@@ -281,8 +169,6 @@ void PhysicsLab_2::run(void)
 			//glUseProgram(cylinderShader->GetProgramID());
 			break;
 		}
-
-		keyControl();
 
 		for (int i=0; i<MAXOBJECT; i++)
 		{
@@ -322,15 +208,18 @@ void PhysicsLab_2::run(void)
 				update(cubes[i]->GetTransformationMatrix(),m_shader->GetProgramID());
 				drawLine(boundingSphereCubeBuffers[i]->vao, boundingSpheresCube[i]->vertices.size());
 
-				for (int j=0; j<cubes[i]->m_points.size(); j++)
+				if (drawPoints)
 				{
-					glm::mat4 tPos = glm::mat4(1);
-					tPos[3][0] = cubes[i]->m_points[j].x;
-					tPos[3][1] = cubes[i]->m_points[j].y;
-					tPos[3][2] = cubes[i]->m_points[j].z;
+					for (int j=0; j<cubes[i]->m_points.size(); j++)
+					{
+						glm::mat4 tPos = glm::mat4(1);
+						tPos[3][0] = cubes[i]->m_points[j].x;
+						tPos[3][1] = cubes[i]->m_points[j].y;
+						tPos[3][2] = cubes[i]->m_points[j].z;
 
-					update(tPos,m_shader->GetProgramID());
-					draw(boundingSphereBuffers[j]->vao, boundingSpheres[j]->vertices.size());
+						update(tPos,m_shader->GetProgramID());
+						draw(boundingSphereBuffers[j]->vao, boundingSpheres[j]->vertices.size());
+					}
 				}
 			}
 
@@ -373,16 +262,20 @@ void PhysicsLab_2::run(void)
 				update(tempPos,too_shader->GetProgramID());
 				drawLine(AABBBuffers[i]->vao, AABBMeshs[i]->vertices.size());
 
-				for (int j=0; j<cubes[i]->m_points.size(); j++)
+				if (drawPoints)
 				{
-					glm::mat4 tPos = glm::mat4(1);
-					tPos[3][0] = cubes[i]->m_points[j].x;
-					tPos[3][1] = cubes[i]->m_points[j].y;
-					tPos[3][2] = cubes[i]->m_points[j].z;
+					for (int j=0; j<cubes[i]->m_points.size(); j++)
+					{
+						glm::mat4 tPos = glm::mat4(1);
+						tPos[3][0] = cubes[i]->m_points[j].x;
+						tPos[3][1] = cubes[i]->m_points[j].y;
+						tPos[3][2] = cubes[i]->m_points[j].z;
 
-					update(tPos,m_shader->GetProgramID());
-					draw(boundingSphereBuffers[j]->vao, boundingSpheres[j]->vertices.size());
+						update(tPos,m_shader->GetProgramID());
+						draw(boundingSphereBuffers[j]->vao, boundingSpheres[j]->vertices.size());
+					}
 				}
+
 			}
 			//BroadPhase update end
 		}
@@ -423,16 +316,20 @@ void PhysicsLab_2::run(void)
 				update(tempPos,b_shader->GetProgramID());
 				drawLine(AABBBuffers[i]->vao, AABBMeshs[i]->vertices.size());
 
-				for (int j=0; j<cubes[i]->m_points.size(); j++)
+				if (drawPoints)
 				{
-					glm::mat4 tPos = glm::mat4(1);
-					tPos[3][0] = cubes[i]->m_points[j].x;
-					tPos[3][1] = cubes[i]->m_points[j].y;
-					tPos[3][2] = cubes[i]->m_points[j].z;
+					for (int j=0; j<cubes[i]->m_points.size(); j++)
+					{
+						glm::mat4 tPos = glm::mat4(1);
+						tPos[3][0] = cubes[i]->m_points[j].x;
+						tPos[3][1] = cubes[i]->m_points[j].y;
+						tPos[3][2] = cubes[i]->m_points[j].z;
 
-					update(tPos,m_shader->GetProgramID());
-					draw(boundingSphereBuffers[j]->vao, boundingSpheres[j]->vertices.size());
+						update(tPos,m_shader->GetProgramID());
+						draw(boundingSphereBuffers[j]->vao, boundingSpheres[j]->vertices.size());
+					}
 				}
+
 			}
 		}
 
@@ -460,6 +357,7 @@ void PhysicsLab_2::run(void)
 			for (int i=0; i<MAXOBJECT; i++)
 			{
 				cubes[i]->ApplyForce(cubes[i]->GetPosition(),glm::vec3(0,-9.81f,0));
+				//cubes[i]->m_linearMomentum.y *= -0.75f;
 			}
 		}
 
@@ -735,6 +633,42 @@ void PhysicsLab_2::keyControl()
 		m_physicsLabCamera->enabled = false;
 	}
 
+	if (glfwGetKey(window, GLFW_KEY_PERIOD ) == GLFW_PRESS){
+		drawPoints = true;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_SLASH ) == GLFW_PRESS){
+		drawPoints = false;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
+		shaderType = STANDARD;
+		stdShader = true;
+		tooShader = false;
+		bShader = false;
+		MMShader = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_9 ) == GLFW_PRESS){
+		shaderType = CARTOON;
+		stdShader = false;
+		tooShader = true;
+		bShader = false;
+		MMShader = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_0 ) == GLFW_PRESS){
+		shaderType = WHATEVER;
+		stdShader = false;
+		tooShader = false;
+		bShader = true;
+		MMShader = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
+		shaderType = NUMBER4;
+		stdShader = false;
+		tooShader = false;
+		bShader = false;
+		MMShader = true;
+	}
 }
 
 void PhysicsLab_2::draw(GLuint vao, int size)
@@ -897,30 +831,18 @@ void PhysicsLab_2::computAABBOverLap()
 					{
 						CheckCollisionNarrow(*cubes[i],*cubes[j]);
 					}
-
-					//cubesBuffer[i]->ChangeColors(cubesMesh[i]->redColors);
-					//cubesBuffer[j]->ChangeColors(cubesMesh[j]->redColors);
 				}
 			}
 		}
 	}
 }
 
-
+//GJK 
 bool PhysicsLab_2::CheckCollisionNarrow(Cube &body1, Cube &body2)
 {
-	int id1 = body1.ID;
-	int id2 = body2.ID;
-
 	glm::vec3 direction = body1.m_position - body2.m_position;
 
-// 	glm::vec3 furthestPointBody1 = body1.getFurthestPoint(direction);
-// 	glm::vec3 furthestPointBody2 = body2.getFurthestPoint(-direction);
-
-	glm::vec3 furthestPointBody1 = support(direction, cubes[id1]->m_points);
-	glm::vec3 furthestPointBody2 = support(-direction, cubes[id2]->m_points);
-
-	glm::vec3 minkowskiDifference = furthestPointBody1 - furthestPointBody2;
+	glm::vec3 minkowskiDifference = support(direction, body1, body2);
 
 	std::vector<glm::vec3> simplex;
 	simplex.push_back(minkowskiDifference);
@@ -931,31 +853,31 @@ bool PhysicsLab_2::CheckCollisionNarrow(Cube &body1, Cube &body2)
 
 	while (counter > 0)
 	{
-		furthestPointBody1 = support(direction, cubes[id1]->m_points);
-		furthestPointBody2 = support(-direction, cubes[id2]->m_points);
-		minkowskiDifference = furthestPointBody1 - furthestPointBody2;
+		minkowskiDifference = support(direction, body1, body2);
 
+		// Last point added was not past the origin in this direction
 		if(glm::dot(minkowskiDifference, direction) < 0)
 		{
-			return NULL;
+			return false;
 		}
 		simplex.push_back(minkowskiDifference);
 
-		if (checkSimplex(simplex, direction))
+		//check intersect
+		if (processSimplex(simplex, direction))
 		{
-			cubesBuffer[id1]->ChangeColors(cubesMesh[id1]->redColors);
-			cubesBuffer[id2]->ChangeColors(cubesMesh[id2]->redColors);
+			cubesBuffer[body1.ID]->ChangeColors(cubesMesh[body1.ID]->redColors);
+			cubesBuffer[body2.ID]->ChangeColors(cubesMesh[body2.ID]->redColors);
 		}
 		counter--;
 	}
 
 }
 
-glm::vec3 PhysicsLab_2::support(glm::vec3 direction, const std::vector<glm::vec3>& vertices)
+glm::vec3 PhysicsLab_2::getFarthestPointInDirection(glm::vec3 direction, const std::vector<glm::vec3>& vertices)
 {
 	float maxDot = glm::dot(vertices[0],direction);
 
-	int   indexDot = 0;
+	int indexDot = 0;
 	float currentDot;
 	for (int i = 1; i < vertices.size(); i++)
 	{
@@ -969,7 +891,15 @@ glm::vec3 PhysicsLab_2::support(glm::vec3 direction, const std::vector<glm::vec3
 	return vertices[indexDot];
 }
 
-bool PhysicsLab_2::checkSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &direction)
+glm::vec3 PhysicsLab_2::support(glm::vec3 direction, Cube &body1, Cube &body2)
+{
+	glm::vec3 furthestPointBody1 = getFarthestPointInDirection(direction, body1.m_points);
+	glm::vec3 furthestPointBody2 = getFarthestPointInDirection(-direction, body2.m_points);
+
+	return furthestPointBody1 - furthestPointBody2;
+}
+
+bool PhysicsLab_2::processSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &direction)
 {
 	glm::vec3 faceA, faceB, faceC, faceD;
 
@@ -1173,8 +1103,10 @@ void PhysicsLab_2::computAABBOverLapWithSweepAndPrune()
 					t.collidingWith = j;
 					collidingPair.push_back(t);
 
-					cubesBuffer[i]->ChangeColors(cubesMesh[i]->redColors);
-					cubesBuffer[j]->ChangeColors(cubesMesh[j]->redColors);
+					if (!collidingPair.empty())
+					{
+						CheckCollisionNarrow(*cubes[i],*cubes[j]);
+					}
 				}
 			}
 		}

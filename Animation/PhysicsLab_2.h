@@ -95,6 +95,7 @@ public:
 	bool stdShader;
 	bool bShader;
 	bool MMShader;
+	bool drawPoints;
 
 	int gSortAxis;
 
@@ -130,7 +131,9 @@ public:
 	void computAABBOverLapWithSweepAndPrune();
 	bool AABBOverlap(const Cube &a, const Cube &b);
 	bool CheckCollisionNarrow(Cube &body1, Cube &body2);
-	bool checkSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &direction);
+	bool processSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &direction);
 	bool checkTriangle(std::vector<glm::vec3> &simplex, glm::vec3 &direction);
 	glm::vec3 support(glm::vec3 direction, const std::vector<glm::vec3>& vertices);
+	glm::vec3 support(glm::vec3 direction, Cube &body1, Cube &body2);
+	glm::vec3 getFarthestPointInDirection(glm::vec3 direction, const std::vector<glm::vec3>& vertices);
 };

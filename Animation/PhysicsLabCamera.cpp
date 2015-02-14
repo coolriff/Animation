@@ -6,7 +6,7 @@ PhysicsLabCamera::PhysicsLabCamera()
 
 
 	// Initial position : on +Z
-	position = glm::vec3( 0, 0, 30 ); 
+	position = glm::vec3( 0, 0, 10 ); 
 	// Initial horizontal angle : toward -Z
 	horizontalAngle = 3.14f;
 	// Initial vertical angle : none
@@ -14,7 +14,7 @@ PhysicsLabCamera::PhysicsLabCamera()
 	// Initial Field of View
 	initialFoV = 45.0f;
 
-	speed = 15.0f; // 3 units / second
+	speed = 1.0f; // 3 units / second
 	mouseSpeed = 0.005f;
 
 	direction = glm::vec3(0,0,-1);
