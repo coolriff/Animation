@@ -1,4 +1,4 @@
-﻿Build started 2/15/2015 4:28:54 PM.
+﻿Build started 2/15/2015 5:08:32 PM.
      1>Project "C:\Animation\Animation\Animation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\Dependancies\AntTweakBar\include /I..\Dependancies\soil\src /I..\Dependancies\SOIL2 /I"..\Dependancies\ImageMagick-6" /I..\Dependancies\assimp\include /I..\Dependancies\glm /I"..\Dependancies\glfw-3.0.4.bin.WIN32\include" /I"..\Dependancies\glew-1.11.0\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt CreateMesh.cpp PhysicsLab_2.cpp
@@ -14,13 +14,13 @@
      1>c:\animation\animation\physicslab_2.cpp(758): warning C4018: '<' : signed/unsigned mismatch
      1>c:\animation\animation\physicslab_2.cpp(882): warning C4018: '<' : signed/unsigned mismatch
          CreateMesh.cpp
-     1>c:\animation\animation\createmesh.cpp(188): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\animation\animation\createmesh.cpp(189): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\animation\animation\createmesh.cpp(191): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\animation\animation\createmesh.cpp(192): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\animation\animation\createmesh.cpp(219): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\animation\animation\createmesh.cpp(181): warning C4101: 'inc5' : unreferenced local variable
-     1>c:\animation\animation\createmesh.cpp(239): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\createmesh.cpp(217): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\animation\animation\createmesh.cpp(218): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\animation\animation\createmesh.cpp(220): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\animation\animation\createmesh.cpp(221): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\animation\animation\createmesh.cpp(248): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\createmesh.cpp(210): warning C4101: 'inc5' : unreferenced local variable
+     1>c:\animation\animation\createmesh.cpp(268): warning C4018: '<' : signed/unsigned mismatch
          Generating Code...
      1>c:\animation\animation\physicslab_2.cpp(874): warning C4715: 'PhysicsLab_2::CheckCollisionNarrow' : not all control paths return a value
      1>c:\animation\animation\physicslab_2.cpp(978): warning C4715: 'PhysicsLab_2::processSimplex' : not all control paths return a value
@@ -62,4 +62,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.57
+Time Elapsed 00:00:01.98

@@ -304,7 +304,7 @@ void PhysicsLab_2::run(void)
 			for (int i=0; i<MAXOBJECT; i++)
 			{
 				update(cubes[i]->GetTransformationMatrix(),b_shader->GetProgramID());
-				drawLine(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
+				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
 
 				glm::mat4 tempPos = glm::mat4(1);
 				tempPos[3][0] = cubes[i]->centre_of_mass.x;
