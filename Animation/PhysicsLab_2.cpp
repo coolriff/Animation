@@ -304,7 +304,7 @@ void PhysicsLab_2::run(void)
 			for (int i=0; i<MAXOBJECT; i++)
 			{
 				update(cubes[i]->GetTransformationMatrix(),b_shader->GetProgramID());
-				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
+				drawLine(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
 
 				glm::mat4 tempPos = glm::mat4(1);
 				tempPos[3][0] = cubes[i]->centre_of_mass.x;
@@ -899,23 +899,34 @@ glm::vec3 PhysicsLab_2::support(glm::vec3 direction, Cube &body1, Cube &body2)
 	return furthestPointBody1 - furthestPointBody2;
 }
 
+bool PhysicsLab_2::isSameDirection(glm::vec3 &a, glm::vec3 &b)
+{
+	float dot = glm::dot(a, b);
+	return dot > 0.0f;
+}
+
 bool PhysicsLab_2::processSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &direction)
 {
-	glm::vec3 faceA, faceB, faceC, faceD;
+	glm::vec3 A,B,C,D,AB,AC,AD,AO;
 
 	switch(simplex.size())
 	{
 	case 2:
-		faceB = simplex[0];
-		faceA = simplex[1];
 
-		if(glm::dot(faceB-faceA, -faceA) > 0)
+		A = simplex.at(1);
+		B = simplex.at(0);
+
+		AB = B - A;
+		AO = -A;
+
+
+		if(isSameDirection(AO,AB))
 		{
-			direction = glm::cross(glm::cross(faceB-faceA, -faceA), faceB-faceA);
+			direction = glm::cross(glm::cross(AB, AO), AB);
 		}
 		else
 		{
-			direction = -faceA;
+			direction = AO;
 		}
 
 		return false;
@@ -927,31 +938,35 @@ bool PhysicsLab_2::processSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &di
 
 		return false;
 	case 4:
+		A = simplex.at(3);
+		B = simplex.at(2);
+		C = simplex.at(1);
+		D = simplex.at(0);
 
-		faceD = simplex[0];
-		faceC = simplex[1];
-		faceB = simplex[2];
-		faceA = simplex[3];
+		AB = B-A;
+		AC = C-A;
+		AD = D-A;
+		AO = -A;
 
-		glm::vec3 ABC = glm::cross(faceB-faceA, faceC-faceA);
-		glm::vec3 ADB = glm::cross(faceD-faceA, faceB-faceA);
-		glm::vec3 ACD = glm::cross(faceC-faceA, faceD-faceA);
+		glm::vec3 ABC = glm::cross(AB, AC);
+		glm::vec3 ADB = glm::cross(AD, AB);
+		glm::vec3 ACD = glm::cross(AC, AD);
 
-		if(glm::dot(ABC, -faceA) > 0)
+		if(isSameDirection(ABC, AO))
 		{			
 			simplex.erase(simplex.begin());
 
 			return checkTriangle(simplex, direction);
 		}
-		else if(glm::dot(ADB, -faceA) > 0)
+		else if(isSameDirection(ADB, AO))
 		{
 			simplex.erase(simplex.begin() + 1);
-			simplex[0] = faceB;
-			simplex[1] = faceD;
+			simplex[0] = B;
+			simplex[1] = D;
 
 			return checkTriangle(simplex, direction);
 		}
-		else if(glm::dot(ACD, -faceA) > 0)
+		else if(isSameDirection(ACD, AO))
 		{
 			simplex.erase(simplex.begin() + 2);
 
@@ -964,30 +979,35 @@ bool PhysicsLab_2::processSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &di
 
 bool PhysicsLab_2::checkTriangle(std::vector<glm::vec3> &simplex, glm::vec3 &direction)
 {
-	glm::vec3 C = simplex[0];
-	glm::vec3 B = simplex[1];
-	glm::vec3 A = simplex[2];
+	glm::vec3 A,B,C,AB,AC,AO;
 
-	// face
-	glm::vec3 ABC = glm::cross(B-A, C-A);
+	A = simplex[2];
+	B = simplex[1];
+	C = simplex[0];
 
-	if(glm::dot(glm::cross(ABC, C-A), -A) > 0) // AC plane 
+	AB = B-A;
+	AC = C-A;
+	AO = -A;
+
+	glm::vec3 ABC = glm::cross(AB, AC);
+
+	if(isSameDirection(glm::cross(ABC, AC), AO)) // AC plane 
 	{
-		if(glm::dot(C-A, -A) > 0) // outside AC edge
+		if(isSameDirection(AC, AO)) // outside AC edge
 		{
-			direction = glm::cross(glm::cross(C-A, -A), C-A);
+			direction = glm::cross(glm::cross(AC, AO), AC);
 			simplex.erase(simplex.begin() + 1);
 		}
 		else
 		{
-			if(glm::dot(B-A, -A) > 0) // outside AB edge
+			if(isSameDirection(AB, AO)) // outside AB edge
 			{
-				direction = glm::cross(glm::cross(B-A, -A), B-A);
+				direction = glm::cross(glm::cross(AB, AO), AB);
 				simplex.erase(simplex.begin());
 			}
 			else // outside A
 			{
-				direction = -A;
+				direction = AO;
 				simplex.erase(simplex.begin());
 				simplex.erase(simplex.begin());
 			}
@@ -995,23 +1015,23 @@ bool PhysicsLab_2::checkTriangle(std::vector<glm::vec3> &simplex, glm::vec3 &dir
 	}
 	else // inside AC 
 	{
-		if(glm::dot(glm::cross(B-A, ABC), -A) > 0) // AB plane 
+		if(isSameDirection(glm::cross(AB, ABC), AO)) // AB plane 
 		{
-			if(glm::dot(B-A, -A) > 0) // outside AB plane
+			if(isSameDirection(AB, AO)) // outside AB plane
 			{
-				direction = glm::cross(glm::cross(B-A, -A), B-A);
+				direction = glm::cross(glm::cross(AB, AO), AB);
 				simplex.erase(simplex.begin());
 			}
 			else // outside A
 			{
-				direction = -A;
+				direction = AO;
 				simplex.erase(simplex.begin());
 				simplex.erase(simplex.begin());
 			}
 		}
 		else // orthogonal to face
 		{
-			if(glm::dot(ABC, -A) > 0) // outside face
+			if(isSameDirection(ABC, AO)) // outside face
 			{
 				direction = ABC;
 			}
@@ -1024,7 +1044,6 @@ bool PhysicsLab_2::checkTriangle(std::vector<glm::vec3> &simplex, glm::vec3 &dir
 			}
 		}
 	}
-
 	return false;
 }
 

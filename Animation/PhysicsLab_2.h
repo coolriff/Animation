@@ -136,4 +136,5 @@ public:
 	glm::vec3 support(glm::vec3 direction, const std::vector<glm::vec3>& vertices);
 	glm::vec3 support(glm::vec3 direction, Cube &body1, Cube &body2);
 	glm::vec3 getFarthestPointInDirection(glm::vec3 direction, const std::vector<glm::vec3>& vertices);
+	bool isSameDirection(glm::vec3 &a, glm::vec3 &b);
 };
