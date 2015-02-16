@@ -841,14 +841,10 @@ void PhysicsLab_2::computAABBOverLap()
 bool PhysicsLab_2::CheckCollisionNarrow(Cube &body1, Cube &body2)
 {
 	glm::vec3 direction = body1.m_position - body2.m_position;
-
 	glm::vec3 minkowskiDifference = support(direction, body1, body2);
-
 	std::vector<glm::vec3> simplex;
 	simplex.push_back(minkowskiDifference);
-
 	direction = -minkowskiDifference;
-
 	int counter = 100;
 
 	while (counter > 0)
@@ -865,13 +861,104 @@ bool PhysicsLab_2::CheckCollisionNarrow(Cube &body1, Cube &body2)
 		//check intersect
 		if (processSimplex(simplex, direction))
 		{
+			EPA(simplex, body1, body2);
 			cubesBuffer[body1.ID]->ChangeColors(cubesMesh[body1.ID]->redColors);
 			cubesBuffer[body2.ID]->ChangeColors(cubesMesh[body2.ID]->redColors);
 		}
 		counter--;
 	}
-
 }
+
+
+glm::vec3 PhysicsLab_2::EPA(std::vector<glm::vec3>& simplex, Cube &body1, Cube &body2)
+{
+	std::vector<Face> faces;
+
+	faces.push_back(Face(0, 1, 2, simplex));
+	faces.push_back(Face(0, 1, 3, simplex));
+	faces.push_back(Face(0, 2, 3, simplex));
+	faces.push_back(Face(1, 2, 3, simplex));
+
+	int counter = 100;
+	while (counter > 0)
+	{
+		Face face = findClosestFace(faces);
+		glm::vec3 newPoint = support(face.normal, body1, body2);
+
+		if(glm::dot(newPoint - face.v1, face.normal) - glm::dot(face.v1, face.normal) < 0.01f) 
+		{
+
+			glm::vec3 barycentric = toTriangle(glm::vec3(0), face.v1, face.v2, face.v3);
+			glm::vec3 contactPoint1 = barycentric.x * face.v1 + barycentric.y * face.v2 + barycentric.z * face.v3;
+
+			glm::vec3 result = -face.normal * glm::dot(-face.v1, -face.normal);
+
+			if(result != glm::vec3())
+			{
+				return glm::normalize(result);
+			}
+			else
+			{
+				return glm::vec3(glm::vec3::_null);
+			}
+		}
+
+		// Add new vertex
+		simplex.push_back(newPoint);
+
+		// Add relevant faces
+		faces.push_back(Face(simplex.size()-1, face.i1, face.i2, simplex));
+		faces.push_back(Face(simplex.size()-1, face.i1, face.i3, simplex));
+		faces.push_back(Face(simplex.size()-1, face.i2, face.i3, simplex)); 
+	}
+
+	return glm::vec3(glm::vec3::_null);
+}
+
+
+glm::vec3 PhysicsLab_2::toTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c)
+{
+	// code from Crister Erickson's Real-Time Collision Detection
+	auto v0 = b - a,v1 = c - a,v2 = p - a;
+	float d00 = glm::dot(v0,v0);
+	float d01 = glm::dot(v0,v1);
+	float d11 = glm::dot(v1,v1);
+	float d20 = glm::dot(v2,v0);
+	float d21 = glm::dot(v2,v1);
+	float denom = d00 * d11 - d01 * d01;
+	float v = (d11 * d20 - d01 * d21) / denom;
+	float w = (d00 * d21 - d01 * d20) / denom;
+	float u = 1.0f -  v -  w;
+
+	glm::vec3 barycentric(u,v,w);
+
+	return barycentric; // = u*a + v*b + w*c, u = va * denom = 1.0f - v - w
+}
+
+
+Face PhysicsLab_2::findClosestFace(std::vector<Face> &faces)
+{
+	float minDistance = FLT_MAX;
+	int minIndex = 0;
+
+	for(int i=0; i<faces.size(); ++i)
+	{
+		float distance = glm::dot(faces[i].v1, faces[i].normal);
+
+		if(distance < minDistance)
+		{
+			minDistance = distance;
+			minIndex = i;
+		}
+	}
+
+	Face closest = faces[minIndex];
+	faces.erase(faces.begin() + minIndex);
+
+	return closest;
+}
+
+
 
 glm::vec3 PhysicsLab_2::getFarthestPointInDirection(glm::vec3 direction, const std::vector<glm::vec3>& vertices)
 {

@@ -32,6 +32,24 @@ struct AABB
 	}
 };
 
+struct Face
+{
+	Face(int index1, int index2, int index3, std::vector<glm::vec3> &simplex) : i1(index1), i2(index2), i3(index3){
+		v1 = simplex[i1];
+		v2 = simplex[i2];
+		v3 = simplex[i3];
+
+		normal = glm::normalize(glm::cross(v3 - v1, v2 - v1));
+		if(glm::dot(v1, normal) < 0)
+			normal = -normal;
+	}
+
+	glm::vec3 v1, v2, v3;
+	int i1, i2, i3;
+
+	glm::vec3 normal;
+};
+
 class PhysicsLab_2
 {
 public:
@@ -137,4 +155,7 @@ public:
 	glm::vec3 support(glm::vec3 direction, Cube &body1, Cube &body2);
 	glm::vec3 getFarthestPointInDirection(glm::vec3 direction, const std::vector<glm::vec3>& vertices);
 	bool isSameDirection(glm::vec3 &a, glm::vec3 &b);
+	glm::vec3 EPA(std::vector<glm::vec3>& simplex, Cube &body1, Cube &body2);
+	Face findClosestFace(std::vector<Face> &faces);
+	glm::vec3 toTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c);
 };
