@@ -6,7 +6,7 @@ PhysicsLabCamera::PhysicsLabCamera()
 
 
 	// Initial position : on +Z
-	position = glm::vec3( 0, 0, 10 ); 
+	position = glm::vec3( 0, 0, 30 ); 
 	// Initial horizontal angle : toward -Z
 	horizontalAngle = 3.14f;
 	// Initial vertical angle : none

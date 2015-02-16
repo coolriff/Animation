@@ -313,7 +313,7 @@ void PhysicsLab_2::run(void)
 			for (int i=0; i<MAXOBJECT; i++)
 			{
 				update(cubes[i]->GetTransformationMatrix(),b_shader->GetProgramID());
-				drawLine(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
+				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
 
 				glm::mat4 tempPos = glm::mat4(1);
 				tempPos[3][0] = cubes[i]->centre_of_mass.x;
@@ -842,18 +842,23 @@ void PhysicsLab_2::computAABBOverLap()
 						{
 							cubesBuffer[i]->ChangeColors(cubesMesh[i]->redColors);
 							cubesBuffer[j]->ChangeColors(cubesMesh[j]->redColors);
-							stopTime = true;
+							//stopTime = true;
 
-							for (int i=0; i<demoResult.size(); i++)
-							{
-								glm::mat4 tPos = glm::mat4(1);
-								tPos[3][0] = demoResult[i].collidingPointOnObjectA.x;
-								tPos[3][1] = demoResult[i].collidingPointOnObjectA.y;
-								tPos[3][2] = demoResult[i].collidingPointOnObjectA.z;
+							// 							for (int i=0; i<demoResult.size(); i++)
+							// 							{
+							// 								glm::mat4 tPos = glm::mat4(1);
+							// 								tPos[3][0] = demoResult[i].collidingPointOnObjectA.x;
+							// 								tPos[3][1] = demoResult[i].collidingPointOnObjectA.y;
+							// 								tPos[3][2] = demoResult[i].collidingPointOnObjectA.z;
+							// 
+							// 								update(tPos,m_shader->GetProgramID());
+							// 								draw(collidingPointBuffers[0]->vao, collidingPointMesh[0]->vertices.size());
+							// 							}
 
-								update(tPos,m_shader->GetProgramID());
-								draw(collidingPointBuffers[0]->vao, collidingPointMesh[0]->vertices.size());
-							}
+// 							if (!demoResult.empty())
+// 							{
+// 								RespondCollision(*cubes[i], *cubes[j], demoResult[0].collidingPointOnObjectA, demoResult[0].collidingPointOnObjectB, demoResult[0].collidingNormal);
+// 							}
 						}
 					}
 				}
@@ -871,7 +876,7 @@ bool PhysicsLab_2::CheckCollisionNarrow(Cube &body1, Cube &body2)
 	glm::vec3 direction = body1.m_position - body2.m_position;
 
 	simplex.push_back(support(direction, body1, body2));
-	
+
 	direction = -simplex[0].minkowskiDifference;
 	int counter = 100;
 
@@ -898,6 +903,40 @@ bool PhysicsLab_2::CheckCollisionNarrow(Cube &body1, Cube &body2)
 		}
 		counter--;
 	}
+}
+
+
+void PhysicsLab_2::RespondCollision(Cube &body1, Cube &body2, glm::vec3 &cpA, glm::vec3 &cpB, glm::vec3 &n)
+{
+	glm::vec3 rA = cpA - body1.GetPosition();
+	glm::vec3 rB = cpB - body2.GetPosition();
+
+	glm::vec3 J = calculateCollisionImpulse(body1, body2, rA, rB, n, 1.0f) * n;
+
+
+	body1.SetLinearMomentum(body1.GetLinearMomentum() + J);
+	body1.SetAngularMomentum(body1.GetAngularMomentum() + glm::cross(rA, J));
+
+	body2.SetLinearMomentum(body2.GetLinearMomentum() - J);
+	body2.SetAngularMomentum(body2.GetAngularMomentum() - glm::cross(rB, J));
+
+}
+
+float PhysicsLab_2::calculateCollisionImpulse(Cube &body1, Cube &body2, glm::vec3 &rA, glm::vec3 &rB, glm::vec3 &n, float e)
+{
+	glm::vec3 pA = body1.GetLinearVelocity() + glm::cross(body1.GetAngularVelocity(), rA);
+	glm::vec3 pB = body2.GetLinearVelocity() + glm::cross(body2.GetAngularVelocity(), rB);
+	float relativeV = glm::dot(n, pA - pB);
+
+	if(relativeV < 0.0f)
+	{
+		float j = (-(1 + e) * relativeV) / 
+			(body1.m_massInverse + body2.GetMassInverse() + glm::dot(n, body1.GetInertiaInverse() * glm::cross(rA, n)) + glm::dot(n, body2.GetInertiaInverse() * glm::cross(rB, n)));
+
+		return std::max(0.0f, j);
+	}
+
+	return 0.0f;
 }
 
 
@@ -931,7 +970,10 @@ glm::vec3 PhysicsLab_2::EPA(std::vector<Simplex>& simplex, Cube &body1, Cube &bo
 				dr.collidingPointOnObjectA = contactPoint1;
 				dr.collidingPointOnObjectB = contactPoint2;
 
-				demoResult.push_back(dr);
+				//demoResult.push_back(dr);
+
+				RespondCollision(body1, body2, dr.collidingPointOnObjectA, dr.collidingPointOnObjectB, dr.collidingNormal);
+
 				return dr.collidingNormal;
 			}
 			else
@@ -941,13 +983,14 @@ glm::vec3 PhysicsLab_2::EPA(std::vector<Simplex>& simplex, Cube &body1, Cube &bo
 		}
 
 		// Add new vertex
-		simplex.erase(simplex.begin());
+		//simplex.erase(simplex.begin());
 		simplex.push_back(newPoint);
 
 		// Add relevant faces
 		faces.push_back(Face(simplex.size()-1, face.i1, face.i2, simplex));
 		faces.push_back(Face(simplex.size()-1, face.i1, face.i3, simplex));
 		faces.push_back(Face(simplex.size()-1, face.i2, face.i3, simplex)); 
+		counter--;
 	}
 
 	return glm::vec3(glm::vec3::_null);

@@ -46,6 +46,12 @@ struct DemoResult
 	glm::vec3 collidingPointOnObjectB;
 };
 
+struct ContactModel
+{
+	glm::vec3 normal;
+	glm::vec3 cA;
+	glm::vec3 cB;
+};
 
 
 struct Face
@@ -182,4 +188,6 @@ public:
 	glm::vec3 EPA(std::vector<Simplex>& simplex, Cube &body1, Cube &body2);
 	Face findClosestFace(std::vector<Face> &faces);
 	glm::vec3 toTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c);
+	void RespondCollision(Cube &body1, Cube &body2, glm::vec3 &cpA, glm::vec3 &cpB, glm::vec3 &n);
+	float calculateCollisionImpulse(Cube &body1, Cube &body2, glm::vec3 &rA, glm::vec3 &rB, glm::vec3 &n, float e);
 };

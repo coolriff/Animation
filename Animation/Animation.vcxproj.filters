@@ -117,6 +117,9 @@
     <ClCompile Include="Sphere.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="diffuse.ps">
@@ -272,6 +275,9 @@
       <Filter>Physics Lab2</Filter>
     </ClInclude>
     <ClInclude Include="Sphere.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
   </ItemGroup>

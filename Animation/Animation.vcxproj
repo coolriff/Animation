@@ -98,6 +98,7 @@
     <ClCompile Include="Lab2.cpp" />
     <ClCompile Include="Lab3.cpp" />
     <ClCompile Include="Lab3Model.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="maths_funcs.cpp" />
     <ClCompile Include="math_3d.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="Lab2.h" />
     <ClInclude Include="Lab3.h" />
     <ClInclude Include="Lab3Model.h" />
+    <ClInclude Include="Line.h" />
     <ClInclude Include="maths_funcs.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ObjectBuffer.h" />
