@@ -46,7 +46,7 @@ glm::mat4 RigidBody::GetTransformationMatrix(glm::vec3 p, glm::vec3 s)
 void RigidBody::Update(float deltaTime)
 {
 	// linear velocity
-	m_linearMomentum += m_force * deltaTime;
+	m_linearMomentum += m_force * deltaTime * 0.5f;
 	m_position += (m_linearMomentum * m_massInverse)  * deltaTime;
 
 	m_force = glm::vec3();
@@ -54,7 +54,7 @@ void RigidBody::Update(float deltaTime)
 	// angular velocity
 	glm::mat3 currentInverseI = GetInertiaInverse();
 
-	m_angularMomentum += m_torque * deltaTime;
+	m_angularMomentum += m_torque * deltaTime * 0.5f;
 	m_orientation = glm::normalize(glm::toQuat(currentInverseI * glm::toMat3(glm::quat(m_angularMomentum * deltaTime))) * m_orientation);
 	m_torque = glm::vec3();
 }
@@ -141,42 +141,5 @@ void RigidBody::CalculateDistanceFromCentreOfMessToPoint(void)
 		);
 
 	distanceFromCentreMessToPoint = glm::abs(distanceFromCentreMessToPoint);
-}
-
-glm::vec3 RigidBody::getFurthestPoint(glm::vec3 &direction)
-{
-	int furthestPoint = 0;
-	float max = FLT_MIN;
-
-	glm::vec3 d = glm::normalize(glm::vec3(glm::toMat4(m_orientation) * glm::vec4(direction, 0.0f)));
-	for(unsigned int i=0; i<m_points.size(); ++i)
-	{
-		glm::vec3 vertex = m_scale * m_points[i];
-		float projection = glm::dot(vertex, d);
-
-		if(projection > max)
-		{
-			furthestPoint = i;
-			max = projection;
-		}
-	}
-
-	printf("%f, %f, %f /n",m_points[furthestPoint].x,m_points[furthestPoint].y,m_points[furthestPoint].z);
-
-// 	for(unsigned int i=0; i<m_points.size(); ++i)
-// 	{
-// 		glm::vec3 vertex = m_scale * m_points[i];
-// 		float projection = glm::dot(vertex, direction);
-// 
-// 		if(projection > max)
-// 		{
-// 			furthestPoint = i;
-// 			max = projection;
-// 		}
-// 	}
-// 
-// 	printf("%f, %f, %f",m_points[furthestPoint].x,m_points[furthestPoint].y,m_points[furthestPoint].z);
-
-	return m_points[furthestPoint];
 }
 

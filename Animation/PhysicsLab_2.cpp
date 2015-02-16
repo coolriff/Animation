@@ -68,6 +68,7 @@ PhysicsLab_2::PhysicsLab_2(void)
 	}
 
 	drawPoints = false;
+	line = new Line();
 }
 
 
@@ -146,6 +147,13 @@ void PhysicsLab_2::run(void)
 		collidingPointBuffers[j]->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
 		collidingPointBuffers[j]->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
 	}
+	
+	v.push_back(glm::vec3());
+	v.push_back(glm::vec3());
+	s.push_back(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	s.push_back(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	line->GenerateBuffer(v, s);
+	line->linkShader(m_shader->GetProgramID());
 
 	initTweakBar();
 
@@ -313,7 +321,7 @@ void PhysicsLab_2::run(void)
 			for (int i=0; i<MAXOBJECT; i++)
 			{
 				update(cubes[i]->GetTransformationMatrix(),b_shader->GetProgramID());
-				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
+				drawLine(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
 
 				glm::mat4 tempPos = glm::mat4(1);
 				tempPos[3][0] = cubes[i]->centre_of_mass.x;
@@ -607,9 +615,9 @@ void PhysicsLab_2::keyControl()
 			float f2 = -50.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(50.0f-(-50.0f))));
 			float f3 = -50.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(50.0f-(-50.0f))));
 
-			cubes[i]->ApplyForce(glm::vec3(p1,p2,p3),glm::vec3(f1,f2,f3));
-			cubes[i]->SetOrientation(cubes[i]->GetOrientation() * glm::quat(glm::vec3(p1,p2,p3)));
-			//cubes[i]->SetLinearMomentum(12.0f * glm::vec3(p1,p2,p3) * cubes[i]->GetMass());
+			//cubes[i]->ApplyForce(glm::vec3(p1,p2,p3),glm::vec3(f1,f2,f3));
+			//cubes[i]->SetOrientation(cubes[i]->GetOrientation() * glm::quat(glm::vec3(p1,p2,p3)));
+			cubes[i]->SetLinearMomentum(12.0f * glm::vec3(p1,p2,p3) * cubes[i]->GetMass());
 		}
 	}
 
@@ -700,29 +708,29 @@ void PhysicsLab_2::updateInBox()
 	{
 		if (cubes[i]->m_position.x < -SPACE)
 		{
-			cubes[i]->m_linearMomentum.x *= -1.0f;
+			cubes[i]->m_linearMomentum.x *= -0.60f;
 		}
 		if (cubes[i]->m_position.x > SPACE)
 		{
-			cubes[i]->m_linearMomentum.x *= -1.0f;
+			cubes[i]->m_linearMomentum.x *= -0.60f;
 		}
 
 		if (cubes[i]->m_position.y < -SPACE)
 		{
-			cubes[i]->m_linearMomentum.y *= -1.0f;
+			cubes[i]->m_linearMomentum.y *= -0.60f;
 		}
 		if (cubes[i]->m_position.y > SPACE)
 		{
-			cubes[i]->m_linearMomentum.y *= -1.0f;
+			cubes[i]->m_linearMomentum.y *= -0.60f;
 		}
 
 		if (cubes[i]->m_position.z < -SPACE)
 		{
-			cubes[i]->m_linearMomentum.z *= -1.0f;
+			cubes[i]->m_linearMomentum.z *= -0.60f;
 		}
 		if (cubes[i]->m_position.z > SPACE)
 		{
-			cubes[i]->m_linearMomentum.z *= -1.0f;
+			cubes[i]->m_linearMomentum.z *= -0.60f;
 		}
 	}
 }
@@ -846,13 +854,13 @@ void PhysicsLab_2::computAABBOverLap()
 
 							// 							for (int i=0; i<demoResult.size(); i++)
 							// 							{
-							// 								glm::mat4 tPos = glm::mat4(1);
-							// 								tPos[3][0] = demoResult[i].collidingPointOnObjectA.x;
-							// 								tPos[3][1] = demoResult[i].collidingPointOnObjectA.y;
-							// 								tPos[3][2] = demoResult[i].collidingPointOnObjectA.z;
-							// 
-							// 								update(tPos,m_shader->GetProgramID());
-							// 								draw(collidingPointBuffers[0]->vao, collidingPointMesh[0]->vertices.size());
+// 								glm::mat4 tPos = glm::mat4(1);
+// 								tPos[3][0] = demoResult[i].collidingPointOnObjectA.x;
+// 								tPos[3][1] = demoResult[i].collidingPointOnObjectA.y;
+// 								tPos[3][2] = demoResult[i].collidingPointOnObjectA.z;
+// 
+// 								update(tPos,m_shader->GetProgramID());
+// 								draw(collidingPointBuffers[0]->vao, collidingPointMesh[0]->vertices.size());
 							// 							}
 
 // 							if (!demoResult.empty())
@@ -911,8 +919,7 @@ void PhysicsLab_2::RespondCollision(Cube &body1, Cube &body2, glm::vec3 &cpA, gl
 	glm::vec3 rA = cpA - body1.GetPosition();
 	glm::vec3 rB = cpB - body2.GetPosition();
 
-	glm::vec3 J = calculateCollisionImpulse(body1, body2, rA, rB, n, 1.0f) * n;
-
+	glm::vec3 J = calculateCollisionImpulse(body1, body2, rA, rB, n, 0.8f) * n;
 
 	body1.SetLinearMomentum(body1.GetLinearMomentum() + J);
 	body1.SetAngularMomentum(body1.GetAngularMomentum() + glm::cross(rA, J));
@@ -971,6 +978,26 @@ glm::vec3 PhysicsLab_2::EPA(std::vector<Simplex>& simplex, Cube &body1, Cube &bo
 				dr.collidingPointOnObjectB = contactPoint2;
 
 				//demoResult.push_back(dr);
+
+				glm::mat4 tPos = glm::mat4(1.0);
+				tPos[3][0] = contactPoint1.x;
+				tPos[3][1] = contactPoint1.y;
+				tPos[3][2] = contactPoint1.z;
+
+				update(tPos,m_shader->GetProgramID());
+				draw(collidingPointBuffers[0]->vao, collidingPointMesh[0]->vertices.size());
+
+				//glm::mat4 tPos = glm::mat4();
+				tPos[3][0] = contactPoint2.x;
+				tPos[3][1] = contactPoint2.y;
+				tPos[3][2] = contactPoint2.z;
+
+				update(tPos,m_shader->GetProgramID());
+				draw(collidingPointBuffers[1]->vao, collidingPointMesh[1]->vertices.size());
+
+				line->SetFromTo(glm::vec3(result.x * -5, result.y * -5, result.z * -5),glm::vec3(result.x * 5, result.y * 5, result.z * 10));
+				update(tPos,b_shader->GetProgramID());
+				line->Render(m_shader->GetProgramID());
 
 				RespondCollision(body1, body2, dr.collidingPointOnObjectA, dr.collidingPointOnObjectB, dr.collidingNormal);
 
@@ -1298,7 +1325,11 @@ void PhysicsLab_2::computAABBOverLapWithSweepAndPrune()
 
 					if (!collidingPair.empty())
 					{
-						CheckCollisionNarrow(*cubes[i],*cubes[j]);
+						if (CheckCollisionNarrow(*cubes[i],*cubes[j]))
+						{
+							cubesBuffer[i]->ChangeColors(cubesMesh[i]->redColors);
+							cubesBuffer[j]->ChangeColors(cubesMesh[j]->redColors);
+						}
 					}
 				}
 			}

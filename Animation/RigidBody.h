@@ -72,7 +72,6 @@ public:
 	void updateCurrentVertices(int verticesSize, std::vector<glm::vec3> & vertices);
 	void CalculateCentreOfMess(int verticesSize);
 	void CalculateDistanceFromCentreOfMessToPoint(void);
-	glm::vec3 getFurthestPoint(glm::vec3 &direction);
 };
 
 #endif

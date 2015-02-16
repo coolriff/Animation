@@ -14,7 +14,7 @@ PhysicsLabCamera::PhysicsLabCamera()
 	// Initial Field of View
 	initialFoV = 45.0f;
 
-	speed = 1.0f; // 3 units / second
+	speed = 15.0f; // 3 units / second
 	mouseSpeed = 0.005f;
 
 	direction = glm::vec3(0,0,-1);

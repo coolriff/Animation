@@ -14,12 +14,13 @@
 #include <glm/gtc/matrix_transform.hpp> 
 #include <glm/gtx/transform.hpp>
 #include <algorithm>
+#include "Line.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
 #define MAX 36
 #define MAXOBJECT 2
-#define SPACE 2.0f
+#define SPACE 1.5f
 
 struct AABB
 {
@@ -114,6 +115,9 @@ public:
 	CreateMesh* collidingPointMesh[MAXOBJECT * 8];
 	ObjectBuffer* collidingPointBuffers[MAXOBJECT * 8];
 
+	CreateMesh* lineMesh[MAXOBJECT * 8];
+	ObjectBuffer* lineMeshBuffers[MAXOBJECT * 8];
+
 	AABB* SAP[MAXOBJECT];
 
 	Cube* AABBcubes[MAXOBJECT];
@@ -130,6 +134,11 @@ public:
 	glm::mat4 M;
 	glm::vec3 applyForcePoint;
 	glm::vec3 applyForceF;
+
+	Line* line; 
+	std::vector<glm::vec3> v;
+	std::vector<glm::vec4> s;
+
 
 	float directionalLightIntensity;
 	glm::vec3 directionalLightDirection;
