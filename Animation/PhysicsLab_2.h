@@ -20,7 +20,7 @@
 #define WINDOW_HIGH 900
 #define MAX 36
 #define MAXOBJECT 2
-#define SPACE 1.5f
+#define SPACE 50.0f
 
 struct AABB
 {

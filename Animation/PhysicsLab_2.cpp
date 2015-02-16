@@ -98,6 +98,9 @@ void PhysicsLab_2::run(void)
 		cubes[i]->ID = i;
 	}
 
+	cubes[0]->m_position = glm::vec3(0,0,0);
+	cubes[1]->m_position = glm::vec3(5,0,0);
+
 	for (int i=0; i<MAXOBJECT; i++)
 	{
 		cubesMesh[i]->createCubeMesh();
@@ -150,8 +153,8 @@ void PhysicsLab_2::run(void)
 	
 	v.push_back(glm::vec3());
 	v.push_back(glm::vec3());
-	s.push_back(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
-	s.push_back(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	s.push_back(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	s.push_back(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	line->GenerateBuffer(v, s);
 	line->linkShader(m_shader->GetProgramID());
 
@@ -605,20 +608,21 @@ void PhysicsLab_2::keyControl()
 	if (glfwGetKey(window, GLFW_KEY_X ) == GLFW_PRESS)
 	{
 
-		for (int i=0; i<MAXOBJECT; i++)
-		{
-			float p1 = -0.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(0.5f-(-0.5f))));
-			float p2 = -0.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(0.5f-(-0.5f))));
-			float p3 = -0.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(0.5f-(-0.5f))));
-
-			float f1 = -50.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(50.0f-(-50.0f))));
-			float f2 = -50.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(50.0f-(-50.0f))));
-			float f3 = -50.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(50.0f-(-50.0f))));
-
-			//cubes[i]->ApplyForce(glm::vec3(p1,p2,p3),glm::vec3(f1,f2,f3));
-			//cubes[i]->SetOrientation(cubes[i]->GetOrientation() * glm::quat(glm::vec3(p1,p2,p3)));
-			cubes[i]->SetLinearMomentum(12.0f * glm::vec3(p1,p2,p3) * cubes[i]->GetMass());
-		}
+// 		for (int i=0; i<MAXOBJECT; i++)
+// 		{
+// 			float p1 = -0.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(0.5f-(-0.5f))));
+// 			float p2 = -0.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(0.5f-(-0.5f))));
+// 			float p3 = -0.5f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(0.5f-(-0.5f))));
+// 
+// 			float f1 = -50.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(50.0f-(-50.0f))));
+// 			float f2 = -50.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(50.0f-(-50.0f))));
+// 			float f3 = -50.0f + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(50.0f-(-50.0f))));
+// 
+// 			//cubes[i]->ApplyForce(glm::vec3(p1,p2,p3),glm::vec3(f1,f2,f3));
+// 			//cubes[i]->SetOrientation(cubes[i]->GetOrientation() * glm::quat(glm::vec3(p1,p2,p3)));
+// 			cubes[i]->SetLinearMomentum(12.0f * glm::vec3(5,0,0) * cubes[i]->GetMass());
+// 		}
+		cubes[0]->SetLinearMomentum(12.0f * glm::vec3(2,0,0) * cubes[0]->GetMass());
 	}
 
 	//dt
@@ -995,7 +999,7 @@ glm::vec3 PhysicsLab_2::EPA(std::vector<Simplex>& simplex, Cube &body1, Cube &bo
 				update(tPos,m_shader->GetProgramID());
 				draw(collidingPointBuffers[1]->vao, collidingPointMesh[1]->vertices.size());
 
-				line->SetFromTo(glm::vec3(result.x * -5, result.y * -5, result.z * -5),glm::vec3(result.x * 5, result.y * 5, result.z * 10));
+				line->SetFromTo(glm::vec3(result.x, result.y, result.z),glm::vec3(result.x, result.y, result.z));
 				update(tPos,b_shader->GetProgramID());
 				line->Render(m_shader->GetProgramID());
 

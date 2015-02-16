@@ -50,10 +50,10 @@ void Line::SetFromTo(glm::vec3 from, glm::vec3 to)
 	vertices.push_back(from);
 	vertices.push_back(to);
 
-	glBindVertexArray( vao );
-	glBindBuffer( GL_ARRAY_BUFFER, vbo );
+	glBindVertexArray(vao);
+	glBindBuffer( GL_ARRAY_BUFFER, vbo);
 
-	glBufferSubData( GL_ARRAY_BUFFER, 0, vSize, (const GLvoid*)(&vertices[0]) );
+	glBufferSubData( GL_ARRAY_BUFFER, 0, vSize, (const GLvoid*)(&vertices[0]));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
