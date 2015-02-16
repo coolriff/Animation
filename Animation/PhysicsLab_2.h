@@ -32,23 +32,44 @@ struct AABB
 	}
 };
 
+struct Simplex
+{
+	glm::vec3 minkowskiDifference;
+	glm::vec3 pointA;
+	glm::vec3 pointB;
+};
+
+struct DemoResult
+{
+	glm::vec3 collidingNormal;
+	glm::vec3 collidingPointOnObjectA;
+	glm::vec3 collidingPointOnObjectB;
+};
+
+
+
 struct Face
 {
-	Face(int index1, int index2, int index3, std::vector<glm::vec3> &simplex) : i1(index1), i2(index2), i3(index3){
+	Face(int index1, int index2, int index3, std::vector<Simplex> &simplex) : i1(index1), i2(index2), i3(index3)
+	{
 		v1 = simplex[i1];
 		v2 = simplex[i2];
 		v3 = simplex[i3];
 
-		normal = glm::normalize(glm::cross(v3 - v1, v2 - v1));
-		if(glm::dot(v1, normal) < 0)
+		normal = glm::normalize(glm::cross(v3.minkowskiDifference - v1.minkowskiDifference, v2.minkowskiDifference - v1.minkowskiDifference));
+		if(glm::dot(v1.minkowskiDifference, normal) < 0)
+		{
 			normal = -normal;
+		}
 	}
 
-	glm::vec3 v1, v2, v3;
+	Simplex v1, v2, v3;
 	int i1, i2, i3;
 
 	glm::vec3 normal;
 };
+
+
 
 class PhysicsLab_2
 {
@@ -83,6 +104,10 @@ public:
 
 	CreateMesh* boundingSpheres[MAXOBJECT * 8];
 	ObjectBuffer* boundingSphereBuffers[MAXOBJECT * 8];
+
+	CreateMesh* collidingPointMesh[MAXOBJECT * 8];
+	ObjectBuffer* collidingPointBuffers[MAXOBJECT * 8];
+
 	AABB* SAP[MAXOBJECT];
 
 	Cube* AABBcubes[MAXOBJECT];
@@ -149,13 +174,12 @@ public:
 	void computAABBOverLapWithSweepAndPrune();
 	bool AABBOverlap(const Cube &a, const Cube &b);
 	bool CheckCollisionNarrow(Cube &body1, Cube &body2);
-	bool processSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &direction);
-	bool checkTriangle(std::vector<glm::vec3> &simplex, glm::vec3 &direction);
-	glm::vec3 support(glm::vec3 direction, const std::vector<glm::vec3>& vertices);
-	glm::vec3 support(glm::vec3 direction, Cube &body1, Cube &body2);
+	bool processSimplex(std::vector<Simplex> &simplex, glm::vec3 &direction);
+	bool checkTriangle(std::vector<Simplex> &simplex, glm::vec3 &direction);
+	Simplex support(glm::vec3 direction, Cube &body1, Cube &body2);
 	glm::vec3 getFarthestPointInDirection(glm::vec3 direction, const std::vector<glm::vec3>& vertices);
 	bool isSameDirection(glm::vec3 &a, glm::vec3 &b);
-	glm::vec3 EPA(std::vector<glm::vec3>& simplex, Cube &body1, Cube &body2);
+	glm::vec3 EPA(std::vector<Simplex>& simplex, Cube &body1, Cube &body2);
 	Face findClosestFace(std::vector<Face> &faces);
 	glm::vec3 toTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c);
 };

@@ -25,6 +25,7 @@ void MouseScrollCB(  GLFWwindow* window, double x , double y )
 	TwEventMouseWheelGLFW( (int)y );
 }
 
+std::vector<DemoResult> demoResult;
 
 PhysicsLab_2::PhysicsLab_2(void)
 {
@@ -62,6 +63,8 @@ PhysicsLab_2::PhysicsLab_2(void)
 	{
 		boundingSpheres[i] = new CreateMesh();
 		boundingSphereBuffers[i] = new ObjectBuffer();
+		collidingPointMesh[i] = new CreateMesh();
+		collidingPointBuffers[i] = new ObjectBuffer();
 	}
 
 	drawPoints = false;
@@ -136,6 +139,12 @@ void PhysicsLab_2::run(void)
 		boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
 		boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
 		boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
+
+		collidingPointMesh[j]->createBoundingSphereMesh(0.05, 5);
+		collidingPointBuffers[j]->GenerateVBO(boundingSpheres[j]->vertices,boundingSpheres[j]->colors,boundingSpheres[j]->normals);
+		collidingPointBuffers[j]->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+		collidingPointBuffers[j]->LinkBufferToShaderWithNormal(too_shader->GetProgramID());
+		collidingPointBuffers[j]->LinkBufferToShaderWithNormal(b_shader->GetProgramID());
 	}
 
 	initTweakBar();
@@ -304,7 +313,7 @@ void PhysicsLab_2::run(void)
 			for (int i=0; i<MAXOBJECT; i++)
 			{
 				update(cubes[i]->GetTransformationMatrix(),b_shader->GetProgramID());
-				draw(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
+				drawLine(cubesBuffer[i]->vao, cubesMesh[i]->vertices.size());
 
 				glm::mat4 tempPos = glm::mat4(1);
 				tempPos[3][0] = cubes[i]->centre_of_mass.x;
@@ -829,7 +838,23 @@ void PhysicsLab_2::computAABBOverLap()
 					//CheckCollisionNarrow
 					if (!collidingPair.empty())
 					{
-						CheckCollisionNarrow(*cubes[i],*cubes[j]);
+						if (CheckCollisionNarrow(*cubes[i],*cubes[j]))
+						{
+							cubesBuffer[i]->ChangeColors(cubesMesh[i]->redColors);
+							cubesBuffer[j]->ChangeColors(cubesMesh[j]->redColors);
+							stopTime = true;
+
+							for (int i=0; i<demoResult.size(); i++)
+							{
+								glm::mat4 tPos = glm::mat4(1);
+								tPos[3][0] = demoResult[i].collidingPointOnObjectA.x;
+								tPos[3][1] = demoResult[i].collidingPointOnObjectA.y;
+								tPos[3][2] = demoResult[i].collidingPointOnObjectA.z;
+
+								update(tPos,m_shader->GetProgramID());
+								draw(collidingPointBuffers[0]->vao, collidingPointMesh[0]->vertices.size());
+							}
+						}
 					}
 				}
 			}
@@ -840,37 +865,43 @@ void PhysicsLab_2::computAABBOverLap()
 //GJK 
 bool PhysicsLab_2::CheckCollisionNarrow(Cube &body1, Cube &body2)
 {
+	//demoResult.clear();
+	std::vector<Simplex> simplex;
+
 	glm::vec3 direction = body1.m_position - body2.m_position;
-	glm::vec3 minkowskiDifference = support(direction, body1, body2);
-	std::vector<glm::vec3> simplex;
-	simplex.push_back(minkowskiDifference);
-	direction = -minkowskiDifference;
+
+	simplex.push_back(support(direction, body1, body2));
+	
+	direction = -simplex[0].minkowskiDifference;
 	int counter = 100;
 
 	while (counter > 0)
 	{
-		minkowskiDifference = support(direction, body1, body2);
+		Simplex tempSimplex;
+		tempSimplex = support(direction, body1, body2);
 
 		// Last point added was not past the origin in this direction
-		if(glm::dot(minkowskiDifference, direction) < 0)
+		if(glm::dot(tempSimplex.minkowskiDifference, direction) < 0)
 		{
 			return false;
 		}
-		simplex.push_back(minkowskiDifference);
+		simplex.push_back(tempSimplex);
 
 		//check intersect
 		if (processSimplex(simplex, direction))
 		{
-			EPA(simplex, body1, body2);
-			cubesBuffer[body1.ID]->ChangeColors(cubesMesh[body1.ID]->redColors);
-			cubesBuffer[body2.ID]->ChangeColors(cubesMesh[body2.ID]->redColors);
+			if (simplex.size() == 4)
+			{
+				glm::vec3 normal = EPA(simplex, body1, body2);
+				return true;
+			}
 		}
 		counter--;
 	}
 }
 
 
-glm::vec3 PhysicsLab_2::EPA(std::vector<glm::vec3>& simplex, Cube &body1, Cube &body2)
+glm::vec3 PhysicsLab_2::EPA(std::vector<Simplex>& simplex, Cube &body1, Cube &body2)
 {
 	std::vector<Face> faces;
 
@@ -883,19 +914,25 @@ glm::vec3 PhysicsLab_2::EPA(std::vector<glm::vec3>& simplex, Cube &body1, Cube &
 	while (counter > 0)
 	{
 		Face face = findClosestFace(faces);
-		glm::vec3 newPoint = support(face.normal, body1, body2);
+		Simplex newPoint = support(face.normal, body1, body2);
 
-		if(glm::dot(newPoint - face.v1, face.normal) - glm::dot(face.v1, face.normal) < 0.01f) 
+		glm::vec3 barycentric = toTriangle(glm::vec3(0), face.v1.minkowskiDifference, face.v2.minkowskiDifference, face.v3.minkowskiDifference);
+		glm::vec3 contactPoint1 = barycentric.x * face.v1.pointA + barycentric.y * face.v2.pointA + barycentric.z * face.v3.pointA;
+		glm::vec3 contactPoint2 = barycentric.x * face.v1.pointB + barycentric.y * face.v2.pointB + barycentric.z * face.v3.pointB;
+
+		if(glm::dot(newPoint.minkowskiDifference - face.v1.minkowskiDifference, face.normal) - glm::dot(face.v1.minkowskiDifference, face.normal) < 0.01f) 
 		{
-
-			glm::vec3 barycentric = toTriangle(glm::vec3(0), face.v1, face.v2, face.v3);
-			glm::vec3 contactPoint1 = barycentric.x * face.v1 + barycentric.y * face.v2 + barycentric.z * face.v3;
-
-			glm::vec3 result = -face.normal * glm::dot(-face.v1, -face.normal);
+			glm::vec3 result = -face.normal * glm::dot(-face.v1.minkowskiDifference, -face.normal);
 
 			if(result != glm::vec3())
 			{
-				return glm::normalize(result);
+				DemoResult dr;
+				dr.collidingNormal = glm::normalize(result);
+				dr.collidingPointOnObjectA = contactPoint1;
+				dr.collidingPointOnObjectB = contactPoint2;
+
+				demoResult.push_back(dr);
+				return dr.collidingNormal;
 			}
 			else
 			{
@@ -904,6 +941,7 @@ glm::vec3 PhysicsLab_2::EPA(std::vector<glm::vec3>& simplex, Cube &body1, Cube &
 		}
 
 		// Add new vertex
+		simplex.erase(simplex.begin());
 		simplex.push_back(newPoint);
 
 		// Add relevant faces
@@ -919,7 +957,9 @@ glm::vec3 PhysicsLab_2::EPA(std::vector<glm::vec3>& simplex, Cube &body1, Cube &
 glm::vec3 PhysicsLab_2::toTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c)
 {
 	// code from Crister Erickson's Real-Time Collision Detection
-	auto v0 = b - a,v1 = c - a,v2 = p - a;
+	glm::vec3 v0 = b - a;
+	glm::vec3 v1 = c - a;
+	glm::vec3 v2 = p - a;
 	float d00 = glm::dot(v0,v0);
 	float d01 = glm::dot(v0,v1);
 	float d11 = glm::dot(v1,v1);
@@ -932,7 +972,7 @@ glm::vec3 PhysicsLab_2::toTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::v
 
 	glm::vec3 barycentric(u,v,w);
 
-	return barycentric; // = u*a + v*b + w*c, u = va * denom = 1.0f - v - w
+	return barycentric;
 }
 
 
@@ -943,7 +983,7 @@ Face PhysicsLab_2::findClosestFace(std::vector<Face> &faces)
 
 	for(int i=0; i<faces.size(); ++i)
 	{
-		float distance = glm::dot(faces[i].v1, faces[i].normal);
+		float distance = glm::dot(faces[i].v1.minkowskiDifference, faces[i].normal);
 
 		if(distance < minDistance)
 		{
@@ -978,12 +1018,14 @@ glm::vec3 PhysicsLab_2::getFarthestPointInDirection(glm::vec3 direction, const s
 	return vertices[indexDot];
 }
 
-glm::vec3 PhysicsLab_2::support(glm::vec3 direction, Cube &body1, Cube &body2)
+Simplex PhysicsLab_2::support(glm::vec3 direction, Cube &body1, Cube &body2)
 {
-	glm::vec3 furthestPointBody1 = getFarthestPointInDirection(direction, body1.m_points);
-	glm::vec3 furthestPointBody2 = getFarthestPointInDirection(-direction, body2.m_points);
+	Simplex s;
+	s.pointA = getFarthestPointInDirection(direction, body1.m_points);
+	s.pointB = getFarthestPointInDirection(-direction, body2.m_points);
+	s.minkowskiDifference = s.pointA - s.pointB;
 
-	return furthestPointBody1 - furthestPointBody2;
+	return s;
 }
 
 bool PhysicsLab_2::isSameDirection(glm::vec3 &a, glm::vec3 &b)
@@ -992,9 +1034,10 @@ bool PhysicsLab_2::isSameDirection(glm::vec3 &a, glm::vec3 &b)
 	return dot > 0.0f;
 }
 
-bool PhysicsLab_2::processSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &direction)
+bool PhysicsLab_2::processSimplex(std::vector<Simplex> &simplex, glm::vec3 &direction)
 {
-	glm::vec3 A,B,C,D,AB,AC,AD,AO;
+	Simplex A,B,C,D;
+	glm::vec3 AB,AC,AD,AO;
 
 	switch(simplex.size())
 	{
@@ -1003,8 +1046,8 @@ bool PhysicsLab_2::processSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &di
 		A = simplex.at(1);
 		B = simplex.at(0);
 
-		AB = B - A;
-		AO = -A;
+		AB = B.minkowskiDifference - A.minkowskiDifference;
+		AO = -A.minkowskiDifference;
 
 
 		if(isSameDirection(AO,AB))
@@ -1030,10 +1073,10 @@ bool PhysicsLab_2::processSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &di
 		C = simplex.at(1);
 		D = simplex.at(0);
 
-		AB = B-A;
-		AC = C-A;
-		AD = D-A;
-		AO = -A;
+		AB = B.minkowskiDifference - A.minkowskiDifference;
+		AC = C.minkowskiDifference - A.minkowskiDifference;
+		AD = D.minkowskiDifference - A.minkowskiDifference;
+		AO = -A.minkowskiDifference;
 
 		glm::vec3 ABC = glm::cross(AB, AC);
 		glm::vec3 ADB = glm::cross(AD, AB);
@@ -1064,17 +1107,18 @@ bool PhysicsLab_2::processSimplex(std::vector<glm::vec3> &simplex, glm::vec3 &di
 	}
 }
 
-bool PhysicsLab_2::checkTriangle(std::vector<glm::vec3> &simplex, glm::vec3 &direction)
+bool PhysicsLab_2::checkTriangle(std::vector<Simplex> &simplex, glm::vec3 &direction)
 {
-	glm::vec3 A,B,C,AB,AC,AO;
+	Simplex A,B,C;
+	glm::vec3 AB,AC,AO;
 
 	A = simplex[2];
 	B = simplex[1];
 	C = simplex[0];
 
-	AB = B-A;
-	AC = C-A;
-	AO = -A;
+	AB = B.minkowskiDifference - A.minkowskiDifference;
+	AC = C.minkowskiDifference - A.minkowskiDifference;
+	AO = -A.minkowskiDifference;
 
 	glm::vec3 ABC = glm::cross(AB, AC);
 
