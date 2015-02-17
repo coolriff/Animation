@@ -41,6 +41,12 @@ public:
 	Shader *shaderToonTexture;
 	Shader *shaderOrenNayarTexture;
 
+	//SkyBox 
+	Cube *SkyBoxBody;
+	CreateMesh *SkyBoxMesh;
+	ObjectBuffer *SkyBoxBuffer;
+	Shader *SkyBoxShader;
+
 	PhysicsLabCamera* m_physicsLabCamera;
 
 	GLuint modelLoc;
@@ -114,4 +120,5 @@ public:
 	void draw(GLuint vao, int size);
 	void drawLine(GLuint vao, int size);
 	void createShaders(Shader *shader, std::string v, std::string p);
+	void SkyBox();
 };

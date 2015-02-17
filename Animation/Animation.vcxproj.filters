@@ -185,6 +185,12 @@
     <None Include="..\Shader\orenNayarTexture.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
+    <None Include="..\Shader\cubemap_reflect.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\cubemap_reflect.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lab1.h">

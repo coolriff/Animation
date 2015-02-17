@@ -32,7 +32,6 @@ RenderingLab1n2::RenderingLab1n2(void)
 	stopTime = false;
 	useForce = false;
 
-	
 	isTexture = true;
 
 	shaderToon = new Shader();
@@ -42,6 +41,11 @@ RenderingLab1n2::RenderingLab1n2(void)
 	shaderBlinnPhongTexture = new Shader();
 	shaderToonTexture = new Shader();
 	shaderOrenNayarTexture = new Shader();
+
+	SkyBoxBody = new Cube();
+	SkyBoxMesh = new CreateMesh();
+	SkyBoxBuffer = new ObjectBuffer();
+	SkyBoxShader = new Shader();
 
 	for (int i=0; i<MAXOBJECT; i++)
 	{
@@ -87,6 +91,11 @@ void RenderingLab1n2::run(void)
 
 	double lastTime = glfwGetTime();
 
+	SkyBoxMesh->LoadMesh("../Models/cube2.obj");
+	SkyBoxMesh->setSkyBoxTexture("../Models/Colloseum/",SkyBoxShader->GetProgramID());
+	SkyBoxBody->SetPosition(glm::vec3(0));
+	SkyBoxBody->SetScale(glm::vec3(100.0f,100.0f,100.0f));
+
 	m_bodyMesh[0]->LoadMesh("../Models/head2.obj");
 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
@@ -96,7 +105,7 @@ void RenderingLab1n2::run(void)
 	m_bodyMesh[1]->LoadMesh("../Models/head2.obj");
 	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
 	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
-	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
+	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
 	m_body[1]->SetPosition(glm::vec3(2,0,0));
 
 	vLightDirGLM = glm::vec3(0,0,-1);
@@ -133,6 +142,7 @@ void RenderingLab1n2::run(void)
 			{
 
 			case RenderingLab1n2::BLINNPHONGTEXTURE:
+				SkyBox();
 				m_bodyMesh[i]->isTextured = true;
 				glUseProgram(shaderBlinnPhongTexture->GetProgramID());
 				shaderBlinnPhongTexture->findAllShaderID();
@@ -264,8 +274,18 @@ void RenderingLab1n2::run(void)
 	glfwTerminate();
 }
 
+void RenderingLab1n2::SkyBox()
+{
+	glUseProgram(SkyBoxShader->GetProgramID());
+	SkyBoxShader->findAllShaderID();
+	SkyBoxShader->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
+	SkyBoxMesh->Render();
+}
+
 void RenderingLab1n2::initShaders()
 {
+	createShaders(shaderOrenNayar, "../Shader/cubemap_reflect.vs", "../Shader/cubemap_reflect.ps");
+
 	createShaders(shaderBlinnPhongTexture, "../Shader/BlinnPhongTexture.vs", "../Shader/BlinnPhongTexture.ps");
 	createShaders(shaderBlinnPhong, "../Shader/BlinnPhong.vs", "../Shader/BlinnPhong.ps");
 
@@ -463,7 +483,6 @@ void RenderingLab1n2::keyControl()
 // 		m_bodyMesh[0]->isTextured = false;
 // 	}
 }
-
 
 void RenderingLab1n2::draw(GLuint vao, int size)
 {

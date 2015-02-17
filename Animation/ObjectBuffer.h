@@ -44,7 +44,6 @@ public:
 	void LinkBufferToShaderWithNormal(GLuint shaderProgramID);
 	void ChangeColors( const std::vector<glm::vec4> &newColor);
 	void SetColor(glm::vec4 color);
-	void SetTexture(const char* filename, GLuint shaderProgramID);
 
 	void tony(
 		const std::vector<glm::vec3> & vertices, 

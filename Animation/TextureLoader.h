@@ -10,9 +10,11 @@
 class TextureLoader
 {
 public:
-	TextureLoader(GLenum textureTarget, const std::string &filename);
+	TextureLoader();
+	~TextureLoader();
 
-	bool Load();
+	bool Load(GLenum textureTarget, const std::string &filename);
+	bool LoadSkyBox(GLenum textureTarget, const std::string &filename);
 	void Bind(GLenum textureUnit);
 	void UnBind();
 

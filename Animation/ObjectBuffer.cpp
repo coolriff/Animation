@@ -189,20 +189,6 @@ void ObjectBuffer::SetColor(glm::vec4 color)
 	glBufferSubData( GL_ARRAY_BUFFER, vSize, cSize, (const GLvoid*)(&newColor[0]));
 }
 
-void ObjectBuffer::SetTexture(const char* filename, GLuint shaderProgramID)
-{
-	gSampler = glGetUniformLocation(shaderProgramID, "gSampler");
-
-	glUniform1i(gSampler, 0);
-
-	textureLoader = new TextureLoader(GL_TEXTURE_2D, filename);
-
-	if (!textureLoader->Load()) 
-	{
-		std::cout << "Unable to load texture" << std::endl;
-	}
-}
-
 void ObjectBuffer::tony(const std::vector<glm::vec3> & vertices, 
 						const std::vector<glm::vec4> & colors , 
 						const std::vector<glm::vec3> & normals, 

@@ -123,6 +123,8 @@
     <None Include="..\Shader\BlinnPhong.vs" />
     <None Include="..\Shader\BlinnPhongTexture.ps" />
     <None Include="..\Shader\BlinnPhongTexture.vs" />
+    <None Include="..\Shader\cubemap_reflect.ps" />
+    <None Include="..\Shader\cubemap_reflect.vs" />
     <None Include="..\Shader\orenNayar.ps" />
     <None Include="..\Shader\orenNayar.vs" />
     <None Include="..\Shader\orenNayarTexture.ps" />
