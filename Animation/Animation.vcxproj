@@ -117,12 +117,15 @@
     <ClCompile Include="skinning_technique.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
+    <ClCompile Include="tgaio.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shader\BlinnPhong.ps" />
     <None Include="..\Shader\BlinnPhong.vs" />
     <None Include="..\Shader\BlinnPhongTexture.ps" />
     <None Include="..\Shader\BlinnPhongTexture.vs" />
+    <None Include="..\Shader\cubemap_reflect.ps" />
+    <None Include="..\Shader\cubemap_reflect.vs" />
     <None Include="..\Shader\orenNayar.ps" />
     <None Include="..\Shader\orenNayar.vs" />
     <None Include="..\Shader\orenNayarTexture.ps" />
@@ -177,6 +180,7 @@
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="technique.h" />
     <ClInclude Include="TextureLoader.h" />
+    <ClInclude Include="tgaio.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="simpleFragmentShader.txt" />

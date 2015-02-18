@@ -418,3 +418,10 @@ void CreateMesh::Render()
 	glBindVertexArray(0);
 }
 
+void CreateMesh::RenderSkyBox()
+{
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, NULL);
+	glBindVertexArray(0);
+}
+

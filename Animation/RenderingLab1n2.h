@@ -14,6 +14,7 @@
 #include <glm/gtc/matrix_transform.hpp> 
 #include <glm/gtx/transform.hpp>
 #include <algorithm>
+#include "tgaio.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
@@ -32,6 +33,12 @@ public:
 	Cube *m_body[MAXOBJECT];
 	CreateMesh *m_bodyMesh[MAXOBJECT];
 	ObjectBuffer *m_bodyBuffer[MAXOBJECT];
+
+	Cube *skyBoxBody;
+	CreateMesh *skyBoxMesh;
+	ObjectBuffer *skyBoxBuffer;
+
+	Shader *shaderSkyBox;
 
 	Shader *shaderBlinnPhong;
 	Shader *shaderToon;
@@ -114,4 +121,5 @@ public:
 	void draw(GLuint vao, int size);
 	void drawLine(GLuint vao, int size);
 	void createShaders(Shader *shader, std::string v, std::string p);
+	void loadCubeMap( const char * baseFileName );
 };

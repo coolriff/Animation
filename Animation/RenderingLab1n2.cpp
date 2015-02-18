@@ -35,6 +35,11 @@ RenderingLab1n2::RenderingLab1n2(void)
 	
 	isTexture = true;
 
+	shaderSkyBox = new Shader();
+	skyBoxBody = new Cube();
+	skyBoxMesh = new CreateMesh();
+	skyBoxBuffer = new ObjectBuffer();
+
 	shaderToon = new Shader();
 	shaderBlinnPhong = new Shader();
 	shaderOrenNayar = new Shader();
@@ -87,6 +92,12 @@ void RenderingLab1n2::run(void)
 
 	double lastTime = glfwGetTime();
 
+	skyBoxMesh->LoadMesh("../Models/cube2.obj");
+	loadCubeMap("../Models/cubemap_night/night");
+	skyBoxBody->SetPosition(glm::vec3(0));
+	skyBoxBody->SetScale(glm::vec3(100.0f,100.0f,100.0f));
+
+
 	m_bodyMesh[0]->LoadMesh("../Models/head2.obj");
 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
@@ -107,6 +118,8 @@ void RenderingLab1n2::run(void)
 	specularIntensityGLM =  0.6f;
 	diffuseIntensityGLM =  0.8f;
 	specularShininessGLM =  64.0f;
+
+
 	
 	do{
 		double currentTime = glfwGetTime();
@@ -119,6 +132,24 @@ void RenderingLab1n2::run(void)
 		}
 
 		preDraw();
+
+
+
+		glUseProgram(shaderSkyBox->GetProgramID());
+		GLuint dsb = glGetUniformLocation(shaderSkyBox->GetProgramID(), "DrawSkyBox");
+		glUniform1i(dsb, true);
+		//setMatrices
+		m_physicsLabCamera->computeMatricesFromInputs(window);
+		modelLoc = glGetUniformLocation(shaderSkyBox->GetProgramID(), "model");
+		viewLoc = glGetUniformLocation(shaderSkyBox->GetProgramID(), "view");
+		projLoc = glGetUniformLocation(shaderSkyBox->GetProgramID(), "projection");
+		m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
+		update(skyBoxBody->GetTransformationMatrix(), shaderSkyBox->GetProgramID());
+		skyBoxMesh->RenderSkyBox();
+		GLuint dsbs = glGetUniformLocation(shaderSkyBox->GetProgramID(), "DrawSkyBox");
+		glUniform1i(dsbs, false);
+
+
 
 		for (int i=0; i<MAXOBJECT; i++)
 		{
@@ -215,40 +246,6 @@ void RenderingLab1n2::run(void)
 			}
 		}
 
-// 		if (glfwGetKey(window, GLFW_KEY_LEFT_BRACKET ) == GLFW_PRESS){
-// 			m_bodyMesh[0]->isTextured = true;
-// 			glUseProgram(shaderBlinnPhongTexture->GetProgramID());
-// 
-// 			shaderBlinnPhongTexture->findAllShaderID();
-// 			shaderBlinnPhongTexture->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
-// 
-// 			m_physicsLabCamera->computeMatricesFromInputs(window);
-// 			modelLoc = glGetUniformLocation(shaderBlinnPhongTexture->GetProgramID(), "model");
-// 			viewLoc = glGetUniformLocation(shaderBlinnPhongTexture->GetProgramID(), "view");
-// 			projLoc = glGetUniformLocation(shaderBlinnPhongTexture->GetProgramID(), "projection");
-// 			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-// 
-// 			update(m_body[0]->GetTransformationMatrix(), shaderBlinnPhongTexture->GetProgramID());
-// 			m_bodyMesh[0]->Render();
-// 		}
-// 
-// 		if (glfwGetKey(window, GLFW_KEY_RIGHT_BRACKET ) == GLFW_PRESS){
-// 			m_bodyMesh[0]->isTextured = false;
-// 			glUseProgram(shaderBlinnPhong->GetProgramID());
-// 
-// 			shaderBlinnPhong->findAllShaderID();
-// 			shaderBlinnPhong->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
-// 
-// 			m_physicsLabCamera->computeMatricesFromInputs(window);
-// 			modelLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "model");
-// 			viewLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "view");
-// 			projLoc = glGetUniformLocation(shaderBlinnPhong->GetProgramID(), "projection");
-// 			m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc);
-// 
-// 			update(m_body[0]->GetTransformationMatrix(), shaderBlinnPhong->GetProgramID());
-// 			m_bodyMesh[0]->Render();
-// 		}
-
 		TwDraw();
 
 		// Swap buffers
@@ -264,8 +261,45 @@ void RenderingLab1n2::run(void)
 	glfwTerminate();
 }
 
+void RenderingLab1n2::loadCubeMap( const char * baseFileName )
+{
+	glActiveTexture(GL_TEXTURE0);
+
+	GLuint texID;
+	glGenTextures(1, &texID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, texID);
+
+	const char * suffixes[] = { "posx", "negx", "posy", "negy", "posz", "negz" };
+	GLuint targets[] = {
+		GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+		GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+		GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+	};
+
+	GLint w,h;
+	// Allocate the cube map texture
+	glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, GL_RGBA8, 256, 256);
+
+	// Load each cube-map face
+	for( int i = 0; i < 6; i++ ) {
+		std::string texName = std::string(baseFileName) + "_" + suffixes[i] + ".tga";
+		GLubyte * data = TGAIO::read(texName.c_str(), w, h);
+		glTexSubImage2D(targets[i], 0, 0, 0, w, h,
+			GL_RGBA, GL_UNSIGNED_BYTE, data);
+		delete [] data;
+	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+}
+
 void RenderingLab1n2::initShaders()
 {
+	createShaders(shaderSkyBox, "../Shader/cubemap_reflect.vs", "../Shader/cubemap_reflect.ps");
+
 	createShaders(shaderBlinnPhongTexture, "../Shader/BlinnPhongTexture.vs", "../Shader/BlinnPhongTexture.ps");
 	createShaders(shaderBlinnPhong, "../Shader/BlinnPhong.vs", "../Shader/BlinnPhong.ps");
 
@@ -453,15 +487,6 @@ void RenderingLab1n2::keyControl()
 	if (glfwGetKey(window, GLFW_KEY_O ) == GLFW_PRESS){
 		stopTime = false;
 	}
-
-
-// 	if (glfwGetKey(window, GLFW_KEY_LEFT_BRACKET ) == GLFW_PRESS){
-// 		m_bodyMesh[0]->isTextured = true;
-// 	}
-// 
-// 	if (glfwGetKey(window, GLFW_KEY_RIGHT_BRACKET ) == GLFW_PRESS){
-// 		m_bodyMesh[0]->isTextured = false;
-// 	}
 }
 
 

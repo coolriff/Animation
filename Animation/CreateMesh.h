@@ -44,7 +44,7 @@ public:
 	std::vector<glm::vec4> getColors(void) {return colors;};
 	void LoadMesh(const char* filename);
 	void Render();
-
+	void RenderSkyBox();
 	TextureLoader *texture;
 };
 #endif
