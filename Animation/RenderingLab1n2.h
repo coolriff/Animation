@@ -39,6 +39,8 @@ public:
 	ObjectBuffer *skyBoxBuffer;
 
 	Shader *shaderSkyBox;
+	Shader *shaderRefraction;
+
 
 	Shader *shaderBlinnPhong;
 	Shader *shaderToon;

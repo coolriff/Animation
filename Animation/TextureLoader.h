@@ -15,7 +15,6 @@ public:
 	bool Load();
 	void Bind(GLenum textureUnit);
 	void UnBind();
-
 	std::string filename;
 	GLenum textureTarget;
 	GLuint textureObj;

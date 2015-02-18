@@ -36,6 +36,8 @@ RenderingLab1n2::RenderingLab1n2(void)
 	isTexture = true;
 
 	shaderSkyBox = new Shader();
+	shaderRefraction = new Shader();
+
 	skyBoxBody = new Cube();
 	skyBoxMesh = new CreateMesh();
 	skyBoxBuffer = new ObjectBuffer();
@@ -136,6 +138,8 @@ void RenderingLab1n2::run(void)
 
 
 		glUseProgram(shaderSkyBox->GetProgramID());
+		GLuint cameraPos = glGetUniformLocation(shaderSkyBox->GetProgramID(), "WorldCameraPosition");
+		glUniform3f(cameraPos, m_physicsLabCamera->position.x,m_physicsLabCamera->position.y,m_physicsLabCamera->position.z);
 		GLuint dsb = glGetUniformLocation(shaderSkyBox->GetProgramID(), "DrawSkyBox");
 		glUniform1i(dsb, true);
 		//setMatrices
@@ -145,11 +149,12 @@ void RenderingLab1n2::run(void)
 		GLuint dsbs = glGetUniformLocation(shaderSkyBox->GetProgramID(), "DrawSkyBox");
 		glUniform1i(dsbs, false);
 
-		GLuint mc = glGetUniformLocation(shaderSkyBox->GetProgramID(), "MaterialColor");
-		glUniform4f(mc, 0.5f, 0.5f, 0.5f, 1.0f);
+		//TO_BE_CHANGED
+		GLuint mc;
+		GLuint rf;
 
-		GLuint rf = glGetUniformLocation(shaderSkyBox->GetProgramID(), "ReflectFactor");
-		glUniform1f(rf, 0.85f);
+		GLuint mE;
+		GLuint mR;
 
 		for (int i=0; i<MAXOBJECT; i++)
 		{
@@ -163,13 +168,33 @@ void RenderingLab1n2::run(void)
 			switch (shaderType[i])
 			{
 			case RenderingLab1n2::REFLECTION:
+
 				glUseProgram(shaderSkyBox->GetProgramID());
+
+				mc = glGetUniformLocation(shaderSkyBox->GetProgramID(), "MaterialColor");
+				glUniform4f(mc, 0.5f, 0.5f, 0.5f, 1.0f);
+				rf = glGetUniformLocation(shaderSkyBox->GetProgramID(), "ReflectFactor");
+				glUniform1f(rf, 0.85f);
+
 				updateCamera(shaderSkyBox->GetProgramID());
 				update(m_body[i]->GetTransformationMatrix(), shaderSkyBox->GetProgramID());
 				m_bodyMesh[i]->Render();
 				break;
+
 			case RenderingLab1n2::RERACTION:
+
+				glUseProgram(shaderRefraction->GetProgramID());
+
+				mE = glGetUniformLocation(shaderRefraction->GetProgramID(), "Material.Eta");
+				glUniform1f(mE, 0.94f);
+				mR = glGetUniformLocation(shaderRefraction->GetProgramID(), "Material.ReflectionFactor");
+				glUniform1f(mR, 0.1f);
+
+				updateCamera(shaderRefraction->GetProgramID());
+				update(m_body[i]->GetTransformationMatrix(), shaderRefraction->GetProgramID());
+				m_bodyMesh[i]->Render();
 				break;
+
 			case RenderingLab1n2::EXTRA:
 				break;
 
@@ -294,6 +319,7 @@ void RenderingLab1n2::updateCamera(GLuint ShaderID)
 void RenderingLab1n2::initShaders()
 {
 	createShaders(shaderSkyBox, "../Shader/cubemap_reflect.vs", "../Shader/cubemap_reflect.ps");
+	createShaders(shaderRefraction, "../Shader/cubemap_refract.vs", "../Shader/cubemap_refract.ps");
 
 	createShaders(shaderBlinnPhongTexture, "../Shader/BlinnPhongTexture.vs", "../Shader/BlinnPhongTexture.ps");
 	createShaders(shaderBlinnPhong, "../Shader/BlinnPhong.vs", "../Shader/BlinnPhong.ps");
