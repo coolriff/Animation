@@ -1,8 +1,9 @@
 #version 430
 
-layout (location = 0) in vec3 VertexPosition;
-layout (location = 1) in vec3 VertexNormal;
-layout (location = 2) in vec2 VertexTexCoord;
+layout(location = 0) in vec3 vPosition;
+layout(location = 1) in vec4 vColor;
+layout(location = 2) in vec2 vTexCoord;
+layout(location = 4) in vec3 vNormal;
 
 out vec3 ReflectDir;
 
@@ -16,14 +17,14 @@ uniform mat4 projection;
 void main()
 {
     if( DrawSkyBox ) {
-        ReflectDir = VertexPosition;
+        ReflectDir = vPosition;
     } else {
-        vec3 worldPos = vec3( model * vec4(VertexPosition,1.0));
-        vec3 worldNorm = vec3( model * vec4(VertexNormal, 0.0));
+        vec3 worldPos = vec3( model * vec4(vPosition,1.0));
+        vec3 worldNorm = vec3( model * vec4(vNormal, 0.0));
         vec3 worldView = normalize( WorldCameraPosition - worldPos );
 
         ReflectDir = reflect(-worldView, worldNorm );
     }
 
-    gl_Position = projection * view * model * vec4(VertexPosition,1.0);
+    gl_Position = projection * view * model * vec4(vPosition,1.0);
 }

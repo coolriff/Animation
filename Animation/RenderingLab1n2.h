@@ -103,7 +103,11 @@ public:
 		BLINNPHONG,
 		BLINNPHONGTEXTURE,
 		OREN_NAYAR,
-		OREN_NAYARTEXTURE
+		OREN_NAYARTEXTURE,
+		REFLECTION,
+		RERACTION,
+		NORMAL_MAP,
+		EXTRA
 	};
 
 	ShaderType shaderType[MAXOBJECT];
@@ -122,4 +126,5 @@ public:
 	void drawLine(GLuint vao, int size);
 	void createShaders(Shader *shader, std::string v, std::string p);
 	void loadCubeMap( const char * baseFileName );
+	void updateCamera(GLuint ShaderID);
 };
