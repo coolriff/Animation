@@ -1,0 +1,30 @@
+#version 430
+
+in vec3 ReflectDir;
+
+
+layout(binding=0) uniform samplerCube CubeMapTex;
+
+uniform bool DrawSkyBox;
+
+in vec3 RefractDirR;
+in vec3 RefractDirG;
+in vec3 RefractDirB;
+
+uniform float ReflectFactor;
+
+out vec4 FragColor;
+
+void main() {
+
+    vec4 reflectColor = texture(CubeMapTex, ReflectDir);
+
+    vec4 refractColor = vec4(0.0);
+
+	refractColor.r = texture (CubeMapTex, RefractDirR).r;
+	refractColor.g = texture (CubeMapTex, RefractDirG).g;
+	refractColor.b = texture (CubeMapTex, RefractDirB).b;
+	refractColor.a = 1.0;
+
+	FragColor = mix(refractColor, reflectColor, ReflectFactor);
+}

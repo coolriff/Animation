@@ -37,6 +37,7 @@ RenderingLab1n2::RenderingLab1n2(void)
 
 	skyBoxBody = new Cube();
 	skyBoxMesh = new CreateMesh();
+	shaderCombined = new Shader();
 
 	shaderToon = new Shader();
 	shaderBlinnPhong = new Shader();
@@ -62,18 +63,18 @@ RenderingLab1n2::RenderingLab1n2(void)
 	normalMapMesh = new CreateMesh();
 	normalMapShader = new Shader();
 
-	ambientColor = glm::vec3(1.0f,1.0f,1.0f);
-	ambientIntensity = 0.1f;	
-
-	diffuseColor = glm::vec3(1.0f,1.0f,1.0f);
-	diffuseIntensity = 0.1f;
-	diffuseDirection = glm::vec3(0, 0, -1);
-
-	specularColor = glm::vec3(1.0f,1.0f,1.0f);
-	specularIntensity = 0.7f;
-	specularShininess = 60.0f;
-
-	roughness = 1.0f;
+// 	ambientColor = glm::vec3(1.0f,1.0f,1.0f);
+// 	ambientIntensity = 0.1f;	
+// 
+// 	diffuseColor = glm::vec3(1.0f,1.0f,1.0f);
+// 	diffuseIntensity = 0.1f;
+// 	diffuseDirection = glm::vec3(0, 0, -1);
+// 
+// 	specularColor = glm::vec3(1.0f,1.0f,1.0f);
+// 	specularIntensity = 0.7f;
+// 	specularShininess = 60.0f;
+// 
+// 	roughness = 1.0f;
 }
 
 
@@ -92,20 +93,17 @@ void RenderingLab1n2::run(void)
 
 	double lastTime = glfwGetTime();
 
-
-	m_bodyMesh[0]->loadMesh("../Models/head2.obj");
-	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
+	m_bodyMesh[0]->loadMesh("../Models/teapot2.obj");
+	m_bodyMesh[0]->setTexture("../Models/gold.jpg",shaderBlinnPhongTexture->GetProgramID());
 	// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
 	// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
-	m_body[0]->SetPosition(glm::vec3(-2,0,0));
+	m_body[0]->SetPosition(glm::vec3(-4,0,0));
 
-	m_bodyMesh[1]->loadMesh("../Models/head2.obj");
-	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
+	m_bodyMesh[1]->loadMesh("../Models/teapot2.obj");
+	m_bodyMesh[1]->setTexture("../Models/gold.jpg",shaderBlinnPhongTexture->GetProgramID());
 	// 	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
 	// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
-	m_body[1]->SetPosition(glm::vec3(2,0,0));
-
-
+	m_body[1]->SetPosition(glm::vec3(4,0,0));
 
 	skyBoxMesh->loadMesh("../Models/cube2.obj");
 	//skyBoxMesh->SetCubeMapTexture("../Models/SantaMariaDeiMiracoli/",shaderSkyBox->GetProgramID());
@@ -117,8 +115,10 @@ void RenderingLab1n2::run(void)
 	normalMapMesh->loadMesh("../Models/cube.obj");
 	normalMapMesh->setTexture("../Models/bricks2.jpg",normalMapShader->GetProgramID());
 	normalMapMesh->setNormalTexture("../Models/bricks2_normal.png",normalMapShader->GetProgramID());
-	normalMapBody->SetPosition(glm::vec3(0,2,0));
+	normalMapBody->SetPosition(glm::vec3(0,3,0));
 	normalMapBody->SetScale(glm::vec3(1.0f,1.0f,1.0f));
+
+	teapot = new VBOTeapot(14, glm::mat4(1.0f));
 
 	vLightDirGLM = glm::vec3(0,0,-1);
 	ambientColorGLM = glm::vec3(1,1,1);
@@ -129,7 +129,16 @@ void RenderingLab1n2::run(void)
 	diffuseIntensityGLM =  0.8f;
 	specularShininessGLM =  64.0f;
 
+	MaterialColorGLM = glm::vec4(0.5f,0.5f,0.5f,1.0f);
+	reflectFactor1 = 0.85f;
+	reflectFactor2 = 0.1f;
+	eta = 0.94f;
 
+	ratioR = 0.65;
+	ratioG = 0.67;
+	ratioB = 0.69;
+
+	reflectFactorCombined = 0.1f;
 
 	do{
 		double currentTime = glfwGetTime();
@@ -144,13 +153,6 @@ void RenderingLab1n2::run(void)
 		preDraw();
 
 
-
-		// 		GLint OldCullFaceMode;
-		// 		glGetIntegerv(GL_CULL_FACE_MODE, &OldCullFaceMode);
-		// 		GLint OldDepthFuncMode;
-		// 		glGetIntegerv(GL_DEPTH_FUNC, &OldDepthFuncMode);
-
-
 		//normal map
 		glUseProgram(normalMapShader->GetProgramID());
 		normalMapBody->Update(delta);
@@ -160,12 +162,6 @@ void RenderingLab1n2::run(void)
 		update(normalMapBody->GetTransformationMatrix(), normalMapShader->GetProgramID());
 		normalMapMesh->renderNormalMap(normalMapShader->GetProgramID());
 		//normalMapMesh->render();
-
-
-		// 		glCullFace(GL_FRONT);
-		// 		glDepthFunc(GL_LEQUAL);
-		// 		glDepthMask(false);
-
 
 
 		//cube map
@@ -181,9 +177,13 @@ void RenderingLab1n2::run(void)
 		GLuint dsbs = glGetUniformLocation(shaderSkyBox->GetProgramID(), "DrawSkyBox");
 		glUniform1i(dsbs, false);
 
-		// 		glDepthMask(true);
-		// 		glCullFace(OldCullFaceMode); 
-		// 		glDepthFunc(OldDepthFuncMode);
+		//
+// 		glUseProgram(shaderSkyBox->GetProgramID());
+// 		glm::mat4 model = glm::mat4(1.0f);
+// 		model *= glm::translate(vec3(0.0f,-1.0f,0.0f));
+// 		model *= glm::rotate(glm::radians(-90.0f), vec3(0.0f,0.0f,1.0f));
+// 		update(model, shaderSkyBox->GetProgramID());
+// 		teapot->render();
 
 		//TO_BE_CHANGED
 		GLuint mc;
@@ -191,6 +191,11 @@ void RenderingLab1n2::run(void)
 
 		GLuint mE;
 		GLuint mR;
+		//glm::mat4 model;
+
+		GLuint ratioRID;
+		GLuint ratioGID;
+		GLuint ratioBID;
 
 		for (int i=0; i<MAXOBJECT; i++)
 		{
@@ -204,28 +209,22 @@ void RenderingLab1n2::run(void)
 			switch (shaderType[i])
 			{
 			case RenderingLab1n2::REFLECTION:
-
 				glUseProgram(shaderSkyBox->GetProgramID());
-
 				mc = glGetUniformLocation(shaderSkyBox->GetProgramID(), "MaterialColor");
-				glUniform4f(mc, 0.5f, 0.5f, 0.5f, 1.0f);
+				glUniform4f(mc, MaterialColorGLM.x, MaterialColorGLM.y, MaterialColorGLM.z, MaterialColorGLM.w);
 				rf = glGetUniformLocation(shaderSkyBox->GetProgramID(), "ReflectFactor");
-				glUniform1f(rf, 0.85f);
-
+				glUniform1f(rf, reflectFactor1);
 				updateCamera(shaderSkyBox->GetProgramID());
 				update(m_body[i]->GetTransformationMatrix(), shaderSkyBox->GetProgramID());
 				m_bodyMesh[i]->render();
 				break;
 
 			case RenderingLab1n2::RERACTION:
-
 				glUseProgram(shaderRefraction->GetProgramID());
-
 				mE = glGetUniformLocation(shaderRefraction->GetProgramID(), "Material.Eta");
-				glUniform1f(mE, 0.94f);
+				glUniform1f(mE, eta);
 				mR = glGetUniformLocation(shaderRefraction->GetProgramID(), "Material.ReflectionFactor");
-				glUniform1f(mR, 0.1f);
-
+				glUniform1f(mR, reflectFactor2);
 				updateCamera(shaderRefraction->GetProgramID());
 				update(m_body[i]->GetTransformationMatrix(), shaderRefraction->GetProgramID());
 				m_bodyMesh[i]->render();
@@ -235,6 +234,20 @@ void RenderingLab1n2::run(void)
 				break;
 
 			case RenderingLab1n2::EXTRA:
+
+				glUseProgram(shaderCombined->GetProgramID());
+				ratioRID = glGetUniformLocation(shaderCombined->GetProgramID(), "ratioR");
+				ratioGID = glGetUniformLocation(shaderCombined->GetProgramID(), "ratioG");
+				ratioBID = glGetUniformLocation(shaderCombined->GetProgramID(), "ratioB");
+				glUniform1f(ratioRID,ratioR);
+				glUniform1f(ratioGID,ratioG);
+				glUniform1f(ratioBID,ratioB);
+
+				rf = glGetUniformLocation(shaderCombined->GetProgramID(), "ReflectFactor");
+				glUniform1f(rf, reflectFactorCombined);
+				updateCamera(shaderCombined->GetProgramID());
+				update(m_body[i]->GetTransformationMatrix(), shaderCombined->GetProgramID());
+				m_bodyMesh[i]->render();
 				break;
 
 			case RenderingLab1n2::BLINNPHONGTEXTURE:
@@ -311,6 +324,36 @@ void RenderingLab1n2::run(void)
 	glfwTerminate();
 }
 
+void RenderingLab1n2::initTweakBar()
+{
+// 	MaterialColorGLM = glm::vec4(0.5f,0.5f,0.5f,1.0f);
+// 	reflectFactor = 0.85f;
+// 	eta = 0.94f;
+
+	TwBar * bar;
+	bar = TwNewBar("Simulation");
+	TwDefine(" Simulation size='300 400' ");
+
+	TwAddVarRW(bar, "diffuseDirection", TW_TYPE_DIR3F, &vLightDirGLM, " label='vLightDir '");
+	TwAddVarRW(bar, "lightPosition", TW_TYPE_COLOR3F, &ambientColorGLM, " label='ambientColor '");
+	TwAddVarRW(bar, "lightIntensity",  TW_TYPE_COLOR3F, &specularColorGLM, " label='specularColor '");
+	TwAddVarRW(bar, "lightIntensdsdsity",  TW_TYPE_COLOR3F, &diffuseColorGLM, " label='diffuseColor '");
+
+	TwAddVarRW(bar, "materialAmbient", TW_TYPE_FLOAT, &ambientIntensityGLM, "step = 0.1" " label='ambientIntensity '");
+	TwAddVarRW(bar, "materialDiffuse", TW_TYPE_FLOAT, &specularIntensityGLM, "step = 0.1" " label='specularIntensity '");
+	TwAddVarRW(bar, "materiaSpecular", TW_TYPE_FLOAT, &diffuseIntensityGLM, "step = 0.1" " label='diffuseIntensity '");
+	TwAddVarRW(bar, "roughness", TW_TYPE_FLOAT, &specularShininessGLM, "step = 0.1" " label='specularShininess '");
+	TwAddVarRW(bar, "reflectFactor1", TW_TYPE_FLOAT, &reflectFactor1, "step = 0.1" " label='reflectFactor(fle) '");
+	TwAddVarRW(bar, "reflectFactor2", TW_TYPE_FLOAT, &reflectFactor2, "step = 0.1" " label='reflectFactor(fre) '");
+	TwAddVarRW(bar, "reflectFactorCombined", TW_TYPE_FLOAT, &reflectFactorCombined, "step = 0.1" " label='reflectFactorCombined '");
+	TwAddVarRW(bar, "eta", TW_TYPE_FLOAT, &eta, "step = 0.1" " label='eta '");
+	TwAddVarRW(bar, "MaterialColorGLM",  TW_TYPE_COLOR4F, &MaterialColorGLM, " label='MaterialColor '");
+	TwAddVarRW(bar, "ratioR", TW_TYPE_FLOAT, &ratioR, "step = 0.1" " label='ratioR '");
+	TwAddVarRW(bar, "ratioG", TW_TYPE_FLOAT, &ratioG, "step = 0.1" " label='ratioG '");
+	TwAddVarRW(bar, "ratioB", TW_TYPE_FLOAT, &ratioB, "step = 0.1" " label='ratioB '");
+
+}
+
 void RenderingLab1n2::loadCubeMap( const char * baseFileName )
 {
 	glActiveTexture(GL_TEXTURE0);
@@ -360,6 +403,7 @@ void RenderingLab1n2::initShaders()
 	createShaders(normalMapShader, "../Shader/normalMap.vs", "../Shader/normalMap.ps");
 	createShaders(shaderSkyBox, "../Shader/cubemap_reflect.vs", "../Shader/cubemap_reflect.ps");
 	createShaders(shaderRefraction, "../Shader/cubemap_refract.vs", "../Shader/cubemap_refract.ps");
+	createShaders(shaderCombined, "../Shader/combined.vs", "../Shader/combined.ps");
 
 	createShaders(shaderBlinnPhongTexture, "../Shader/BlinnPhongTexture.vs", "../Shader/BlinnPhongTexture.ps");
 	createShaders(shaderBlinnPhong, "../Shader/BlinnPhong.vs", "../Shader/BlinnPhong.ps");
@@ -456,22 +500,7 @@ GLFWwindow* RenderingLab1n2::getWindow()
 	return window;
 }
 
-void RenderingLab1n2::initTweakBar()
-{
-	TwBar * bar;
-	bar = TwNewBar("Simulation");
-	TwDefine(" Simulation size='300 400' ");
 
-	TwAddVarRW(bar, "diffuseDirection", TW_TYPE_DIR3F, &vLightDirGLM, " label='vLightDir '");
-	TwAddVarRW(bar, "lightPosition", TW_TYPE_COLOR3F, &ambientColorGLM, " label='ambientColor '");
-	TwAddVarRW(bar, "lightIntensity",  TW_TYPE_COLOR3F, &specularColorGLM, " label='specularColor '");
-	TwAddVarRW(bar, "lightIntensdsdsity",  TW_TYPE_COLOR3F, &diffuseColorGLM, " label='diffuseColor '");
-
-	TwAddVarRW(bar, "materialAmbient", TW_TYPE_FLOAT, &ambientIntensityGLM, "step = 0.1" " label='ambientIntensity '");
-	TwAddVarRW(bar, "materialDiffuse", TW_TYPE_FLOAT, &specularIntensityGLM, "step = 0.1" " label='specularIntensity '");
-	TwAddVarRW(bar, "materiaSpecular", TW_TYPE_FLOAT, &diffuseIntensityGLM, "step = 0.1" " label='diffuseIntensity '");
-	TwAddVarRW(bar, "roughness", TW_TYPE_FLOAT, &specularShininessGLM, "step = 0.1" " label='specularShininess '");
-}
 
 void RenderingLab1n2::update(glm::mat4 ModelMatrix, GLuint shaderProgramID)
 {
@@ -505,7 +534,7 @@ void RenderingLab1n2::keyControl()
 	if (glfwGetKey(window, GLFW_KEY_2 ) == GLFW_PRESS){
 		shaderType[0] = RERACTION;
 	}
-	if (glfwGetKey(window, GLFW_KEY_3 ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_4 ) == GLFW_PRESS){
 		shaderType[0] = EXTRA;
 	}
 
@@ -534,7 +563,7 @@ void RenderingLab1n2::keyControl()
 	if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
 		shaderType[1] = RERACTION;
 	}
-	if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_9 ) == GLFW_PRESS){
 		shaderType[1] = EXTRA;
 	}
 

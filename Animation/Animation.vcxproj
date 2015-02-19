@@ -118,12 +118,15 @@
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="tgaio.cpp" />
+    <ClCompile Include="vboteapot.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shader\BlinnPhong.ps" />
     <None Include="..\Shader\BlinnPhong.vs" />
     <None Include="..\Shader\BlinnPhongTexture.ps" />
     <None Include="..\Shader\BlinnPhongTexture.vs" />
+    <None Include="..\Shader\combined.ps" />
+    <None Include="..\Shader\combined.vs" />
     <None Include="..\Shader\cubemap_reflect.ps" />
     <None Include="..\Shader\cubemap_reflect.vs" />
     <None Include="..\Shader\cubemap_refract.ps" />
@@ -182,9 +185,11 @@
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="skinning_technique.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="teapotdata.h" />
     <ClInclude Include="technique.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="tgaio.h" />
+    <ClInclude Include="vboteapot.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="simpleFragmentShader.txt" />

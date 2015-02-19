@@ -15,6 +15,7 @@
 #include <glm/gtx/transform.hpp>
 #include <algorithm>
 #include "tgaio.h"
+#include "vboteapot.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
@@ -34,6 +35,8 @@ public:
 	CreateMesh *m_bodyMesh[MAXOBJECT];
 	ObjectBuffer *m_bodyBuffer[MAXOBJECT];
 
+	VBOTeapot *teapot;
+
 	Cube *skyBoxBody;
 	CreateMesh *skyBoxMesh;
 
@@ -43,6 +46,7 @@ public:
 
 	Shader *shaderSkyBox;
 	Shader *shaderRefraction;
+	Shader *shaderCombined;
 
 
 	Shader *shaderBlinnPhong;
@@ -90,6 +94,17 @@ public:
 	float specularIntensityGLM; 
 	float diffuseIntensityGLM;
 	float specularShininessGLM; 
+
+
+	glm::vec4 MaterialColorGLM;
+	float reflectFactor1;
+	float reflectFactor2;
+	float reflectFactorCombined;
+	float eta;
+
+	float ratioR;
+	float ratioG;
+	float ratioB;
 
 
 	bool stopTime;

@@ -126,6 +126,9 @@
     <ClCompile Include="tgaio.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
+    <ClCompile Include="vboteapot.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="diffuse.ps">
@@ -204,6 +207,12 @@
       <Filter>Physics Lab2\Shader</Filter>
     </None>
     <None Include="..\Shader\normalMap.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\combined.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\combined.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
   </ItemGroup>
@@ -317,6 +326,12 @@
       <Filter>Physics Lab2</Filter>
     </ClInclude>
     <ClInclude Include="tgaio.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="vboteapot.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="teapotdata.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
   </ItemGroup>
