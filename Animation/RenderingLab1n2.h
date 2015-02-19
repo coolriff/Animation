@@ -43,10 +43,16 @@ public:
 	Cube *normalMapBody;
 	CreateMesh *normalMapMesh;
 	Shader *normalMapShader;
+	Shader *fresnelShader;
 
 	Shader *shaderSkyBox;
 	Shader *shaderRefraction;
 	Shader *shaderCombined;
+
+
+	Cube *extraBody;
+	CreateMesh *extraMesh;
+	Shader *shaderExtra;
 
 
 	Shader *shaderBlinnPhong;
@@ -106,6 +112,11 @@ public:
 	float ratioG;
 	float ratioB;
 
+	float fRatioR;
+	float fRatioG;
+	float fRatioB;
+	float fReflectFactor;
+
 
 	bool stopTime;
 	bool useForce;
@@ -125,6 +136,7 @@ public:
 		REFLECTION,
 		RERACTION,
 		NORMAL_MAP,
+		FRESENL,
 		EXTRA
 	};
 

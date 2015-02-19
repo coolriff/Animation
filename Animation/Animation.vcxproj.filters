@@ -215,6 +215,18 @@
     <None Include="..\Shader\combined.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
+    <None Include="..\Shader\fresnel.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\fresnel.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\normalMapReflect.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\normalMapReflect.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lab1.h">

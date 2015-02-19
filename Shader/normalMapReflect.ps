@@ -1,0 +1,76 @@
+
+// Based on Antons OpenGL 4 Tutorials book
+
+#version 400
+
+uniform vec3 ambientColor;
+uniform vec3 specularColor;
+uniform vec3 diffuseColor;
+
+uniform float ambientIntensity;
+uniform float specularIntensity;
+uniform float diffuseIntensity;
+
+uniform float specularShininess;
+uniform vec3 vLightDir;
+
+in vec3 position_eye;
+in vec3 normal_eye;
+in mat3 tbnMatrix;
+
+uniform float ratioR;
+uniform float ratioG;
+uniform float ratioB;
+uniform float reflectFactor;
+
+in vec2 texCoord0;
+uniform samplerCube cSampler;
+uniform sampler2D nSampler;
+
+uniform mat4 view;
+
+out vec4 FragColor;
+
+void main()
+{
+	// Fresnel 
+
+	float F = ((1.0 - ratioG) * (1.0 - ratioG)) / ((1.0 + ratioG) * (1.0 + ratioG)); 
+	/* reflect ray around normal from eye to surface */
+	vec3 incident_eye = normalize (position_eye);
+	vec3 normal0 = normalize (normal_eye);
+
+    vec3 refractedVecR = refract(incident_eye, normal0, ratioR);
+	refractedVecR = vec3 (inverse(view) * vec4(refractedVecR, 0.0));
+
+	vec3 refractedVecG = refract(incident_eye, normal0, ratioG);
+	refractedVecG = vec3 (inverse(view) * vec4(refractedVecG, 0.0));
+
+	vec3 refractedVecB = refract(incident_eye, normal0, ratioB);
+	refractedVecB = vec3 (inverse(view) * vec4(refractedVecB, 0.0));
+
+	vec3 refractColor;
+
+	refractColor.r = vec3(texture (cSampler, refractedVecR)).r;
+	refractColor.g = vec3(texture (cSampler, refractedVecG)).g;
+	refractColor.b = vec3(texture (cSampler, refractedVecB)).b;
+
+	float Ratio = F + (1.0 - F) * pow((1.0 - dot(-incident_eye, normal0)), 5);
+
+	vec3 reflected = reflect (incident_eye, normal0);
+	reflected = vec3 (inverse (view) * vec4 (reflected, 0.0));
+    vec3 reflectColor = texture(cSampler, reflected).xyz;
+
+    // Normal map
+
+	vec3 normal = normalize(tbnMatrix * (255.0/128.0 * texture2D(nSampler, texCoord0).xyz - 1));
+
+	float intensity;
+
+	vec4 diffuseC = vec4(diffuseColor, 1.0f) * diffuseIntensity * max(0.0, dot(normalize(normal), -vLightDir));	
+
+    vec3 color = mix(refractColor, reflectColor, Ratio);
+	FragColor = vec4(color,1.0) * (diffuseC);
+};
+
+

@@ -62,6 +62,11 @@ RenderingLab1n2::RenderingLab1n2(void)
 	normalMapBody = new Cube();
 	normalMapMesh = new CreateMesh();
 	normalMapShader = new Shader();
+	fresnelShader = new Shader();
+	shaderExtra = new Shader();
+
+	extraBody = new Cube();
+	extraMesh = new CreateMesh();
 
 // 	ambientColor = glm::vec3(1.0f,1.0f,1.0f);
 // 	ambientIntensity = 0.1f;	
@@ -111,12 +116,22 @@ void RenderingLab1n2::run(void)
 	skyBoxBody->SetPosition(glm::vec3(0));
 	skyBoxBody->SetScale(glm::vec3(100.0f,100.0f,100.0f));
 
-	normalMapMesh->isNormalMap = true;
+	
 	normalMapMesh->loadMesh("../Models/cube.obj");
-	normalMapMesh->setTexture("../Models/bricks2.jpg",normalMapShader->GetProgramID());
-	normalMapMesh->setNormalTexture("../Models/bricks2_normal.png",normalMapShader->GetProgramID());
+	normalMapMesh->setTexture("../Models/2.jpg",normalMapShader->GetProgramID());
+	normalMapMesh->setNormalTexture("../Models/2_NRM.jpg",normalMapShader->GetProgramID());
+// 	normalMapMesh->setTexture("../Models/face.jpg",normalMapShader->GetProgramID());
+// 	normalMapMesh->setNormalTexture("../Models/face_NRM.jpg",normalMapShader->GetProgramID());
 	normalMapBody->SetPosition(glm::vec3(0,3,0));
 	normalMapBody->SetScale(glm::vec3(1.0f,1.0f,1.0f));
+
+	extraMesh->loadMesh("../Models/cube.obj");
+	extraMesh->setTexture("../Models/2.jpg",normalMapShader->GetProgramID());
+	extraMesh->setNormalTexture("../Models/2_NRM.jpg",normalMapShader->GetProgramID());
+	// 	normalMapMesh->setTexture("../Models/face.jpg",normalMapShader->GetProgramID());
+	// 	normalMapMesh->setNormalTexture("../Models/face_NRM.jpg",normalMapShader->GetProgramID());
+	extraBody->SetPosition(glm::vec3(0,6,0));
+	extraBody->SetScale(glm::vec3(1.0f,1.0f,1.0f));
 
 	teapot = new VBOTeapot(14, glm::mat4(1.0f));
 
@@ -137,8 +152,12 @@ void RenderingLab1n2::run(void)
 	ratioR = 0.65;
 	ratioG = 0.67;
 	ratioB = 0.69;
+	reflectFactorCombined = 0.85f;
 
-	reflectFactorCombined = 0.1f;
+	fRatioR = 0.65;
+	fRatioG = 0.66;
+	fRatioB = 0.67;
+	fReflectFactor = 0.1f;
 
 	do{
 		double currentTime = glfwGetTime();
@@ -161,7 +180,17 @@ void RenderingLab1n2::run(void)
 		updateCamera(normalMapShader->GetProgramID());
 		update(normalMapBody->GetTransformationMatrix(), normalMapShader->GetProgramID());
 		normalMapMesh->renderNormalMap(normalMapShader->GetProgramID());
-		//normalMapMesh->render();
+
+
+		//normal map
+		glUseProgram(shaderExtra->GetProgramID());
+		extraBody->Update(delta);
+		shaderExtra->findAllShaderID();
+		shaderExtra->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
+		updateCamera(shaderExtra->GetProgramID());
+		update(extraBody->GetTransformationMatrix(), shaderExtra->GetProgramID());
+		extraMesh->renderNormalMap(shaderExtra->GetProgramID());
+
 
 
 		//cube map
@@ -197,6 +226,11 @@ void RenderingLab1n2::run(void)
 		GLuint ratioGID;
 		GLuint ratioBID;
 
+		GLuint fRatioRID;
+		GLuint fRatioGID;
+		GLuint fRatioBID;
+		GLuint fRf;
+
 		for (int i=0; i<MAXOBJECT; i++)
 		{
 			m_body[i]->Update(delta);
@@ -231,7 +265,28 @@ void RenderingLab1n2::run(void)
 				break;
 
 			case RenderingLab1n2::NORMAL_MAP:
+
+
 				break;
+
+			case RenderingLab1n2::FRESENL:
+
+				glUseProgram(fresnelShader->GetProgramID());
+				fRatioRID = glGetUniformLocation(fresnelShader->GetProgramID(), "ratioR");
+				fRatioGID = glGetUniformLocation(fresnelShader->GetProgramID(), "ratioG");
+				fRatioBID = glGetUniformLocation(fresnelShader->GetProgramID(), "ratioB");
+				glUniform1f(fRatioRID,fRatioR);
+				glUniform1f(fRatioGID,fRatioG);
+				glUniform1f(fRatioBID,fRatioB);
+
+				fRf = glGetUniformLocation(fresnelShader->GetProgramID(), "reflectFactor");
+				glUniform1f(fRf, fReflectFactor);
+				updateCamera(fresnelShader->GetProgramID());
+				update(m_body[i]->GetTransformationMatrix(), fresnelShader->GetProgramID());
+				m_bodyMesh[i]->render();
+				break;
+
+
 
 			case RenderingLab1n2::EXTRA:
 
@@ -352,6 +407,11 @@ void RenderingLab1n2::initTweakBar()
 	TwAddVarRW(bar, "ratioG", TW_TYPE_FLOAT, &ratioG, "step = 0.1" " label='ratioG '");
 	TwAddVarRW(bar, "ratioB", TW_TYPE_FLOAT, &ratioB, "step = 0.1" " label='ratioB '");
 
+	TwAddVarRW(bar, "fRatioR", TW_TYPE_FLOAT, &fRatioR, "step = 0.01" " label='fRatioR '");
+	TwAddVarRW(bar, "fRatioG", TW_TYPE_FLOAT, &fRatioG, "step = 0.01" " label='fRatioG '");
+	TwAddVarRW(bar, "fRatioB", TW_TYPE_FLOAT, &fRatioB, "step = 0.01" " label='fRatioB '");
+	TwAddVarRW(bar, "fReflectFactor", TW_TYPE_FLOAT, &fReflectFactor, "step = 0.1" " label='fReflectFactor '");
+
 }
 
 void RenderingLab1n2::loadCubeMap( const char * baseFileName )
@@ -404,6 +464,7 @@ void RenderingLab1n2::initShaders()
 	createShaders(shaderSkyBox, "../Shader/cubemap_reflect.vs", "../Shader/cubemap_reflect.ps");
 	createShaders(shaderRefraction, "../Shader/cubemap_refract.vs", "../Shader/cubemap_refract.ps");
 	createShaders(shaderCombined, "../Shader/combined.vs", "../Shader/combined.ps");
+	createShaders(fresnelShader, "../Shader/fresnel.vs", "../Shader/fresnel.ps");
 
 	createShaders(shaderBlinnPhongTexture, "../Shader/BlinnPhongTexture.vs", "../Shader/BlinnPhongTexture.ps");
 	createShaders(shaderBlinnPhong, "../Shader/BlinnPhong.vs", "../Shader/BlinnPhong.ps");
@@ -534,6 +595,9 @@ void RenderingLab1n2::keyControl()
 	if (glfwGetKey(window, GLFW_KEY_2 ) == GLFW_PRESS){
 		shaderType[0] = RERACTION;
 	}
+	if (glfwGetKey(window, GLFW_KEY_3 ) == GLFW_PRESS){
+		shaderType[0] = FRESENL;
+	}
 	if (glfwGetKey(window, GLFW_KEY_4 ) == GLFW_PRESS){
 		shaderType[0] = EXTRA;
 	}
@@ -562,6 +626,9 @@ void RenderingLab1n2::keyControl()
 	}
 	if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
 		shaderType[1] = RERACTION;
+	}
+	if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
+		shaderType[1] = FRESENL;
 	}
 	if (glfwGetKey(window, GLFW_KEY_9 ) == GLFW_PRESS){
 		shaderType[1] = EXTRA;
