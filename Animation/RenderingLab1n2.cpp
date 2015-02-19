@@ -32,9 +32,6 @@ RenderingLab1n2::RenderingLab1n2(void)
 	stopTime = false;
 	useForce = false;
 
-
-	isTexture = true;
-
 	shaderSkyBox = new Shader();
 	shaderRefraction = new Shader();
 
@@ -98,14 +95,14 @@ void RenderingLab1n2::run(void)
 
 	m_bodyMesh[0]->loadMesh("../Models/head2.obj");
 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
-// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
-// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
+	// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
+	// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
 	m_body[0]->SetPosition(glm::vec3(-2,0,0));
 
 	m_bodyMesh[1]->loadMesh("../Models/head2.obj");
 	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
-// 	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
-// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
+	// 	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
+	// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
 	m_body[1]->SetPosition(glm::vec3(2,0,0));
 
 
@@ -116,7 +113,7 @@ void RenderingLab1n2::run(void)
 	skyBoxBody->SetPosition(glm::vec3(0));
 	skyBoxBody->SetScale(glm::vec3(100.0f,100.0f,100.0f));
 
-
+	normalMapMesh->isNormalMap = true;
 	normalMapMesh->loadMesh("../Models/cube.obj");
 	normalMapMesh->setTexture("../Models/bricks2.jpg",normalMapShader->GetProgramID());
 	normalMapMesh->setNormalTexture("../Models/bricks2_normal.png",normalMapShader->GetProgramID());
@@ -148,10 +145,10 @@ void RenderingLab1n2::run(void)
 
 
 
-// 		GLint OldCullFaceMode;
-// 		glGetIntegerv(GL_CULL_FACE_MODE, &OldCullFaceMode);
-// 		GLint OldDepthFuncMode;
-// 		glGetIntegerv(GL_DEPTH_FUNC, &OldDepthFuncMode);
+		// 		GLint OldCullFaceMode;
+		// 		glGetIntegerv(GL_CULL_FACE_MODE, &OldCullFaceMode);
+		// 		GLint OldDepthFuncMode;
+		// 		glGetIntegerv(GL_DEPTH_FUNC, &OldDepthFuncMode);
 
 
 		//normal map
@@ -165,9 +162,9 @@ void RenderingLab1n2::run(void)
 		//normalMapMesh->render();
 
 
-// 		glCullFace(GL_FRONT);
-// 		glDepthFunc(GL_LEQUAL);
-// 		glDepthMask(false);
+		// 		glCullFace(GL_FRONT);
+		// 		glDepthFunc(GL_LEQUAL);
+		// 		glDepthMask(false);
 
 
 
@@ -184,9 +181,9 @@ void RenderingLab1n2::run(void)
 		GLuint dsbs = glGetUniformLocation(shaderSkyBox->GetProgramID(), "DrawSkyBox");
 		glUniform1i(dsbs, false);
 
-// 		glDepthMask(true);
-// 		glCullFace(OldCullFaceMode); 
-// 		glDepthFunc(OldDepthFuncMode);
+		// 		glDepthMask(true);
+		// 		glCullFace(OldCullFaceMode); 
+		// 		glDepthFunc(OldDepthFuncMode);
 
 		//TO_BE_CHANGED
 		GLuint mc;

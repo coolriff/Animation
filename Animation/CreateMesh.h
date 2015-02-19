@@ -37,6 +37,7 @@ public:
 	GLuint nSampler;
 
 	bool isTextured;
+	bool isNormalMap;
 
 	void createCubeMesh();
 	void createBoundingSphereMesh(float radius, int resolution);
@@ -50,6 +51,7 @@ public:
 	void setNormalTexture(const char* textureName, GLuint shaderID);
 	void setCubeMapTexture(const char* directory, GLuint shaderID);
 	void renderNormalMap(GLuint shaderID);
+	void loadMeshNormal(const char* filename);
 	TextureLoader *texture;
 	TextureLoader *normalTexture;
 	TextureLoader *cubeTexture;

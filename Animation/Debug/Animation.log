@@ -1,15 +1,29 @@
-﻿Build started 2/19/2015 6:33:35 AM.
+﻿Build started 2/19/2015 7:37:44 AM.
      1>Project "C:\Animation\Animation\Animation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\Dependancies\AntTweakBar\include /I..\Dependancies\soil\src /I..\Dependancies\SOIL2 /I"..\Dependancies\ImageMagick-6" /I..\Dependancies\assimp\include /I..\Dependancies\glm /I"..\Dependancies\glfw-3.0.4.bin.WIN32\include" /I"..\Dependancies\glew-1.11.0\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt RenderingLab1n2.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\Dependancies\AntTweakBar\include /I..\Dependancies\soil\src /I..\Dependancies\SOIL2 /I"..\Dependancies\ImageMagick-6" /I..\Dependancies\assimp\include /I..\Dependancies\glm /I"..\Dependancies\glfw-3.0.4.bin.WIN32\include" /I"..\Dependancies\glew-1.11.0\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt CreateMesh.cpp RenderingLab1n2.cpp
          RenderingLab1n2.cpp
      1>c:\animation\animation\cylinder.h(33): warning C4018: '<' : signed/unsigned mismatch
      1>c:\animation\animation\cylinder.h(45): warning C4018: '<' : signed/unsigned mismatch
      1>c:\animation\animation\cylinder.h(55): warning C4018: '<' : signed/unsigned mismatch
      1>c:\animation\animation\tgaio.h(38): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
      1>c:\animation\animation\tgaio.h(39): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
-     1>c:\animation\animation\renderinglab1n2.cpp(159): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\animation\animation\renderinglab1n2.cpp(200): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\animation\animation\renderinglab1n2.cpp(156): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\animation\animation\renderinglab1n2.cpp(197): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+         CreateMesh.cpp
+     1>c:\animation\animation\createmesh.cpp(199): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\animation\animation\createmesh.cpp(200): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\animation\animation\createmesh.cpp(202): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\animation\animation\createmesh.cpp(203): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\animation\animation\createmesh.cpp(230): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\createmesh.cpp(192): warning C4101: 'inc5' : unreferenced local variable
+     1>c:\animation\animation\createmesh.cpp(250): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\createmesh.cpp(293): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\createmesh.cpp(320): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\createmesh.cpp(340): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\createmesh.cpp(362): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\createmesh.cpp(385): warning C4018: '<' : signed/unsigned mismatch
+         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Animation\Debug\Animation.exe" /INCREMENTAL /NOLOGO /LIBPATH:..\Dependancies\AntTweakBar\lib /LIBPATH:..\Dependancies\soil\lib /LIBPATH:"..\Dependancies\ImageMagick-6\lib" /LIBPATH:..\Dependancies\assimp\lib /LIBPATH:"..\Dependancies\glfw-3.0.4.bin.WIN32\lib-msvc110" /LIBPATH:"..\Dependancies\glew-1.11.0\lib\Release\Win32" glew32.lib glfw3.lib opengl32.lib assimp.lib CORE_DB_Magick++_.lib SOIL.lib soil2.lib AntTweakBar.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Animation\Debug\Animation.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Animation\Debug\Animation.lib" /MACHINE:X86 Debug\ArmSkeleton.obj
          Debug\Bone.obj
@@ -50,4 +64,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.32
+Time Elapsed 00:00:02.02

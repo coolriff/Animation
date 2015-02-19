@@ -100,9 +100,6 @@ public:
 	bool bShader[MAXOBJECT];
 	bool oShader[MAXOBJECT];
 
-	bool isTexture;
-	bool isNormalTexture;
-
 	enum ShaderType {
 		TOON,
 		TOONTEXTURE,

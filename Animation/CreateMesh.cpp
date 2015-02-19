@@ -273,7 +273,8 @@ void CreateMesh::loadMesh(const char* filename)
 		| aiProcess_OptimizeMeshes
 		| aiProcess_RemoveRedundantMaterials
 		| aiProcess_GenSmoothNormals
-		| aiProcess_FlipUVs);
+		| aiProcess_FlipUVs
+		| aiProcess_CalcTangentSpace);
 
 	if(!scene) 
 	{
@@ -302,7 +303,7 @@ void CreateMesh::loadMesh(const char* filename)
 		glBindBuffer(GL_ARRAY_BUFFER, v_VBO);
 		glBufferData(GL_ARRAY_BUFFER, vSize + cSize, NULL, GL_STATIC_DRAW);
 		glBufferSubData( GL_ARRAY_BUFFER, 0, vSize, (const GLvoid*)(&vertices[0]));
-		glBufferSubData( GL_ARRAY_BUFFER, vSize, cSize, (const GLvoid*)(&colors[0]));
+		//glBufferSubData( GL_ARRAY_BUFFER, vSize, cSize, (const GLvoid*)(&colors[0]));
 		//Loc 0 = vPosition;
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 		glEnableVertexAttribArray (0);
@@ -402,6 +403,7 @@ void CreateMesh::loadMesh(const char* filename)
 	glBindVertexArray(0);
 }
 
+
 void CreateMesh::setTexture(const char* filename, GLuint shaderID)
 {
 	isTextured = true;
@@ -484,4 +486,3 @@ void CreateMesh::renderNormalMap(GLuint shaderID)
 	glBindVertexArray(0);
 
 }
-
