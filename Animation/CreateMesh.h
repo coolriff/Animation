@@ -32,7 +32,9 @@ public:
 
 	GLuint numElements;
 	GLuint vSize, cSize;
-	GLuint VAO, v_VBO, t_VBO, n_VBO, i_VBO;
+	GLuint VAO, v_VBO, t_VBO, n_VBO, i_VBO, tb_VBO;
+	GLuint gSampler;
+	GLuint nSampler;
 
 	bool isTextured;
 
@@ -42,12 +44,15 @@ public:
 	void setColors(glm::vec4 c);
 	void setTexture(const char* filename, GLuint shaderID);
 	std::vector<glm::vec4> getColors(void) {return colors;};
-	void LoadMesh(const char* filename);
-	void Render();
-	void RenderSkyBox();
-	void SetNormalTexture(const char* textureName, GLuint shaderID);
-	void SetCubeMapTexture(const char* directory, GLuint shaderID);
+	void loadMesh(const char* filename);
+	void render();
+	void renderSkyBox();
+	void setNormalTexture(const char* textureName, GLuint shaderID);
+	void setCubeMapTexture(const char* directory, GLuint shaderID);
+	void renderNormalMap(GLuint shaderID);
 	TextureLoader *texture;
+	TextureLoader *normalTexture;
+	TextureLoader *cubeTexture;
 };
 #endif
 

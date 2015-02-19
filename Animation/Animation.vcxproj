@@ -128,6 +128,8 @@
     <None Include="..\Shader\cubemap_reflect.vs" />
     <None Include="..\Shader\cubemap_refract.ps" />
     <None Include="..\Shader\cubemap_refract.vs" />
+    <None Include="..\Shader\normalMap.ps" />
+    <None Include="..\Shader\normalMap.vs" />
     <None Include="..\Shader\orenNayar.ps" />
     <None Include="..\Shader\orenNayar.vs" />
     <None Include="..\Shader\orenNayarTexture.ps" />

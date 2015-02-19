@@ -263,7 +263,7 @@ void CreateMesh::setColors(glm::vec4 c)
 	glBindVertexArray(0);
 }
 
-void CreateMesh::LoadMesh(const char* filename)
+void CreateMesh::loadMesh(const char* filename)
 {
 	Assimp::Importer importer;
 	aiMesh *mesh;
@@ -314,45 +314,38 @@ void CreateMesh::LoadMesh(const char* filename)
 
 	if(mesh->HasTextureCoords(0))
 	{
-		//glm::vec2 t = glm::vec2();
-
-		//float *texcoords = new float[mesh->mNumVertices * 2];
-
-		glm::vec2 t = glm::vec2();
+		float *texcoords = new float[mesh->mNumVertices * 2];
 
 		for(int i = 0; i < mesh->mNumVertices; i++)
 		{
-			//texcoords[i * 2] = mesh->mTextureCoords[0][i].x;
-			//texcoords[i * 2 + 1] = mesh->mTextureCoords[0][i].y;
-			t.x = mesh->mTextureCoords[0][i].x;
-			t.y = mesh->mTextureCoords[0][i].y;
-			texcoords.push_back(t);
+			texcoords[i * 2] = mesh->mTextureCoords[0][i].x;
+			texcoords[i * 2 + 1] = mesh->mTextureCoords[0][i].y;
 		}
 
 		glGenBuffers(1, &t_VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, t_VBO);
-		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * 2 * sizeof(GLfloat), (const GLvoid*)&texcoords[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * 2 * sizeof(GLfloat), texcoords, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 		glEnableVertexAttribArray (2);
 
-		//delete texcoords;
+		delete texcoords;
 	}
 
 	if(mesh->HasNormals())
 	{
-		//float *normals = new float[mesh->mNumVertices * 3];
+		float *normals = new float[mesh->mNumVertices * 3];
+
 		for(int i = 0; i < mesh->mNumVertices; i++)
 		{
-			/*normals[i * 3] = mesh->mNormals[i].x;
+			normals[i * 3] = mesh->mNormals[i].x;
 			normals[i * 3 + 1] = mesh->mNormals[i].y;
-			normals[i * 3 + 2] = mesh->mNormals[i].z;*/
-			normals.push_back(glm::vec3(mesh->mNormals[i].x,mesh->mNormals[i].y,mesh->mNormals[i].z));
+			normals[i * 3 + 2] = mesh->mNormals[i].z;
 		}
 
 		glGenBuffers(1,&n_VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, n_VBO);
-		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * 3 * sizeof(GLfloat), (const GLvoid*)&normals[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * 3 * sizeof(GLfloat), normals, GL_STATIC_DRAW);
 
 		// Loc 4 = vNormal
 		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, NULL);
@@ -384,6 +377,27 @@ void CreateMesh::LoadMesh(const char* filename)
 		delete indices;
 	}
 
+	if(mesh->HasTangentsAndBitangents())
+	{
+		float *tangents = new float[mesh->mNumVertices * 3];
+
+		for(int i = 0; i < mesh->mNumVertices; i++)
+		{
+			tangents[i * 3] = mesh->mTangents[i].x;
+			tangents[i * 3 + 1] = mesh->mTangents[i].y;
+			tangents[i * 3 + 2] = mesh->mTangents[i].z;
+		}
+
+		glGenBuffers(1,&tb_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, tb_VBO);
+		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * 3 * sizeof(GLfloat), tangents, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray (5);
+
+		delete tangents;
+	}
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
@@ -391,7 +405,7 @@ void CreateMesh::LoadMesh(const char* filename)
 void CreateMesh::setTexture(const char* filename, GLuint shaderID)
 {
 	isTextured = true;
-	GLuint gSampler = glGetUniformLocation(shaderID, "gSampler");
+	gSampler = glGetUniformLocation(shaderID, "gSampler");
 	glUniform1i(gSampler, 0);
 
 	texture = new TextureLoader(GL_TEXTURE_2D, filename);
@@ -402,34 +416,34 @@ void CreateMesh::setTexture(const char* filename, GLuint shaderID)
 	}
 }
 
-void CreateMesh::SetNormalTexture(const char* textureName, GLuint shaderID)
+void CreateMesh::setNormalTexture(const char* textureName, GLuint shaderID)
 {
-	GLuint gSampler = glGetUniformLocation(shaderID, "gSampler");
-	glUniform1i(gSampler, 0);
+	nSampler = glGetUniformLocation(shaderID, "nSampler");
+	glUniform1i(nSampler, 1);
 
-	texture = new TextureLoader(GL_TEXTURE_2D,textureName);
+	normalTexture = new TextureLoader(GL_TEXTURE_2D,textureName);
 
-	if (!texture->Load()) 
+	if (!normalTexture->Load()) 
 	{
 		std::cout << "Unable to load normal texture" << std::endl;
 	}
 
 }
 
-void CreateMesh::SetCubeMapTexture(const char* directory, GLuint shaderID)
+void CreateMesh::setCubeMapTexture(const char* directory, GLuint shaderID)
 {
-	GLuint gSampler = glGetUniformLocation(shaderID, "gSampler");
+	gSampler = glGetUniformLocation(shaderID, "gSampler");
 	glUniform1i(gSampler, 0);
 
-	texture = new TextureLoader(directory);
+	cubeTexture = new TextureLoader(directory);
 
-	if (!texture->LoadCubeMap()) 
+	if (!cubeTexture->LoadCubeMap()) 
 	{
 		std::cout << "Unable to load cube map" << std::endl;
 	}
 }
 
-void CreateMesh::Render()
+void CreateMesh::render()
 {
 	if(isTextured)
 	{
@@ -445,11 +459,29 @@ void CreateMesh::Render()
 	glBindVertexArray(0);
 }
 
-void CreateMesh::RenderSkyBox()
+void CreateMesh::renderSkyBox()
 {
-	texture->Bind(GL_TEXTURE0);
+	cubeTexture->Bind(GL_TEXTURE0);
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0);
+}
+
+void CreateMesh::renderNormalMap(GLuint shaderID)
+{
+	glActiveTexture(GL_TEXTURE0);
+	texture->Bind(GL_TEXTURE0);
+	//gSampler = glGetUniformLocation(shaderID, "gSampler");
+	glUniform1i(gSampler, 0);
+
+	glActiveTexture(GL_TEXTURE1);
+	normalTexture->Bind(GL_TEXTURE1);
+	//nSampler = glGetUniformLocation(shaderID, "nSampler");
+	glUniform1i(nSampler, 1);
+
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, NULL);
+	glBindVertexArray(0);
+
 }
 

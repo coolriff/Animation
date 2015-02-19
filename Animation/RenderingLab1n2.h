@@ -37,6 +37,10 @@ public:
 	Cube *skyBoxBody;
 	CreateMesh *skyBoxMesh;
 
+	Cube *normalMapBody;
+	CreateMesh *normalMapMesh;
+	Shader *normalMapShader;
+
 	Shader *shaderSkyBox;
 	Shader *shaderRefraction;
 
@@ -97,6 +101,7 @@ public:
 	bool oShader[MAXOBJECT];
 
 	bool isTexture;
+	bool isNormalTexture;
 
 	enum ShaderType {
 		TOON,

@@ -32,7 +32,7 @@ RenderingLab1n2::RenderingLab1n2(void)
 	stopTime = false;
 	useForce = false;
 
-	
+
 	isTexture = true;
 
 	shaderSkyBox = new Shader();
@@ -60,6 +60,23 @@ RenderingLab1n2::RenderingLab1n2(void)
 		oShader[i] = false;
 		shaderType[i]= BLINNPHONGTEXTURE;
 	}
+
+	normalMapBody = new Cube();
+	normalMapMesh = new CreateMesh();
+	normalMapShader = new Shader();
+
+	ambientColor = glm::vec3(1.0f,1.0f,1.0f);
+	ambientIntensity = 0.1f;	
+
+	diffuseColor = glm::vec3(1.0f,1.0f,1.0f);
+	diffuseIntensity = 0.1f;
+	diffuseDirection = glm::vec3(0, 0, -1);
+
+	specularColor = glm::vec3(1.0f,1.0f,1.0f);
+	specularIntensity = 0.7f;
+	specularShininess = 60.0f;
+
+	roughness = 1.0f;
 }
 
 
@@ -79,25 +96,32 @@ void RenderingLab1n2::run(void)
 	double lastTime = glfwGetTime();
 
 
-	skyBoxMesh->LoadMesh("../Models/cube2.obj");
+	m_bodyMesh[0]->loadMesh("../Models/head2.obj");
+	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
+// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
+// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
+	m_body[0]->SetPosition(glm::vec3(-2,0,0));
+
+	m_bodyMesh[1]->loadMesh("../Models/head2.obj");
+	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
+// 	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
+// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
+	m_body[1]->SetPosition(glm::vec3(2,0,0));
+
+
+
+	skyBoxMesh->loadMesh("../Models/cube2.obj");
 	//skyBoxMesh->SetCubeMapTexture("../Models/SantaMariaDeiMiracoli/",shaderSkyBox->GetProgramID());
-	skyBoxMesh->SetCubeMapTexture("../Models/LancellottiChapel/",shaderSkyBox->GetProgramID());
-	//loadCubeMap("../Models/cubemap_night/night");
+	skyBoxMesh->setCubeMapTexture("../Models/LancellottiChapel/",shaderSkyBox->GetProgramID());
 	skyBoxBody->SetPosition(glm::vec3(0));
 	skyBoxBody->SetScale(glm::vec3(100.0f,100.0f,100.0f));
 
 
-	m_bodyMesh[0]->LoadMesh("../Models/head2.obj");
-	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
-	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
-	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
-	m_body[0]->SetPosition(glm::vec3(-2,0,0));
-
-	m_bodyMesh[1]->LoadMesh("../Models/head2.obj");
-	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
-	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
-	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
-	m_body[1]->SetPosition(glm::vec3(2,0,0));
+	normalMapMesh->loadMesh("../Models/cube.obj");
+	normalMapMesh->setTexture("../Models/bricks2.jpg",normalMapShader->GetProgramID());
+	normalMapMesh->setNormalTexture("../Models/bricks2_normal.png",normalMapShader->GetProgramID());
+	normalMapBody->SetPosition(glm::vec3(0,2,0));
+	normalMapBody->SetScale(glm::vec3(1.0f,1.0f,1.0f));
 
 	vLightDirGLM = glm::vec3(0,0,-1);
 	ambientColorGLM = glm::vec3(1,1,1);
@@ -109,7 +133,7 @@ void RenderingLab1n2::run(void)
 	specularShininessGLM =  64.0f;
 
 
-	
+
 	do{
 		double currentTime = glfwGetTime();
 		double delta = currentTime - lastTime;
@@ -124,6 +148,30 @@ void RenderingLab1n2::run(void)
 
 
 
+// 		GLint OldCullFaceMode;
+// 		glGetIntegerv(GL_CULL_FACE_MODE, &OldCullFaceMode);
+// 		GLint OldDepthFuncMode;
+// 		glGetIntegerv(GL_DEPTH_FUNC, &OldDepthFuncMode);
+
+
+		//normal map
+		glUseProgram(normalMapShader->GetProgramID());
+		normalMapBody->Update(delta);
+		normalMapShader->findAllShaderID();
+		normalMapShader->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
+		updateCamera(normalMapShader->GetProgramID());
+		update(normalMapBody->GetTransformationMatrix(), normalMapShader->GetProgramID());
+		normalMapMesh->renderNormalMap(normalMapShader->GetProgramID());
+		//normalMapMesh->render();
+
+
+// 		glCullFace(GL_FRONT);
+// 		glDepthFunc(GL_LEQUAL);
+// 		glDepthMask(false);
+
+
+
+		//cube map
 		glUseProgram(shaderSkyBox->GetProgramID());
 		GLuint cameraPos = glGetUniformLocation(shaderSkyBox->GetProgramID(), "WorldCameraPosition");
 		glUniform3f(cameraPos, m_physicsLabCamera->position.x,m_physicsLabCamera->position.y,m_physicsLabCamera->position.z);
@@ -132,9 +180,13 @@ void RenderingLab1n2::run(void)
 		//setMatrices
 		updateCamera(shaderSkyBox->GetProgramID());
 		update(skyBoxBody->GetTransformationMatrix(), shaderSkyBox->GetProgramID());
-		skyBoxMesh->RenderSkyBox();
+		skyBoxMesh->renderSkyBox();
 		GLuint dsbs = glGetUniformLocation(shaderSkyBox->GetProgramID(), "DrawSkyBox");
 		glUniform1i(dsbs, false);
+
+// 		glDepthMask(true);
+// 		glCullFace(OldCullFaceMode); 
+// 		glDepthFunc(OldDepthFuncMode);
 
 		//TO_BE_CHANGED
 		GLuint mc;
@@ -165,7 +217,7 @@ void RenderingLab1n2::run(void)
 
 				updateCamera(shaderSkyBox->GetProgramID());
 				update(m_body[i]->GetTransformationMatrix(), shaderSkyBox->GetProgramID());
-				m_bodyMesh[i]->Render();
+				m_bodyMesh[i]->render();
 				break;
 
 			case RenderingLab1n2::RERACTION:
@@ -179,7 +231,10 @@ void RenderingLab1n2::run(void)
 
 				updateCamera(shaderRefraction->GetProgramID());
 				update(m_body[i]->GetTransformationMatrix(), shaderRefraction->GetProgramID());
-				m_bodyMesh[i]->Render();
+				m_bodyMesh[i]->render();
+				break;
+
+			case RenderingLab1n2::NORMAL_MAP:
 				break;
 
 			case RenderingLab1n2::EXTRA:
@@ -192,7 +247,7 @@ void RenderingLab1n2::run(void)
 				shaderBlinnPhongTexture->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
 				updateCamera(shaderBlinnPhongTexture->GetProgramID());
 				update(m_body[i]->GetTransformationMatrix(), shaderBlinnPhongTexture->GetProgramID());
-				m_bodyMesh[i]->Render();
+				m_bodyMesh[i]->render();
 				break;
 			case RenderingLab1n2::BLINNPHONG:
 				m_bodyMesh[i]->isTextured = false;
@@ -201,7 +256,7 @@ void RenderingLab1n2::run(void)
 				shaderBlinnPhong->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
 				updateCamera(shaderBlinnPhong->GetProgramID());
 				update(m_body[i]->GetTransformationMatrix(), shaderBlinnPhong->GetProgramID());
-				m_bodyMesh[i]->Render();
+				m_bodyMesh[i]->render();
 				break;
 
 			case RenderingLab1n2::TOONTEXTURE:
@@ -211,7 +266,7 @@ void RenderingLab1n2::run(void)
 				shaderToonTexture->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
 				updateCamera(shaderToonTexture->GetProgramID());
 				update(m_body[i]->GetTransformationMatrix(), shaderToonTexture->GetProgramID());
-				m_bodyMesh[i]->Render();
+				m_bodyMesh[i]->render();
 				break;
 			case RenderingLab1n2::TOON:
 				m_bodyMesh[i]->isTextured = false;
@@ -220,7 +275,7 @@ void RenderingLab1n2::run(void)
 				shaderToon->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
 				updateCamera(shaderToon->GetProgramID());
 				update(m_body[i]->GetTransformationMatrix(), shaderToon->GetProgramID());
-				m_bodyMesh[i]->Render();
+				m_bodyMesh[i]->render();
 				break;
 
 			case RenderingLab1n2::OREN_NAYARTEXTURE:
@@ -230,7 +285,7 @@ void RenderingLab1n2::run(void)
 				shaderOrenNayarTexture->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
 				updateCamera(shaderOrenNayarTexture->GetProgramID());
 				update(m_body[i]->GetTransformationMatrix(), shaderOrenNayarTexture->GetProgramID());
-				m_bodyMesh[i]->Render();
+				m_bodyMesh[i]->render();
 				break;
 			case RenderingLab1n2::OREN_NAYAR:
 				m_bodyMesh[i]->isTextured = false;
@@ -239,7 +294,7 @@ void RenderingLab1n2::run(void)
 				shaderOrenNayar->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
 				updateCamera(shaderOrenNayar->GetProgramID());
 				update(m_body[i]->GetTransformationMatrix(), shaderOrenNayar->GetProgramID());
-				m_bodyMesh[i]->Render();
+				m_bodyMesh[i]->render();
 				break;
 			}
 		}
@@ -305,6 +360,7 @@ void RenderingLab1n2::updateCamera(GLuint ShaderID)
 
 void RenderingLab1n2::initShaders()
 {
+	createShaders(normalMapShader, "../Shader/normalMap.vs", "../Shader/normalMap.ps");
 	createShaders(shaderSkyBox, "../Shader/cubemap_reflect.vs", "../Shader/cubemap_reflect.ps");
 	createShaders(shaderRefraction, "../Shader/cubemap_refract.vs", "../Shader/cubemap_refract.ps");
 
@@ -490,19 +546,24 @@ void RenderingLab1n2::keyControl()
 		for (int i=0; i<MAXOBJECT; i++)
 		{
 			m_body[i]->SetAngularMomentum(glm::vec3(0.5f,0,0));
+
 		}
+		normalMapBody->SetAngularMomentum(glm::vec3(0.5f,0,0));
 	}
 	if (glfwGetKey(window, GLFW_KEY_X ) == GLFW_PRESS){
 		for (int i=0; i<MAXOBJECT; i++)
 		{
 			m_body[i]->SetAngularMomentum(glm::vec3(0,0.5f,0));
+
 		}
+		normalMapBody->SetAngularMomentum(glm::vec3(0,0.5f,0));
 	}
 	if (glfwGetKey(window, GLFW_KEY_C ) == GLFW_PRESS){
 		for (int i=0; i<MAXOBJECT; i++)
 		{
 			m_body[i]->SetAngularMomentum(glm::vec3(0,0,0.5f));
 		}
+		normalMapBody->SetAngularMomentum(glm::vec3(0,0,0.5f));
 	}
 
 	//dt

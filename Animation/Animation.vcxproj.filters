@@ -200,6 +200,12 @@
     <None Include="..\Shader\cubemap_refract.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
+    <None Include="..\Shader\normalMap.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\normalMap.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lab1.h">
