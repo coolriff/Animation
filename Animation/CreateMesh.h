@@ -25,6 +25,7 @@ public:
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec3> indices;
 	std::vector<glm::vec4> colors;
+	std::vector<glm::vec4> tangents;
 
 	std::vector<glm::vec4> redColors;
 	std::vector<glm::vec4> greenColors;
@@ -41,10 +42,15 @@ public:
 	void createSphereMesh(int numSegments);
 	void setColors(glm::vec4 c);
 	void setTexture(const char* filename, GLuint shaderID);
+	void setTexture(const char* filename);
 	std::vector<glm::vec4> getColors(void) {return colors;};
 	void LoadMesh(const char* filename);
+	void LoadMesh(const char* filename, bool isNormalMap);
 	void Render();
+	void Render(GLenum id);
 	void RenderSkyBox();
+	void generateTangents( const std::vector<glm::vec3> & points, const std::vector<glm::vec3> & normals, 
+		const std::vector<int> & faces, const std::vector<glm::vec2> & texCoords, std::vector<glm::vec4> & tangents);
 	TextureLoader *texture;
 };
 #endif

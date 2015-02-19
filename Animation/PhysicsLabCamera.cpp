@@ -155,6 +155,23 @@ void PhysicsLabCamera::handleMVP(GLuint modelLoc, GLuint viewLoc, GLuint projLoc
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, &ProjectionMatrix[0][0]);
 }
 
+void PhysicsLabCamera::handleMVP(GLuint modelLoc, GLuint viewLoc, GLuint projLoc, GLuint normalMatrix)
+{
+	ProjectionMatrix = getProjectionMatrix();
+	ViewMatrix = getViewMatrix();
+	glm::mat4 ModelMatrix = glm::mat4(1.0);
+
+	glm::mat4 mv = ViewMatrix * ModelMatrix;
+	glm::mat3 nm = glm::mat3(glm::vec3(mv[0]), glm::vec3(mv[1]), glm::vec3(mv[2]));
+
+	// Send our transformation to the currently bound shader, 
+	// in the "MVP" uniform
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &ModelMatrix[0][0]);
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &ViewMatrix[0][0]);
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, &ProjectionMatrix[0][0]);
+	glUniformMatrix4fv(normalMatrix, 1, GL_FALSE, &nm[0][0]);
+}
+
 glm::mat4 PhysicsLabCamera::getViewMatrix()
 {
 	return ViewMatrix;

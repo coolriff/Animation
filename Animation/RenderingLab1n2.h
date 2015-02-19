@@ -15,12 +15,13 @@
 #include <glm/gtx/transform.hpp>
 #include <algorithm>
 #include "tgaio.h"
+#include "vbomesh.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
 #define MAX 36
 #define MAXOBJECT 2
-#define MAXSHADERTYPE 3
+#define MAXSHADERTYPE 2
 
 class RenderingLab1n2
 {
@@ -34,12 +35,16 @@ public:
 	CreateMesh *m_bodyMesh[MAXOBJECT];
 	ObjectBuffer *m_bodyBuffer[MAXOBJECT];
 
+	Cube *normalMapHeadBody;
+	VBOMesh *ogre;
+
 	Cube *skyBoxBody;
 	CreateMesh *skyBoxMesh;
 	ObjectBuffer *skyBoxBuffer;
 
 	Shader *shaderSkyBox;
 	Shader *shaderRefraction;
+	Shader *shaderNormalMap;
 
 
 	Shader *shaderBlinnPhong;
@@ -55,6 +60,7 @@ public:
 	GLuint modelLoc;
 	GLuint viewLoc;
 	GLuint projLoc;
+	GLuint normalMatrix;
 
 	glm::vec3 eye;
 	glm::vec3 ambientColor;

@@ -388,12 +388,242 @@ void CreateMesh::LoadMesh(const char* filename)
 	glBindVertexArray(0);
 }
 
+void CreateMesh::LoadMesh(const char* filename, bool isNormalMap)
+{
+		Assimp::Importer importer;
+	aiMesh *mesh;
+
+	const aiScene *scene = importer.ReadFile(filename, 	aiProcess_Triangulate
+		| aiProcess_OptimizeGraph
+		| aiProcess_OptimizeMeshes
+		| aiProcess_RemoveRedundantMaterials
+		| aiProcess_GenSmoothNormals
+		| aiProcess_FlipUVs);
+
+	if(!scene) 
+	{
+		printf("Unable to load mesh: %s\n", importer.GetErrorString());
+	}
+
+	mesh = scene->mMeshes[0];
+	numElements = mesh->mNumFaces * 3;
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	if(mesh->HasTextureCoords(0))
+	{
+		//glm::vec2 t = glm::vec2();
+
+		//float *texcoords = new float[mesh->mNumVertices * 2];
+
+		glm::vec2 t = glm::vec2();
+
+		for(int i = 0; i < mesh->mNumVertices; i++)
+		{
+			//texcoords[i * 2] = mesh->mTextureCoords[0][i].x;
+			//texcoords[i * 2 + 1] = mesh->mTextureCoords[0][i].y;
+			t.x = mesh->mTextureCoords[0][i].x;
+			t.y = mesh->mTextureCoords[0][i].y;
+			texcoords.push_back(t);
+		}
+
+		glGenBuffers(1, &t_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, t_VBO);
+		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * 2 * sizeof(GLfloat), (const GLvoid*)&texcoords[0], GL_STATIC_DRAW);
+
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray (2);
+
+		//delete texcoords;
+	}
+
+	if(mesh->HasNormals())
+	{
+		//float *normals = new float[mesh->mNumVertices * 3];
+		for(int i = 0; i < mesh->mNumVertices; i++)
+		{
+			/*normals[i * 3] = mesh->mNormals[i].x;
+			normals[i * 3 + 1] = mesh->mNormals[i].y;
+			normals[i * 3 + 2] = mesh->mNormals[i].z;*/
+			normals.push_back(glm::vec3(mesh->mNormals[i].x,mesh->mNormals[i].y,mesh->mNormals[i].z));
+		}
+
+		glGenBuffers(1,&n_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, n_VBO);
+		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * 3 * sizeof(GLfloat), (const GLvoid*)&normals[0], GL_STATIC_DRAW);
+
+		// Loc 4 = vNormal
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray (4);
+
+		//delete normals;
+	}
+
+	GLuint *indices = new GLuint[mesh->mNumFaces * 3];
+	std::vector<int> face;
+
+	if(mesh->HasFaces())
+	{
+		
+
+		for(int i = 0; i < mesh->mNumFaces; i++)
+		{
+			//indices.push_back(glm::vec3(mesh->mFaces[i].mIndices[0],mesh->mFaces[i].mIndices[1],mesh->mFaces[i].mIndices[2]));
+
+			indices[i * 3] = mesh->mFaces[i].mIndices[0];
+			face.push_back(indices[i * 3]);
+			indices[i * 3 + 1] = mesh->mFaces[i].mIndices[1];
+			face.push_back(indices[i * 3 + 1]);
+			indices[i * 3 + 2] = mesh->mFaces[i].mIndices[2];
+			face.push_back(indices[i * 3 + 2]);
+		}
+
+		glGenBuffers(1, &i_VBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, i_VBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->mNumFaces * 3 * sizeof(GLuint), indices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray (3);
+
+		//delete indices;
+	}
+
+	if (isNormalMap)
+	{
+		if(mesh->HasPositions())
+		{
+			for(int i = 0; i < mesh->mNumVertices; i++) 
+			{
+				vertices.push_back(glm::vec3(mesh->mVertices[i].x,mesh->mVertices[i].y,mesh->mVertices[i].z));			
+				//colors.push_back(glm::vec4(0.85f,0.85f,0.85f,1));
+			}
+
+			generateTangents(vertices,normals,face,texcoords,tangents);
+
+			vSize = vertices.size() * sizeof(glm::vec3);
+			cSize = colors.size() * sizeof(glm::vec4);
+
+			glGenBuffers(1, &v_VBO);
+			glBindBuffer(GL_ARRAY_BUFFER, v_VBO);
+			glBufferData(GL_ARRAY_BUFFER, vSize + cSize, NULL, GL_STATIC_DRAW);
+			glBufferSubData( GL_ARRAY_BUFFER, 0, vSize, (const GLvoid*)(&vertices[0]));
+			glBufferSubData( GL_ARRAY_BUFFER, vSize, cSize, (const GLvoid*)(&tangents[0]));
+			//Loc 0 = vPosition;
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+			glEnableVertexAttribArray (0);
+
+			//Loc 1 = vColor
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0,  BUFFER_OFFSET(vSize));
+			glEnableVertexAttribArray (1);
+		}
+	}
+	else
+	{
+		if(mesh->HasPositions())
+		{
+			for(int i = 0; i < mesh->mNumVertices; i++) 
+			{
+				vertices.push_back(glm::vec3(mesh->mVertices[i].x,mesh->mVertices[i].y,mesh->mVertices[i].z));			
+				colors.push_back(glm::vec4(0.85f,0.85f,0.85f,1));
+			}
+
+			vSize = vertices.size() * sizeof(glm::vec3);
+			cSize = colors.size() * sizeof(glm::vec4);
+
+			glGenBuffers(1, &v_VBO);
+			glBindBuffer(GL_ARRAY_BUFFER, v_VBO);
+			glBufferData(GL_ARRAY_BUFFER, vSize + cSize, NULL, GL_STATIC_DRAW);
+			glBufferSubData( GL_ARRAY_BUFFER, 0, vSize, (const GLvoid*)(&vertices[0]));
+			glBufferSubData( GL_ARRAY_BUFFER, vSize, cSize, (const GLvoid*)(&colors[0]));
+			//Loc 0 = vPosition;
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+			glEnableVertexAttribArray (0);
+
+			//Loc 1 = vColor
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0,  BUFFER_OFFSET(vSize));
+			glEnableVertexAttribArray (1);
+		}
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void CreateMesh::generateTangents(const std::vector<glm::vec3> & points, const std::vector<glm::vec3> & normals, 
+								  const std::vector<int> & faces, const std::vector<glm::vec2> & texCoords, 
+								  std::vector<glm::vec4> & tangents)
+{
+	std::vector<glm::vec3> tan1Accum;
+	std::vector<glm::vec3> tan2Accum;
+
+	for( int i = 0; i < points.size(); i++ ) {
+		tan1Accum.push_back(glm::vec3(0.0f));
+		tan2Accum.push_back(glm::vec3(0.0f));
+		tangents.push_back(glm::vec4(0.0f));
+	}
+
+	// Compute the tangent vector
+	for( int i = 0; i < faces.size(); i += 3 )
+	{
+		const glm::vec3 &p1 = points[faces[i]];
+		const glm::vec3 &p2 = points[faces[i+1]];
+		const glm::vec3 &p3 = points[faces[i+2]];
+
+		const glm::vec2 &tc1 = texCoords[faces[i]];
+		const glm::vec2 &tc2 = texCoords[faces[i+1]];
+		const glm::vec2 &tc3 = texCoords[faces[i+2]];
+
+		glm::vec3 q1 = p2 - p1;
+		glm::vec3 q2 = p3 - p1;
+		float s1 = tc2.x - tc1.x, s2 = tc3.x - tc1.x;
+		float t1 = tc2.y - tc1.y, t2 = tc3.y - tc1.y;
+		float r = 1.0f / (s1 * t2 - s2 * t1);
+		glm::vec3 tan1( (t2*q1.x - t1*q2.x) * r,
+			(t2*q1.y - t1*q2.y) * r,
+			(t2*q1.z - t1*q2.z) * r);
+		glm::vec3 tan2( (s1*q2.x - s2*q1.x) * r,
+			(s1*q2.y - s2*q1.y) * r,
+			(s1*q2.z - s2*q1.z) * r);
+		tan1Accum[faces[i]] += tan1;
+		tan1Accum[faces[i+1]] += tan1;
+		tan1Accum[faces[i+2]] += tan1;
+		tan2Accum[faces[i]] += tan2;
+		tan2Accum[faces[i+1]] += tan2;
+		tan2Accum[faces[i+2]] += tan2;
+	}
+
+	for( int i = 0; i < points.size(); ++i )
+	{
+		const glm::vec3 &n = normals[i];
+		glm::vec3 &t1 = tan1Accum[i];
+		glm::vec3 &t2 = tan2Accum[i];
+
+		// Gram-Schmidt orthogonalize
+		tangents[i] = glm::vec4(glm::normalize( t1 - (glm::dot(n,t1) * n) ), 0.0f);
+		// Store handedness in w
+		tangents[i].w = (glm::dot( glm::cross(n,t1), t2 ) < 0.0f) ? -1.0f : 1.0f;
+	}
+	tan1Accum.clear();
+	tan2Accum.clear();
+}
+
 void CreateMesh::setTexture(const char* filename, GLuint shaderID)
 {
 	isTextured = true;
 	GLuint gSampler = glGetUniformLocation(shaderID, "gSampler");
 	glUniform1i(gSampler, 0);
 
+	texture = new TextureLoader(GL_TEXTURE_2D, filename);
+
+	if (!texture->Load()) 
+	{
+		std::cout << "Unable to load texture" << std::endl;
+	}
+}
+
+void CreateMesh::setTexture(const char* filename)
+{
 	texture = new TextureLoader(GL_TEXTURE_2D, filename);
 
 	if (!texture->Load()) 
@@ -425,3 +655,18 @@ void CreateMesh::RenderSkyBox()
 	glBindVertexArray(0);
 }
 
+void CreateMesh::Render(GLenum id)
+{
+	if(isTextured)
+	{
+		texture->Bind(id);
+	}
+	else
+	{
+		texture->UnBind();
+	}
+
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, NULL);
+	glBindVertexArray(0);
+}

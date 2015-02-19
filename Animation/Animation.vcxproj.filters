@@ -126,6 +126,9 @@
     <ClCompile Include="tgaio.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
+    <ClCompile Include="vbomesh.cpp">
+      <Filter>Physics Lab2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="diffuse.ps">
@@ -198,6 +201,12 @@
       <Filter>Physics Lab2\Shader</Filter>
     </None>
     <None Include="..\Shader\cubemap_refract.vs">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\normalmap.ps">
+      <Filter>Physics Lab2\Shader</Filter>
+    </None>
+    <None Include="..\Shader\normalmap.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
   </ItemGroup>
@@ -311,6 +320,9 @@
       <Filter>Physics Lab2</Filter>
     </ClInclude>
     <ClInclude Include="tgaio.h">
+      <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="vbomesh.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
   </ItemGroup>

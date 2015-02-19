@@ -37,6 +37,7 @@ RenderingLab1n2::RenderingLab1n2(void)
 
 	shaderSkyBox = new Shader();
 	shaderRefraction = new Shader();
+	shaderNormalMap = new Shader();
 
 	skyBoxBody = new Cube();
 	skyBoxMesh = new CreateMesh();
@@ -76,6 +77,8 @@ RenderingLab1n2::RenderingLab1n2(void)
 	specularShininess = 60.0f;
 
 	roughness = 1.0f;
+
+	normalMapHeadBody = new Cube();
 }
 
 
@@ -99,7 +102,6 @@ void RenderingLab1n2::run(void)
 	skyBoxBody->SetPosition(glm::vec3(0));
 	skyBoxBody->SetScale(glm::vec3(100.0f,100.0f,100.0f));
 
-
 	m_bodyMesh[0]->LoadMesh("../Models/head2.obj");
 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
@@ -109,8 +111,15 @@ void RenderingLab1n2::run(void)
 	m_bodyMesh[1]->LoadMesh("../Models/head2.obj");
 	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
 	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
-	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
+	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
 	m_body[1]->SetPosition(glm::vec3(2,0,0));
+
+	ogre = new VBOMesh("../Models/bs_ears.obj",false,true,true);
+	normalMapHeadBody->SetPosition(glm::vec3(0,-3,0));
+	glActiveTexture(GL_TEXTURE0);
+	TGAIO::loadTex("../Models/ogre_diffuse.tga");
+	glActiveTexture(GL_TEXTURE1);
+	TGAIO::loadTex("../Models/ogre_normalmap.tga");
 
 	vLightDirGLM = glm::vec3(0,0,-1);
 	ambientColorGLM = glm::vec3(1,1,1);
@@ -135,8 +144,6 @@ void RenderingLab1n2::run(void)
 
 		preDraw();
 
-
-
 		glUseProgram(shaderSkyBox->GetProgramID());
 		GLuint cameraPos = glGetUniformLocation(shaderSkyBox->GetProgramID(), "WorldCameraPosition");
 		glUniform3f(cameraPos, m_physicsLabCamera->position.x,m_physicsLabCamera->position.y,m_physicsLabCamera->position.z);
@@ -155,6 +162,40 @@ void RenderingLab1n2::run(void)
 
 		GLuint mE;
 		GLuint mR;
+
+		//normal
+		GLuint lI;
+		GLuint lP;
+		GLuint mKs;
+		GLuint mKa;
+		GLuint mS;
+
+
+		glUseProgram(shaderNormalMap->GetProgramID());
+
+		lI = glGetUniformLocation(shaderNormalMap->GetProgramID(), "Light.Intensity");
+		glUniform3f(lI, 0.9f,0.9f,0.9f);
+
+		lP = glGetUniformLocation(shaderNormalMap->GetProgramID(), "Light.Position");
+		glUniform3f(lI, m_physicsLabCamera->position.x,m_physicsLabCamera->position.y,m_physicsLabCamera->position.z);
+
+		mKs = glGetUniformLocation(shaderNormalMap->GetProgramID(), "Material.Ks");
+		glUniform3f(mKs, 0.2f,0.2f,0.2f);
+
+		mKa = glGetUniformLocation(shaderNormalMap->GetProgramID(), "Material.Ka");
+		glUniform3f(mKa, 0.1f,0.1f,0.1f);
+
+		mS = glGetUniformLocation(shaderNormalMap->GetProgramID(), "Material.Shininess");
+		glUniform1f(mS, 1.0f);
+
+		m_physicsLabCamera->computeMatricesFromInputs(window);
+		modelLoc = glGetUniformLocation(shaderNormalMap->GetProgramID(), "model");
+		viewLoc = glGetUniformLocation(shaderNormalMap->GetProgramID(), "view");
+		projLoc = glGetUniformLocation(shaderNormalMap->GetProgramID(), "projection");
+		normalMatrix = glGetUniformLocation(shaderNormalMap->GetProgramID(), "NormalMatrix");
+		m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc,normalMatrix);
+		update(normalMapHeadBody->GetTransformationMatrix(), shaderNormalMap->GetProgramID());
+		ogre->render();
 
 		for (int i=0; i<MAXOBJECT; i++)
 		{
@@ -193,6 +234,36 @@ void RenderingLab1n2::run(void)
 				updateCamera(shaderRefraction->GetProgramID());
 				update(m_body[i]->GetTransformationMatrix(), shaderRefraction->GetProgramID());
 				m_bodyMesh[i]->Render();
+				break;
+
+			case RenderingLab1n2::NORMAL_MAP:
+// 				glUseProgram(shaderNormalMap->GetProgramID());
+// 
+// 				lI = glGetUniformLocation(shaderNormalMap->GetProgramID(), "Light.Intensity");
+// 				glUniform3f(lI, 0.9f,0.9f,0.9f);
+// 
+// 				lP = glGetUniformLocation(shaderNormalMap->GetProgramID(), "Light.Position");
+// 				glUniform3f(lI, m_physicsLabCamera->position.x,m_physicsLabCamera->position.y,m_physicsLabCamera->position.z);
+// 
+// 				mKs = glGetUniformLocation(shaderNormalMap->GetProgramID(), "Material.Ks");
+// 				glUniform3f(mKs, 0.2f,0.2f,0.2f);
+// 
+// 				mKa = glGetUniformLocation(shaderNormalMap->GetProgramID(), "Material.Ka");
+// 				glUniform3f(mKa, 0.1f,0.1f,0.1f);
+// 
+// 				mS = glGetUniformLocation(shaderNormalMap->GetProgramID(), "Material.Shininess");
+// 				glUniform1f(mS, 1.0f);
+// 
+// 				m_physicsLabCamera->computeMatricesFromInputs(window);
+// 				modelLoc = glGetUniformLocation(shaderNormalMap->GetProgramID(), "model");
+// 				viewLoc = glGetUniformLocation(shaderNormalMap->GetProgramID(), "view");
+// 				projLoc = glGetUniformLocation(shaderNormalMap->GetProgramID(), "projection");
+// 				normalMatrix = glGetUniformLocation(shaderNormalMap->GetProgramID(), "NormalMatrix");
+// 				m_physicsLabCamera->handleMVP(modelLoc, viewLoc, projLoc,normalMatrix);
+// 
+// 				update(normalMapHeadBody->GetTransformationMatrix(), shaderNormalMap->GetProgramID());
+// 				normalMapHeadMesh->RenderSkyBox();
+
 				break;
 
 			case RenderingLab1n2::EXTRA:
@@ -320,6 +391,7 @@ void RenderingLab1n2::initShaders()
 {
 	createShaders(shaderSkyBox, "../Shader/cubemap_reflect.vs", "../Shader/cubemap_reflect.ps");
 	createShaders(shaderRefraction, "../Shader/cubemap_refract.vs", "../Shader/cubemap_refract.ps");
+	createShaders(shaderNormalMap, "../Shader/normalmap.vs", "../Shader/normalmap.ps");
 
 	createShaders(shaderBlinnPhongTexture, "../Shader/BlinnPhongTexture.vs", "../Shader/BlinnPhongTexture.ps");
 	createShaders(shaderBlinnPhong, "../Shader/BlinnPhong.vs", "../Shader/BlinnPhong.ps");
@@ -461,12 +533,15 @@ void RenderingLab1n2::keyControl()
 	}
 	if (glfwGetKey(window, GLFW_KEY_1 ) == GLFW_PRESS){
 		shaderType[0] = REFLECTION;
+		shaderType[2] = REFLECTION;
 	}
 	if (glfwGetKey(window, GLFW_KEY_2 ) == GLFW_PRESS){
 		shaderType[0] = RERACTION;
+		shaderType[2] = RERACTION;
 	}
 	if (glfwGetKey(window, GLFW_KEY_3 ) == GLFW_PRESS){
-		shaderType[0] = EXTRA;
+		shaderType[0] = NORMAL_MAP;
+		shaderType[2] = NORMAL_MAP;
 	}
 
 
@@ -495,7 +570,7 @@ void RenderingLab1n2::keyControl()
 		shaderType[1] = RERACTION;
 	}
 	if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
-		shaderType[1] = EXTRA;
+		shaderType[1] = NORMAL_MAP;
 	}
 
 	//transfer
