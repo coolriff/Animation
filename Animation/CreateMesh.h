@@ -45,6 +45,8 @@ public:
 	void LoadMesh(const char* filename);
 	void Render();
 	void RenderSkyBox();
+	void SetNormalTexture(const char* textureName, GLuint shaderID);
+	void SetCubeMapTexture(const char* directory, GLuint shaderID);
 	TextureLoader *texture;
 };
 #endif

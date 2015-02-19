@@ -36,7 +36,6 @@ public:
 
 	Cube *skyBoxBody;
 	CreateMesh *skyBoxMesh;
-	ObjectBuffer *skyBoxBuffer;
 
 	Shader *shaderSkyBox;
 	Shader *shaderRefraction;

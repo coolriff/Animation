@@ -40,7 +40,6 @@ RenderingLab1n2::RenderingLab1n2(void)
 
 	skyBoxBody = new Cube();
 	skyBoxMesh = new CreateMesh();
-	skyBoxBuffer = new ObjectBuffer();
 
 	shaderToon = new Shader();
 	shaderBlinnPhong = new Shader();
@@ -61,21 +60,6 @@ RenderingLab1n2::RenderingLab1n2(void)
 		oShader[i] = false;
 		shaderType[i]= BLINNPHONGTEXTURE;
 	}
-
-	eye = m_physicsLabCamera->direction;
-
-	ambientColor = glm::vec3(1.0f,1.0f,1.0f);
-	ambientIntensity = 0.1f;	
-
-	diffuseColor = glm::vec3(1.0f,1.0f,1.0f);
-	diffuseIntensity = 0.1f;
-	diffuseDirection = glm::vec3(0, 0, -1);
-
-	specularColor = glm::vec3(1.0f,1.0f,1.0f);
-	specularIntensity = 0.7f;
-	specularShininess = 60.0f;
-
-	roughness = 1.0f;
 }
 
 
@@ -94,8 +78,11 @@ void RenderingLab1n2::run(void)
 
 	double lastTime = glfwGetTime();
 
+
 	skyBoxMesh->LoadMesh("../Models/cube2.obj");
-	loadCubeMap("../Models/cubemap_night/night");
+	//skyBoxMesh->SetCubeMapTexture("../Models/SantaMariaDeiMiracoli/",shaderSkyBox->GetProgramID());
+	skyBoxMesh->SetCubeMapTexture("../Models/LancellottiChapel/",shaderSkyBox->GetProgramID());
+	//loadCubeMap("../Models/cubemap_night/night");
 	skyBoxBody->SetPosition(glm::vec3(0));
 	skyBoxBody->SetScale(glm::vec3(100.0f,100.0f,100.0f));
 

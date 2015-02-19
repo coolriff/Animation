@@ -402,6 +402,33 @@ void CreateMesh::setTexture(const char* filename, GLuint shaderID)
 	}
 }
 
+void CreateMesh::SetNormalTexture(const char* textureName, GLuint shaderID)
+{
+	GLuint gSampler = glGetUniformLocation(shaderID, "gSampler");
+	glUniform1i(gSampler, 0);
+
+	texture = new TextureLoader(GL_TEXTURE_2D,textureName);
+
+	if (!texture->Load()) 
+	{
+		std::cout << "Unable to load normal texture" << std::endl;
+	}
+
+}
+
+void CreateMesh::SetCubeMapTexture(const char* directory, GLuint shaderID)
+{
+	GLuint gSampler = glGetUniformLocation(shaderID, "gSampler");
+	glUniform1i(gSampler, 0);
+
+	texture = new TextureLoader(directory);
+
+	if (!texture->LoadCubeMap()) 
+	{
+		std::cout << "Unable to load cube map" << std::endl;
+	}
+}
+
 void CreateMesh::Render()
 {
 	if(isTextured)
@@ -420,6 +447,7 @@ void CreateMesh::Render()
 
 void CreateMesh::RenderSkyBox()
 {
+	texture->Bind(GL_TEXTURE0);
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0);
