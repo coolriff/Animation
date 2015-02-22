@@ -16,6 +16,7 @@ glm::mat4 RigidBody::GetTransformationMatrix()
 {
 	glm::mat4 T = glm::translate(m_position);
 	glm::mat4 R = glm::toMat4(m_orientation);
+	R= glm::inverse(R);
 	glm::mat4 S = glm::scale(m_scale);
 
 	return T * R * S;
