@@ -98,14 +98,14 @@ void RenderingLab1n2::run(void)
 
 	double lastTime = glfwGetTime();
 
-	m_bodyMesh[0]->loadMesh("../Models/teapot2.obj");
-	m_bodyMesh[0]->setTexture("../Models/gold.jpg",shaderBlinnPhongTexture->GetProgramID());
+	m_bodyMesh[0]->loadMesh("../Models/head2.obj");
+	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderBlinnPhongTexture->GetProgramID());
 	// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
 	// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
-	m_body[0]->SetPosition(glm::vec3(-4,0,0));
+	m_body[0]->SetPosition(glm::vec3(-3,0,0));
 
 	m_bodyMesh[1]->loadMesh("../Models/teapot2.obj");
-	m_bodyMesh[1]->setTexture("../Models/gold.jpg",shaderBlinnPhongTexture->GetProgramID());
+	m_bodyMesh[1]->setTexture("../Models/2.jpg",shaderBlinnPhongTexture->GetProgramID());
 	// 	m_bodyMesh[1]->setTexture("../Models/face.jpg",shaderToonTexture->GetProgramID());
 	// 	m_bodyMesh[0]->setTexture("../Models/face.jpg",shaderOrenNayarTexture->GetProgramID());
 	m_body[1]->SetPosition(glm::vec3(4,0,0));
@@ -125,15 +125,15 @@ void RenderingLab1n2::run(void)
 	normalMapBody->SetPosition(glm::vec3(0,3,0));
 	normalMapBody->SetScale(glm::vec3(1.0f,1.0f,1.0f));
 
-	extraMesh->loadMesh("../Models/cube.obj");
-	extraMesh->setTexture("../Models/2.jpg",normalMapShader->GetProgramID());
-	extraMesh->setNormalTexture("../Models/2_NRM.jpg",normalMapShader->GetProgramID());
-	// 	normalMapMesh->setTexture("../Models/face.jpg",normalMapShader->GetProgramID());
-	// 	normalMapMesh->setNormalTexture("../Models/face_NRM.jpg",normalMapShader->GetProgramID());
-	extraBody->SetPosition(glm::vec3(0,6,0));
-	extraBody->SetScale(glm::vec3(1.0f,1.0f,1.0f));
+// 	extraMesh->loadMesh("../Models/teapot2.obj");
+// 	extraMesh->setTexture("../Models/2.jpg",normalMapShader->GetProgramID());
+// 	extraMesh->setNormalTexture("../Models/2_NRM.jpg",normalMapShader->GetProgramID());
+// 	// 	normalMapMesh->setTexture("../Models/face.jpg",normalMapShader->GetProgramID());
+// 	// 	normalMapMesh->setNormalTexture("../Models/face_NRM.jpg",normalMapShader->GetProgramID());
+// 	extraBody->SetPosition(glm::vec3(0,6,0));
+// 	extraBody->SetScale(glm::vec3(1.0f,1.0f,1.0f));
 
-	teapot = new VBOTeapot(14, glm::mat4(1.0f));
+	//teapot = new VBOTeapot(14, glm::mat4(1.0f));
 
 	vLightDirGLM = glm::vec3(0,0,-1);
 	ambientColorGLM = glm::vec3(1,1,1);
@@ -154,9 +154,9 @@ void RenderingLab1n2::run(void)
 	ratioB = 0.69;
 	reflectFactorCombined = 0.85f;
 
-	fRatioR = 0.65;
-	fRatioG = 0.66;
-	fRatioB = 0.67;
+	fRatioR = 0.6;
+	fRatioG = 0.6;
+	fRatioB = 0.6;
 	fReflectFactor = 0.1f;
 
 	do{
@@ -182,18 +182,18 @@ void RenderingLab1n2::run(void)
 		normalMapMesh->renderNormalMap(normalMapShader->GetProgramID());
 
 
-		//normal map
-		glUseProgram(shaderExtra->GetProgramID());
-		extraBody->Update(delta);
-		shaderExtra->findAllShaderID();
-		shaderExtra->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
-		updateCamera(shaderExtra->GetProgramID());
-		update(extraBody->GetTransformationMatrix(), shaderExtra->GetProgramID());
-		extraMesh->renderNormalMap(shaderExtra->GetProgramID());
+// 		//normal map
+// 		glUseProgram(shaderExtra->GetProgramID());
+// 		extraBody->Update(delta);
+// 		shaderExtra->findAllShaderID();
+// 		shaderExtra->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
+// 		updateCamera(shaderExtra->GetProgramID());
+// 		update(extraBody->GetTransformationMatrix(), shaderExtra->GetProgramID());
+// 		extraMesh->renderNormalMap(shaderExtra->GetProgramID());
 
 
 
-		//cube map
+		//SkyBox all value will remain the same
 		glUseProgram(shaderSkyBox->GetProgramID());
 		GLuint cameraPos = glGetUniformLocation(shaderSkyBox->GetProgramID(), "WorldCameraPosition");
 		glUniform3f(cameraPos, m_physicsLabCamera->position.x,m_physicsLabCamera->position.y,m_physicsLabCamera->position.z);
@@ -205,14 +205,6 @@ void RenderingLab1n2::run(void)
 		skyBoxMesh->renderSkyBox();
 		GLuint dsbs = glGetUniformLocation(shaderSkyBox->GetProgramID(), "DrawSkyBox");
 		glUniform1i(dsbs, false);
-
-		//
-// 		glUseProgram(shaderSkyBox->GetProgramID());
-// 		glm::mat4 model = glm::mat4(1.0f);
-// 		model *= glm::translate(vec3(0.0f,-1.0f,0.0f));
-// 		model *= glm::rotate(glm::radians(-90.0f), vec3(0.0f,0.0f,1.0f));
-// 		update(model, shaderSkyBox->GetProgramID());
-// 		teapot->render();
 
 		//TO_BE_CHANGED
 		GLuint mc;
@@ -286,8 +278,6 @@ void RenderingLab1n2::run(void)
 				m_bodyMesh[i]->render();
 				break;
 
-
-
 			case RenderingLab1n2::EXTRA:
 
 				glUseProgram(shaderCombined->GetProgramID());
@@ -314,15 +304,15 @@ void RenderingLab1n2::run(void)
 				update(m_body[i]->GetTransformationMatrix(), shaderBlinnPhongTexture->GetProgramID());
 				m_bodyMesh[i]->render();
 				break;
-			case RenderingLab1n2::BLINNPHONG:
-				m_bodyMesh[i]->isTextured = false;
-				glUseProgram(shaderBlinnPhong->GetProgramID());
-				shaderBlinnPhong->findAllShaderID();
-				shaderBlinnPhong->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
-				updateCamera(shaderBlinnPhong->GetProgramID());
-				update(m_body[i]->GetTransformationMatrix(), shaderBlinnPhong->GetProgramID());
-				m_bodyMesh[i]->render();
-				break;
+// 			case RenderingLab1n2::BLINNPHONG:
+// 				m_bodyMesh[i]->isTextured = false;
+// 				glUseProgram(shaderBlinnPhong->GetProgramID());
+// 				shaderBlinnPhong->findAllShaderID();
+// 				shaderBlinnPhong->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
+// 				updateCamera(shaderBlinnPhong->GetProgramID());
+// 				update(m_body[i]->GetTransformationMatrix(), shaderBlinnPhong->GetProgramID());
+// 				m_bodyMesh[i]->render();
+// 				break;
 
 			case RenderingLab1n2::TOONTEXTURE:
 				m_bodyMesh[i]->isTextured = true;
@@ -333,15 +323,15 @@ void RenderingLab1n2::run(void)
 				update(m_body[i]->GetTransformationMatrix(), shaderToonTexture->GetProgramID());
 				m_bodyMesh[i]->render();
 				break;
-			case RenderingLab1n2::TOON:
-				m_bodyMesh[i]->isTextured = false;
-				glUseProgram(shaderToon->GetProgramID());
-				shaderToon->findAllShaderID();
-				shaderToon->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
-				updateCamera(shaderToon->GetProgramID());
-				update(m_body[i]->GetTransformationMatrix(), shaderToon->GetProgramID());
-				m_bodyMesh[i]->render();
-				break;
+// 			case RenderingLab1n2::TOON:
+// 				m_bodyMesh[i]->isTextured = false;
+// 				glUseProgram(shaderToon->GetProgramID());
+// 				shaderToon->findAllShaderID();
+// 				shaderToon->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
+// 				updateCamera(shaderToon->GetProgramID());
+// 				update(m_body[i]->GetTransformationMatrix(), shaderToon->GetProgramID());
+// 				m_bodyMesh[i]->render();
+// 				break;
 
 			case RenderingLab1n2::OREN_NAYARTEXTURE:
 				m_bodyMesh[i]->isTextured = true;
@@ -352,15 +342,15 @@ void RenderingLab1n2::run(void)
 				update(m_body[i]->GetTransformationMatrix(), shaderOrenNayarTexture->GetProgramID());
 				m_bodyMesh[i]->render();
 				break;
-			case RenderingLab1n2::OREN_NAYAR:
-				m_bodyMesh[i]->isTextured = false;
-				glUseProgram(shaderOrenNayar->GetProgramID());
-				shaderOrenNayar->findAllShaderID();
-				shaderOrenNayar->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
-				updateCamera(shaderOrenNayar->GetProgramID());
-				update(m_body[i]->GetTransformationMatrix(), shaderOrenNayar->GetProgramID());
-				m_bodyMesh[i]->render();
-				break;
+// 			case RenderingLab1n2::OREN_NAYAR:
+// 				m_bodyMesh[i]->isTextured = false;
+// 				glUseProgram(shaderOrenNayar->GetProgramID());
+// 				shaderOrenNayar->findAllShaderID();
+// 				shaderOrenNayar->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
+// 				updateCamera(shaderOrenNayar->GetProgramID());
+// 				update(m_body[i]->GetTransformationMatrix(), shaderOrenNayar->GetProgramID());
+// 				m_bodyMesh[i]->render();
+// 				break;
 			}
 		}
 
@@ -393,23 +383,24 @@ void RenderingLab1n2::initTweakBar()
 	TwAddVarRW(bar, "lightPosition", TW_TYPE_COLOR3F, &ambientColorGLM, " label='ambientColor '");
 	TwAddVarRW(bar, "lightIntensity",  TW_TYPE_COLOR3F, &specularColorGLM, " label='specularColor '");
 	TwAddVarRW(bar, "lightIntensdsdsity",  TW_TYPE_COLOR3F, &diffuseColorGLM, " label='diffuseColor '");
-
 	TwAddVarRW(bar, "materialAmbient", TW_TYPE_FLOAT, &ambientIntensityGLM, "step = 0.1" " label='ambientIntensity '");
 	TwAddVarRW(bar, "materialDiffuse", TW_TYPE_FLOAT, &specularIntensityGLM, "step = 0.1" " label='specularIntensity '");
 	TwAddVarRW(bar, "materiaSpecular", TW_TYPE_FLOAT, &diffuseIntensityGLM, "step = 0.1" " label='diffuseIntensity '");
 	TwAddVarRW(bar, "roughness", TW_TYPE_FLOAT, &specularShininessGLM, "step = 0.1" " label='specularShininess '");
+
 	TwAddVarRW(bar, "reflectFactor1", TW_TYPE_FLOAT, &reflectFactor1, "step = 0.1" " label='reflectFactor(fle) '");
 	TwAddVarRW(bar, "reflectFactor2", TW_TYPE_FLOAT, &reflectFactor2, "step = 0.1" " label='reflectFactor(fre) '");
 	TwAddVarRW(bar, "reflectFactorCombined", TW_TYPE_FLOAT, &reflectFactorCombined, "step = 0.1" " label='reflectFactorCombined '");
 	TwAddVarRW(bar, "eta", TW_TYPE_FLOAT, &eta, "step = 0.1" " label='eta '");
+
 	TwAddVarRW(bar, "MaterialColorGLM",  TW_TYPE_COLOR4F, &MaterialColorGLM, " label='MaterialColor '");
 	TwAddVarRW(bar, "ratioR", TW_TYPE_FLOAT, &ratioR, "step = 0.1" " label='ratioR '");
 	TwAddVarRW(bar, "ratioG", TW_TYPE_FLOAT, &ratioG, "step = 0.1" " label='ratioG '");
 	TwAddVarRW(bar, "ratioB", TW_TYPE_FLOAT, &ratioB, "step = 0.1" " label='ratioB '");
 
-	TwAddVarRW(bar, "fRatioR", TW_TYPE_FLOAT, &fRatioR, "step = 0.01" " label='fRatioR '");
-	TwAddVarRW(bar, "fRatioG", TW_TYPE_FLOAT, &fRatioG, "step = 0.01" " label='fRatioG '");
-	TwAddVarRW(bar, "fRatioB", TW_TYPE_FLOAT, &fRatioB, "step = 0.01" " label='fRatioB '");
+	TwAddVarRW(bar, "fRatioR", TW_TYPE_FLOAT, &fRatioR, "step = 0.1" " label='fRatioR '");
+	TwAddVarRW(bar, "fRatioG", TW_TYPE_FLOAT, &fRatioG, "step = 0.1" " label='fRatioG '");
+	TwAddVarRW(bar, "fRatioB", TW_TYPE_FLOAT, &fRatioB, "step = 0.1" " label='fRatioB '");
 	TwAddVarRW(bar, "fReflectFactor", TW_TYPE_FLOAT, &fReflectFactor, "step = 0.1" " label='fReflectFactor '");
 
 }
@@ -460,18 +451,19 @@ void RenderingLab1n2::updateCamera(GLuint ShaderID)
 
 void RenderingLab1n2::initShaders()
 {
-	createShaders(normalMapShader, "../Shader/normalMap.vs", "../Shader/normalMap.ps");
-	createShaders(shaderSkyBox, "../Shader/cubemap_reflect.vs", "../Shader/cubemap_reflect.ps");
-	createShaders(shaderRefraction, "../Shader/cubemap_refract.vs", "../Shader/cubemap_refract.ps");
-	createShaders(shaderCombined, "../Shader/combined.vs", "../Shader/combined.ps");
-	createShaders(fresnelShader, "../Shader/fresnel.vs", "../Shader/fresnel.ps");
+	//Lab 3 
+	createShaders(normalMapShader, "../Shader/NormalMap.vs", "../Shader/NormalMap.ps");
+	createShaders(shaderSkyBox, "../Shader/Reflect.vs", "../Shader/Reflect.ps");
+	createShaders(shaderRefraction, "../Shader/Refract.vs", "../Shader/Refract.ps");
+	createShaders(fresnelShader, "../Shader/Fresnel.vs", "../Shader/Fresnel.ps");
+	createShaders(shaderCombined, "../Shader/Combined.vs", "../Shader/Combined.ps");
+	
 
+	//Lab 2
 	createShaders(shaderBlinnPhongTexture, "../Shader/BlinnPhongTexture.vs", "../Shader/BlinnPhongTexture.ps");
 	createShaders(shaderBlinnPhong, "../Shader/BlinnPhong.vs", "../Shader/BlinnPhong.ps");
-
 	createShaders(shaderToonTexture, "../Shader/toonTexture.vs", "../Shader/toonTexture.ps");
 	createShaders(shaderToon, "../Shader/toon.vs", "../Shader/toon.ps");
-
 	createShaders(shaderOrenNayarTexture, "../Shader/orenNayarTexture.vs", "../Shader/orenNayarTexture.ps");
 	createShaders(shaderOrenNayar, "../Shader/orenNayar.vs", "../Shader/orenNayar.ps");
 }
@@ -571,66 +563,49 @@ void RenderingLab1n2::update(glm::mat4 ModelMatrix, GLuint shaderProgramID)
 
 void RenderingLab1n2::keyControl()
 {
+	//Object left
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
 		shaderType[0] = BLINNPHONGTEXTURE;
 	}
-	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
-		shaderType[0] = BLINNPHONG;
-	}
-	if (glfwGetKey(window, GLFW_KEY_Y ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_T ) == GLFW_PRESS){
 		shaderType[0] = TOONTEXTURE;
 	}
-	if (glfwGetKey(window, GLFW_KEY_U ) == GLFW_PRESS){
-		shaderType[0] = TOON;
-	}
-	if (glfwGetKey(window, GLFW_KEY_I ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_Y ) == GLFW_PRESS){
 		shaderType[0] = OREN_NAYARTEXTURE;
 	}
-	if (glfwGetKey(window, GLFW_KEY_O ) == GLFW_PRESS){
-		shaderType[0] = OREN_NAYAR;
-	}
-	if (glfwGetKey(window, GLFW_KEY_1 ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_U ) == GLFW_PRESS){
 		shaderType[0] = REFLECTION;
 	}
-	if (glfwGetKey(window, GLFW_KEY_2 ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_I ) == GLFW_PRESS){
 		shaderType[0] = RERACTION;
 	}
-	if (glfwGetKey(window, GLFW_KEY_3 ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_O ) == GLFW_PRESS){
 		shaderType[0] = FRESENL;
 	}
-	if (glfwGetKey(window, GLFW_KEY_4 ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_P ) == GLFW_PRESS){
 		shaderType[0] = EXTRA;
 	}
 
-
+	//Object right
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS){
 		shaderType[1] = BLINNPHONGTEXTURE;
 	}
-	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS){
-		shaderType[1] = BLINNPHONG;
-	}
-	if (glfwGetKey(window, GLFW_KEY_H ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_G ) == GLFW_PRESS){
 		shaderType[1] = TOONTEXTURE;
 	}
-	if (glfwGetKey(window, GLFW_KEY_J ) == GLFW_PRESS){
-		shaderType[1] = TOON;
-	}
-	if (glfwGetKey(window, GLFW_KEY_K ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_H ) == GLFW_PRESS){
 		shaderType[1] = OREN_NAYARTEXTURE;
 	}
-	if (glfwGetKey(window, GLFW_KEY_L ) == GLFW_PRESS){
-		shaderType[1] = OREN_NAYAR;
-	}
-	if (glfwGetKey(window, GLFW_KEY_6 ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_J ) == GLFW_PRESS){
 		shaderType[1] = REFLECTION;
 	}
-	if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_K ) == GLFW_PRESS){
 		shaderType[1] = RERACTION;
 	}
-	if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_L ) == GLFW_PRESS){
 		shaderType[1] = FRESENL;
 	}
-	if (glfwGetKey(window, GLFW_KEY_9 ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_SEMICOLON ) == GLFW_PRESS){
 		shaderType[1] = EXTRA;
 	}
 
@@ -660,11 +635,11 @@ void RenderingLab1n2::keyControl()
 	}
 
 	//dt
-	if (glfwGetKey(window, GLFW_KEY_P ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_LEFT_BRACKET ) == GLFW_PRESS){
 		stopTime = true;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_O ) == GLFW_PRESS){
+	if (glfwGetKey(window, GLFW_KEY_RIGHT_BRACKET ) == GLFW_PRESS){
 		stopTime = false;
 	}
 }

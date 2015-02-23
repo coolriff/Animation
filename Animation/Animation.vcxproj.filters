@@ -191,40 +191,34 @@
     <None Include="..\Shader\orenNayarTexture.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="..\Shader\cubemap_reflect.ps">
+    <None Include="..\Shader\NormalMap.ps">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="..\Shader\cubemap_reflect.vs">
+    <None Include="..\Shader\NormalMap.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="..\Shader\cubemap_refract.ps">
+    <None Include="..\Shader\Reflect.ps">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="..\Shader\cubemap_refract.vs">
+    <None Include="..\Shader\Reflect.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="..\Shader\normalMap.ps">
+    <None Include="..\Shader\Refract.ps">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="..\Shader\normalMap.vs">
+    <None Include="..\Shader\Refract.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="..\Shader\combined.ps">
+    <None Include="..\Shader\Combined.ps">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="..\Shader\combined.vs">
+    <None Include="..\Shader\Combined.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="..\Shader\fresnel.ps">
+    <None Include="..\Shader\Fresnel.ps">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
-    <None Include="..\Shader\fresnel.vs">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="..\Shader\normalMapReflect.vs">
-      <Filter>Physics Lab2\Shader</Filter>
-    </None>
-    <None Include="..\Shader\normalMapReflect.ps">
+    <None Include="..\Shader\Fresnel.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
   </ItemGroup>
