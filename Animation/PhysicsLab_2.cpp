@@ -1,29 +1,29 @@
 #include "PhysicsLab_2.h"
 
-//typedef void (* GLFWmousebuttonfun)(GLFWwindow*,int,int,int);
-void MouseButtonCB( GLFWwindow*,int button ,int action ,int mods)
-{
-	TwEventMouseButtonGLFW( button , action );
-}
-
-//typedef void (* GLFWcursorposfun)(GLFWwindow*,double,double);
-void MousePosCB(GLFWwindow*,double x ,double y)
-{
-	TwEventMousePosGLFW( (int)x, (int)y );
-}
-
-//typedef void (* GLFWkeyfun)(GLFWwindow*,int,int,int,int);
-void KeyFunCB( GLFWwindow* window,int key,int scancode,int action,int mods)
-{
-	TwEventKeyGLFW( key , action );
-	TwEventCharGLFW( key  , action );
-}
-
-//typedef void (* GLFWscrollfun)(GLFWwindow*,double,double);
-void MouseScrollCB(  GLFWwindow* window, double x , double y )
-{
-	TwEventMouseWheelGLFW( (int)y );
-}
+// typedef void (* GLFWmousebuttonfun)(GLFWwindow*,int,int,int);
+// void MouseButtonCB( GLFWwindow*,int button ,int action ,int mods)
+// {
+// 	TwEventMouseButtonGLFW( button , action );
+// }
+// 
+// typedef void (* GLFWcursorposfun)(GLFWwindow*,double,double);
+// void MousePosCB(GLFWwindow*,double x ,double y)
+// {
+// 	TwEventMousePosGLFW( (int)x, (int)y );
+// }
+// 
+// typedef void (* GLFWkeyfun)(GLFWwindow*,int,int,int,int);
+// void KeyFunCB( GLFWwindow* window,int key,int scancode,int action,int mods)
+// {
+// 	TwEventKeyGLFW( key , action );
+// 	TwEventCharGLFW( key  , action );
+// }
+// 
+// typedef void (* GLFWscrollfun)(GLFWwindow*,double,double);
+// void MouseScrollCB(  GLFWwindow* window, double x , double y )
+// {
+// 	TwEventMouseWheelGLFW( (int)y );
+// }
 
 std::vector<DemoResult> demoResult;
 
@@ -56,7 +56,6 @@ PhysicsLab_2::PhysicsLab_2(void)
 		AABBcubes[i] = new Cube();
 		AABBMeshs[i] = new CreateMesh();
 		AABBBuffers[i] = new ObjectBuffer();
-
 	}
 
 	for (int i=0; i<MAXOBJECT * 8; i++)
@@ -83,7 +82,6 @@ void PhysicsLab_2::run(void)
 {
 	setupGlfwGlew();
 	initShaders();
-
 
 	directionalLightDirection = glm::vec3(0, 0, -1);
 
@@ -481,13 +479,13 @@ void PhysicsLab_2::setupGlfwGlew()
 
 	/* Set GLFW event callbacks */
 	// - Directly redirect GLFW mouse button events to AntTweakBar
-	glfwSetMouseButtonCallback( window , MouseButtonCB );
-	// - Directly redirect GLFW mouse position events to AntTweakBar
-	glfwSetCursorPosCallback( window , MousePosCB);
-	// - Directly redirect GLFW mouse wheel events to AntTweakBar
-	glfwSetScrollCallback( window , MouseScrollCB );
-	// - Directly redirect GLFW key events to AntTweakBar
-	glfwSetKeyCallback(window , KeyFunCB);
+// 	glfwSetMouseButtonCallback( window , MouseButtonCB );
+// 	// - Directly redirect GLFW mouse position events to AntTweakBar
+// 	glfwSetCursorPosCallback( window , MousePosCB);
+// 	// - Directly redirect GLFW mouse wheel events to AntTweakBar
+// 	glfwSetScrollCallback( window , MouseScrollCB );
+// 	// - Directly redirect GLFW key events to AntTweakBar
+// 	glfwSetKeyCallback(window , KeyFunCB);
 
 
 	// Ensure we can capture the escape key being pressed below

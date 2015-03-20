@@ -19,6 +19,9 @@
     <Filter Include="Physics Lab2">
       <UniqueIdentifier>{b8f181ea-aa6d-462b-b197-9c5d932a2577}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PhysicsFinal">
+      <UniqueIdentifier>{8f6a5f7e-bb80-4afa-8354-2999e970bebb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -96,9 +99,6 @@
     <ClCompile Include="PhysicsLab_2.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsLabCamera.cpp">
-      <Filter>Physics Lab2</Filter>
-    </ClCompile>
     <ClCompile Include="RigidBody.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
@@ -108,17 +108,23 @@
     <ClCompile Include="CreateMesh.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectBuffer.cpp">
-      <Filter>Physics Lab2</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Physics Lab2</Filter>
-    </ClCompile>
     <ClCompile Include="Sphere.cpp">
       <Filter>Physics Lab2</Filter>
     </ClCompile>
     <ClCompile Include="Line.cpp">
       <Filter>Physics Lab2</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsFinal.cpp">
+      <Filter>PhysicsFinal</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsLabCamera.cpp">
+      <Filter>PhysicsFinal</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectBuffer.cpp">
+      <Filter>PhysicsFinal</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>PhysicsFinal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -256,9 +262,6 @@
     <ClInclude Include="PhysicsLab_2.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsLabCamera.h">
-      <Filter>Physics Lab2</Filter>
-    </ClInclude>
     <ClInclude Include="RigidBody.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
@@ -268,17 +271,23 @@
     <ClInclude Include="CreateMesh.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectBuffer.h">
-      <Filter>Physics Lab2</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Physics Lab2</Filter>
-    </ClInclude>
     <ClInclude Include="Sphere.h">
       <Filter>Physics Lab2</Filter>
     </ClInclude>
     <ClInclude Include="Line.h">
       <Filter>Physics Lab2</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsFinal.h">
+      <Filter>PhysicsFinal</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsLabCamera.h">
+      <Filter>PhysicsFinal</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectBuffer.h">
+      <Filter>PhysicsFinal</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>PhysicsFinal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

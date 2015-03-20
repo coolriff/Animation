@@ -108,6 +108,7 @@
     <ClCompile Include="ogldev_util.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="PhysicsFinal.cpp" />
     <ClCompile Include="PhysicsLabCamera.cpp" />
     <ClCompile Include="PhysicsLab_1.cpp" />
     <ClCompile Include="PhysicsLab_2.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="ogldev_util.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="PhysicsFinal.h" />
     <ClInclude Include="PhysicsLabCamera.h" />
     <ClInclude Include="PhysicsLab_1.h" />
     <ClInclude Include="PhysicsLab_2.h" />
