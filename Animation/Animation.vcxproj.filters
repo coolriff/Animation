@@ -84,16 +84,10 @@
     <ClCompile Include="PhysicsLab_1.cpp">
       <Filter>Physics Lab1</Filter>
     </ClCompile>
-    <ClCompile Include="Particle.cpp">
-      <Filter>Physics Lab1</Filter>
-    </ClCompile>
     <ClCompile Include="ParticleSystem.cpp">
       <Filter>Physics Lab1</Filter>
     </ClCompile>
     <ClCompile Include="ContentLoader.cpp">
-      <Filter>Physics Lab1</Filter>
-    </ClCompile>
-    <ClCompile Include="FountainEffect.cpp">
       <Filter>Physics Lab1</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsLab_2.cpp">
@@ -247,16 +241,10 @@
     <ClInclude Include="PhysicsLab_1.h">
       <Filter>Physics Lab1</Filter>
     </ClInclude>
-    <ClInclude Include="Particle.h">
-      <Filter>Physics Lab1</Filter>
-    </ClInclude>
     <ClInclude Include="ParticleSystem.h">
       <Filter>Physics Lab1</Filter>
     </ClInclude>
     <ClInclude Include="ContentLoader.h">
-      <Filter>Physics Lab1</Filter>
-    </ClInclude>
-    <ClInclude Include="FountainEffect.h">
       <Filter>Physics Lab1</Filter>
     </ClInclude>
     <ClInclude Include="PhysicsLab_2.h">
@@ -287,6 +275,15 @@
       <Filter>PhysicsFinal</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
+      <Filter>PhysicsFinal</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>PhysicsFinal</Filter>
+    </ClInclude>
+    <ClInclude Include="Constraint.h">
+      <Filter>PhysicsFinal</Filter>
+    </ClInclude>
+    <ClInclude Include="Cloth.h">
       <Filter>PhysicsFinal</Filter>
     </ClInclude>
   </ItemGroup>

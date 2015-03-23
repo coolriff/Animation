@@ -30,6 +30,8 @@ PhysicsFinal::PhysicsFinal(void)
 {
 	m_shader = new Shader();
 	m_camera = new PhysicsLabCamera();
+
+
 }
 
 
@@ -45,6 +47,8 @@ void PhysicsFinal::run(void)
 	initShaders();
 	initTweakBar();
 
+	cloth = new Cloth(14, 10, 55, 45);
+
 	do{
 		preDraw();
 
@@ -58,6 +62,27 @@ void PhysicsFinal::run(void)
 
 		m_camera->handleMVP(modelLoc, viewLoc, projLoc);
 
+		cloth->addForce(glm::vec3(0,-0.2,0)*TIME_STEPSIZE2);
+		cloth->windForce(glm::vec3(0.5,0,0.2)*TIME_STEPSIZE2);
+		cloth->timeStep();
+		cloth->drawShaded();
+
+// 		for (int i=0; i<cloth->v.size(); i++)
+// 		{
+// 			update(cloth->particles[i].getTransform(),m_shader->GetProgramID());
+// 		}
+		if (glfwGetKey(window, GLFW_KEY_L ) == GLFW_PRESS){
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else if (glfwGetKey(window, GLFW_KEY_K ) == GLFW_PRESS){
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+// 		else
+// 		{
+// 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+// 		}
+		
+		draw(cloth->clothBuffer->vao, cloth->v.size());
 		TwDraw();
 		// Swap buffers
 		glfwSwapBuffers(getWindow());
@@ -69,11 +94,32 @@ void PhysicsFinal::run(void)
 }
 
 
+void PhysicsFinal::update(glm::mat4 ModelMatrix, GLuint shaderProgramID)
+{
+	GLuint modelLoc = glGetUniformLocation(shaderProgramID, "model");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &ModelMatrix[0][0]);
+}
+
+void PhysicsFinal::draw(GLuint vao, int size)
+{
+	glBindVertexArray(vao);
+	glDrawArrays(GL_TRIANGLES, 0, size);
+	glBindVertexArray(0);
+}
+
+void PhysicsFinal::drawLine(GLuint vao, int size)
+{
+	glBindVertexArray(vao);
+	glDrawArrays(GL_LINE_STRIP, 0, size);
+	glBindVertexArray(0);
+}
+
+
 void PhysicsFinal::initShaders()
 {
 	std::string vertexShaderSourceCode,fragmentShaderSourceCode;
-	m_shader->readShaderFile("diffuse.vs",vertexShaderSourceCode);
-	m_shader->readShaderFile("diffuse.ps",fragmentShaderSourceCode);
+	m_shader->readShaderFile("default.vs",vertexShaderSourceCode);
+	m_shader->readShaderFile("default.ps",fragmentShaderSourceCode);
 	GLuint vertexShaderID = m_shader->makeShader(vertexShaderSourceCode.c_str(), GL_VERTEX_SHADER);
 	GLuint fragmentShaderID = m_shader->makeShader(fragmentShaderSourceCode.c_str(), GL_FRAGMENT_SHADER);
 	m_shader->makeShaderProgram(vertexShaderID,fragmentShaderID);
@@ -134,10 +180,11 @@ void PhysicsFinal::setupGlfwGlew()
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS); 
+	glFrontFace(GL_CCW);
 	glClearColor(0.0f, 0.2f, 0.2f, 0.0f);
 
 	// 	// Cull triangles which normal is not towards the camera
-	// 	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 }
 
 void PhysicsFinal::cleanUp()
@@ -189,3 +236,4 @@ void PhysicsFinal::initTweakBar()
 // 	TwAddVarRW(bar, "force", TW_TYPE_DIR3F, &applyForcePoint, " label='Force Pos: '");
 // 	TwAddVarRW(bar, "forceD", TW_TYPE_DIR3F, &applyForceF, " label='Force Dir: '");
 }
+

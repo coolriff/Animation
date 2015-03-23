@@ -68,8 +68,8 @@ GLuint ObjectBuffer::GenerateVBO(const std::vector<glm::vec3> & vertices, const 
 	glBindVertexArray(vao);
 
 	vSize = vertices.size() * sizeof(glm::vec3);
-	nSize = normals.size() * sizeof(glm::vec3);
 	cSize = colors.size() * sizeof(glm::vec4);
+	nSize = normals.size() * sizeof(glm::vec3);
 
 	// buffer will contain an array of vertices
 	glGenBuffers(1, &vbo);
@@ -123,6 +123,26 @@ void ObjectBuffer::LinkBufferToShaderWithNormal(GLuint shaderProgramID)
 
 	glEnableVertexAttribArray(normalID);
 	glVertexAttribPointer(normalID, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(vSize + cSize));
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void ObjectBuffer::LinkBufferToShaderWithNormal(void)
+{
+// 	glBindVertexArray( vao );	
+// 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
+
+	// Have to enable this
+	glEnableVertexAttribArray(0);
+	// Tell it where to find the position data in the currently active buffer (at index positionID)
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	// Similarly, for the color data.
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(vSize));
+
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(vSize + cSize));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
