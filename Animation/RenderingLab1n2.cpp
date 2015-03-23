@@ -114,8 +114,8 @@ void RenderingLab1n2::run(void)
 
 	
 	normalMapMesh->loadMesh("../Models/cube.obj");
-	normalMapMesh->setTexture("../Models/2.jpg",normalMapShader->GetProgramID());
-	normalMapMesh->setNormalTexture("../Models/2_NRM.jpg",normalMapShader->GetProgramID());
+	normalMapMesh->setTexture("../Models/tile1.png",normalMapShader->GetProgramID());
+	normalMapMesh->setNormalTexture("../Models/tile1N.jpg",normalMapShader->GetProgramID());
 // 	normalMapMesh->setTexture("../Models/face.jpg",normalMapShader->GetProgramID());
 // 	normalMapMesh->setNormalTexture("../Models/face_NRM.jpg",normalMapShader->GetProgramID());
 	normalMapBody->SetPosition(glm::vec3(0,3,0));
