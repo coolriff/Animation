@@ -34,6 +34,7 @@ public:
 	void cameraUpdate(glm::vec3 pos, glm::vec3 direction);
 	void computeMatricesFromInputs(GLFWwindow* window);
 	void handleMVP(GLuint modelLoc, GLuint viewLoc, GLuint projLoc);
+	void handleMVP(GLuint modelLoc, GLuint viewLoc, GLuint projLoc, glm::mat4 modelMax);
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjectionMatrix();
 	void setPosition(glm::vec3 position);

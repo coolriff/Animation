@@ -6,8 +6,11 @@
 #include <AntTweakBar.h>
 #include "ObjectBuffer.h"
 #include "Cloth.h"
+#include "CreateMesh.h"
 #include <glm/gtc/matrix_transform.hpp> 
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
@@ -18,13 +21,18 @@ class PhysicsFinal
 {
 public:
 	PhysicsFinal(void);
-
 	~PhysicsFinal(void);
 
 	GLFWwindow* window;
 	Shader* m_shader;
 	ObjectBuffer* m_objectBuffer;
 	PhysicsLabCamera* m_camera;
+
+	CreateMesh* fingerSpheres;
+	ObjectBuffer* fingerSphereBuffers;
+	glm::vec3 fingerSpheresPos;
+	glm::mat4 fingerSpheresMat;
+	std::vector<glm::mat4> fingerSpheresMats;
 
 	Cloth* cloth;
 

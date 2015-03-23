@@ -86,6 +86,17 @@ GLuint ObjectBuffer::GenerateVBO(const std::vector<glm::vec3> & vertices, const 
 	return vbo;
 }
 
+void ObjectBuffer::Update(const std::vector<glm::vec3> & vertices)
+{
+	vSize = vertices.size() * sizeof(glm::vec3);
+
+	glBindVertexArray(vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferSubData( GL_ARRAY_BUFFER, 0, vSize, (const GLvoid*)(&vertices[0]));
+	glBindVertexArray(0);
+}
+
 void ObjectBuffer::LinkBufferToShader(GLuint shaderProgramID)
 {
 	// find the location of the variables that we will be using in the shader program

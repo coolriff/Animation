@@ -30,8 +30,10 @@ PhysicsFinal::PhysicsFinal(void)
 {
 	m_shader = new Shader();
 	m_camera = new PhysicsLabCamera();
-
-
+	fingerSpheres = new CreateMesh();
+	fingerSphereBuffers = new ObjectBuffer();
+	fingerSpheresPos = glm::vec3(2,-2,3);
+	fingerSpheresMat = glm::mat4(0);
 }
 
 
@@ -49,6 +51,17 @@ void PhysicsFinal::run(void)
 
 	cloth = new Cloth(14, 10, 55, 45);
 
+	fingerSpheres->createBoundingSphereMesh(2.0f, 20);
+	fingerSphereBuffers->GenerateVBO(fingerSpheres->vertices,fingerSpheres->colors,fingerSpheres->normals);
+	fingerSphereBuffers->LinkBufferToShaderWithNormal();
+
+// 	for (int i=0; i<fingerSpheres->vertices.size(); i++)
+// 	{
+// 		fingerSpheresMats[i][3][0] = fingerSpheres->vertices[i].x;
+// 		fingerSpheresMats[i][3][1] = fingerSpheres->vertices[i].y;
+// 		fingerSpheresMats[i][3][2] = fingerSpheres->vertices[i].z;
+// 	}
+
 	do{
 		preDraw();
 
@@ -59,30 +72,72 @@ void PhysicsFinal::run(void)
 		GLuint modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
 		GLuint viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
 		GLuint projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
+		m_shader->SetDirectionalLight(glm::vec3(0,0,-1));
 
 		m_camera->handleMVP(modelLoc, viewLoc, projLoc);
 
-		cloth->addForce(glm::vec3(0,-0.2,0)*TIME_STEPSIZE2);
-		cloth->windForce(glm::vec3(0.5,0,0.2)*TIME_STEPSIZE2);
-		cloth->timeStep();
-		cloth->drawShaded();
+		if (glfwGetKey(window, GLFW_KEY_LEFT_BRACKET ) == GLFW_PRESS){
+			m_camera->enabled = true;
+		}
 
-// 		for (int i=0; i<cloth->v.size(); i++)
-// 		{
-// 			update(cloth->particles[i].getTransform(),m_shader->GetProgramID());
-// 		}
+		if (glfwGetKey(window, GLFW_KEY_RIGHT_BRACKET ) == GLFW_PRESS){
+			m_camera->enabled = false;
+		}
+
 		if (glfwGetKey(window, GLFW_KEY_L ) == GLFW_PRESS){
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
 		else if (glfwGetKey(window, GLFW_KEY_K ) == GLFW_PRESS){
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
-// 		else
-// 		{
-// 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-// 		}
+
+
+		cloth->addForce(glm::vec3(0,-0.2,0)*TIME_STEPSIZE2);
+		cloth->windForce(glm::vec3(0.5,0,0.2)*TIME_STEPSIZE2);
+		cloth->timeStep();
+		cloth->ballCollision(fingerSpheresPos, 2.1f);
+		cloth->drawShaded();
 		
+
+// 		for (int i=0; i<cloth->v.size(); i++)
+// 		{
+// 			update(cloth->particles[i].getTransform(),m_shader->GetProgramID());
+// 		}
+
+		//cloth->clothBuffer->Update(cloth->v);
 		draw(cloth->clothBuffer->vao, cloth->v.size());
+
+		//
+
+
+
+		//glUseProgram(m_shader->GetProgramID());
+
+// 		fingerSpheresMat[3][0] = fingerSpheresPos.x;
+// 		fingerSpheresMat[3][1] = fingerSpheresPos.y;
+// 		fingerSpheresMat[3][2] = fingerSpheresPos.z;
+
+// 		for (int i=0; i<fingerSpheres->vertices.size(); i++)
+// 		{
+// 			fingerSpheres->vertices[i] += fingerSpheresPos;
+// // 			fingerSpheres->vertices[i].x = fingerSpheresMats[i][3][0];
+// // 			fingerSpheres->vertices[i].y = fingerSpheresMats[i][3][1];
+// // 			fingerSpheres->vertices[i].z = fingerSpheresMats[i][3][2];
+// 		}
+// 		fingerSphereBuffers->Update(fingerSpheres->vertices);
+
+		fingerSpheresMat = glm::translate(fingerSpheresPos);
+
+// 		m_camera->computeMatricesFromInputs(window);
+// 		modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
+// 		viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
+// 		projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
+// 		m_camera->handleMVP(modelLoc, viewLoc, projLoc, fingerSpheresMat);
+
+		update(fingerSpheresMat, m_shader->GetProgramID());
+		draw(fingerSphereBuffers->vao, fingerSpheres->vertices.size());
+
+
 		TwDraw();
 		// Swap buffers
 		glfwSwapBuffers(getWindow());
@@ -118,8 +173,8 @@ void PhysicsFinal::drawLine(GLuint vao, int size)
 void PhysicsFinal::initShaders()
 {
 	std::string vertexShaderSourceCode,fragmentShaderSourceCode;
-	m_shader->readShaderFile("default.vs",vertexShaderSourceCode);
-	m_shader->readShaderFile("default.ps",fragmentShaderSourceCode);
+	m_shader->readShaderFile("BlinnPhong.vs",vertexShaderSourceCode);
+	m_shader->readShaderFile("BlinnPhong.ps",fragmentShaderSourceCode);
 	GLuint vertexShaderID = m_shader->makeShader(vertexShaderSourceCode.c_str(), GL_VERTEX_SHADER);
 	GLuint fragmentShaderID = m_shader->makeShader(fragmentShaderSourceCode.c_str(), GL_FRAGMENT_SHADER);
 	m_shader->makeShaderProgram(vertexShaderID,fragmentShaderID);
@@ -180,7 +235,7 @@ void PhysicsFinal::setupGlfwGlew()
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS); 
-	glFrontFace(GL_CCW);
+	//glFrontFace(GL_CCW);
 	glClearColor(0.0f, 0.2f, 0.2f, 0.0f);
 
 	// 	// Cull triangles which normal is not towards the camera
@@ -217,7 +272,7 @@ void PhysicsFinal::initTweakBar()
 // 
 // 	TwAddVarRW(bar, "Camera", TW_TYPE_DIR3F, &m_physicsLabCamera->position, " label='Camera Pos: '");
 // 
-// 	TwAddVarRO(bar, "boxPoint0", TW_TYPE_DIR3F, &cubes[0]->m_points.at(0), " label='p0: '");
+ 	TwAddVarRW(bar, "fingerSpheresPos", TW_TYPE_DIR3F, &fingerSpheresPos, " label='fingerSpheresPos: '");
 // 	TwAddVarRO(bar, "boxPoint1", TW_TYPE_DIR3F, &cubes[0]->m_points.at(1), " label='p1: '");
 // 	TwAddVarRO(bar, "boxPoint2", TW_TYPE_DIR3F, &cubes[0]->m_points.at(2), " label='p2: '");
 // 	TwAddVarRO(bar, "boxPoint3", TW_TYPE_DIR3F, &cubes[0]->m_points.at(3), " label='p3: '");

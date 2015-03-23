@@ -85,6 +85,7 @@ void PhysicsLab_2::run(void)
 
 	directionalLightDirection = glm::vec3(0, 0, -1);
 
+
 	for (int i=0; i<MAXOBJECT; i++)
 	{
 		float f1 = -SPACE + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(SPACE-(-SPACE))));

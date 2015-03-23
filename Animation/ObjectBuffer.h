@@ -32,6 +32,6 @@ public:
 	void LinkBufferToShaderWithNormal(GLuint shaderProgramID);
 	void LinkBufferToShaderWithNormal(void);
 	void ChangeColors( const std::vector<glm::vec4> &newColor);
-
+	void Update(const std::vector<glm::vec3> & vertices);
 };
 

@@ -29,21 +29,12 @@ public:
 		this->num_particles_height = num_particles_height;
 		particles.resize(num_particles_width*num_particles_height); 
 
-// 		for(int x=0; x<num_particles_width; x++)
-// 		{
-// 			for(int y=0; y<num_particles_height; y++)
-// 			{
-// 				glm::vec3 pos = glm::vec3(width * (x/(float)num_particles_width), -height * (y/(float)num_particles_height),0);
-// 				particles[y*num_particles_width+x] = Particle(pos); 
-// 			}
-// 		}
 
 		for(int y=0; y<num_particles_height; y++)
 		{
 			for(int x=0; x<num_particles_width; x++)
 			{
 				glm::vec3 pos = glm::vec3(width * (x/(float)num_particles_width), -height * (y/(float)num_particles_height),0);
-				//glm::vec3( ((float(i)/(width+1-1)) *2-1)* hsize, size+1, ((float(j)/(-1) )* size));
 				particles[y*num_particles_width+x] = Particle(pos); 
 			}
 		}
@@ -78,6 +69,53 @@ public:
 			getParticle(num_particles_width-i-2, 0)->offsetPos(glm::vec3(-0.5,0.0,0.0)); 
 			getParticle(num_particles_width-i-2, 0)->makeUnmovable();
 		}
+
+		v.clear();
+		n.clear();
+		c.clear();
+
+		for(int x = 0; x<num_particles_width-2; x++)
+		{
+			for(int y=0; y<num_particles_height-2; y++)
+			{
+				glm::vec3 normal = calcTriangleNormal(getParticle(x+1,y),getParticle(x,y),getParticle(x,y+1));
+				getParticle(x+1,y)->addToNormal(normal);
+				getParticle(x,y)->addToNormal(normal);
+				getParticle(x,y+1)->addToNormal(normal);
+				n.push_back(getParticle(x+1,y)->getNormal());
+				n.push_back(getParticle(x,y)->getNormal());
+				n.push_back(getParticle(x,y+1)->getNormal());
+
+				normal = calcTriangleNormal(getParticle(x+1,y+1),getParticle(x+1,y),getParticle(x,y+1));
+				getParticle(x+1,y+1)->addToNormal(normal);
+				getParticle(x+1,y)->addToNormal(normal);
+				getParticle(x,y+1)->addToNormal(normal);
+				n.push_back(getParticle(x+1,y+1)->getNormal());
+				n.push_back(getParticle(x+1,y)->getNormal());
+				n.push_back(getParticle(x,y+1)->getNormal());
+			}
+		}
+
+		for(int x = 0; x<num_particles_width-2; x++)
+		{
+			for(int y=0; y<num_particles_height-2; y++)
+			{
+				v.push_back(getParticle(x+1,y)->getPos());
+				v.push_back(getParticle(x,y)->getPos());
+				v.push_back(getParticle(x,y+1)->getPos());
+				v.push_back(getParticle(x+1,y+1)->getPos());
+				v.push_back(getParticle(x+1,y)->getPos());
+				v.push_back(getParticle(x,y+1)->getPos());
+			}
+		}
+
+		for (int i=0; i<v.size(); i++)
+		{
+			c.push_back(glm::vec4(1,0,0,0));
+		}
+
+		clothBuffer->GenerateVBO(v,c,n);
+		clothBuffer->LinkBufferToShaderWithNormal();
 	}
 
 	glm::vec3 calcTriangleNormal(Particle *p1,Particle *p2,Particle *p3)
@@ -103,12 +141,12 @@ public:
 			}
 		}
 
-		v.clear();
+		//v.clear();
 		std::vector<Particle>::iterator particle;
 		for(particle = particles.begin(); particle != particles.end(); particle++)
 		{
 			(*particle).timeStep(); 
-			v.push_back((*particle).pos);
+			//v.push_back((*particle).pos);
 		}
 	}
 
@@ -149,8 +187,8 @@ public:
 		for(particle = particles.begin(); particle != particles.end(); particle++)
 		{
 			glm::vec3 v = (*particle).getPos()-center;
-			float l = v.length();
-			if ( v.length() < radius) 
+			float l = glm::length(v);
+			if ( glm::length(v) < radius) 
 			{
 				(*particle).offsetPos(glm::normalize(v)*(radius-l)); 
 			}
@@ -189,27 +227,27 @@ public:
 		n.clear();
 		c.clear();
 
-// 		for(int x = 0; x<num_particles_width-2; x++)
-// 		{
-// 			for(int y=0; y<num_particles_height-2; y++)
-// 			{
-// 				glm::vec3 normal = calcTriangleNormal(getParticle(x+1,y),getParticle(x,y),getParticle(x,y+1));
-// 				getParticle(x+1,y)->addToNormal(normal);
-// 				getParticle(x,y)->addToNormal(normal);
-// 				getParticle(x,y+1)->addToNormal(normal);
-// 				n.push_back(getParticle(x+1,y)->getNormal());
-// 				n.push_back(getParticle(x,y)->getNormal());
-// 				n.push_back(getParticle(x,y+1)->getNormal());
-// 
-// 				normal = calcTriangleNormal(getParticle(x+1,y+1),getParticle(x+1,y),getParticle(x,y+1));
-// 				getParticle(x+1,y+1)->addToNormal(normal);
-// 				getParticle(x+1,y)->addToNormal(normal);
-// 				getParticle(x,y+1)->addToNormal(normal);
-// 				n.push_back(getParticle(x+1,y+1)->getNormal());
-// 				n.push_back(getParticle(x+1,y)->getNormal());
-// 				n.push_back(getParticle(x,y+1)->getNormal());
-// 			}
-// 		}
+		for(int x = 0; x<num_particles_width-2; x++)
+		{
+			for(int y=0; y<num_particles_height-2; y++)
+			{
+				glm::vec3 normal = calcTriangleNormal(getParticle(x+1,y),getParticle(x,y),getParticle(x,y+1));
+				getParticle(x+1,y)->addToNormal(normal);
+				getParticle(x,y)->addToNormal(normal);
+				getParticle(x,y+1)->addToNormal(normal);
+				n.push_back(getParticle(x+1,y)->getNormal());
+				n.push_back(getParticle(x,y)->getNormal());
+				n.push_back(getParticle(x,y+1)->getNormal());
+
+				normal = calcTriangleNormal(getParticle(x+1,y+1),getParticle(x+1,y),getParticle(x,y+1));
+				getParticle(x+1,y+1)->addToNormal(normal);
+				getParticle(x+1,y)->addToNormal(normal);
+				getParticle(x,y+1)->addToNormal(normal);
+				n.push_back(getParticle(x+1,y+1)->getNormal());
+				n.push_back(getParticle(x+1,y)->getNormal());
+				n.push_back(getParticle(x,y+1)->getNormal());
+			}
+		}
 
 		for(int x = 0; x<num_particles_width-2; x++)
 		{
