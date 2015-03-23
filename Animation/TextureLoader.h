@@ -17,6 +17,7 @@ public:
 	void Bind(GLenum textureUnit);
 	void UnBind();
 	bool LoadCubeMap();
+
 	std::string filename;
 	const char *directory;
 	GLenum textureTarget;
