@@ -40,6 +40,7 @@ PhysicsFinal::PhysicsFinal(void)
 PhysicsFinal::~PhysicsFinal(void)
 {
 	cleanUp();
+	leapMotionCleanup();
 }
 
 
@@ -48,6 +49,7 @@ void PhysicsFinal::run(void)
 	setupGlfwGlew();
 	initShaders();
 	initTweakBar();
+	leapMotionInit();
 
 	cloth = new Cloth(14, 10, 55, 45);
 
@@ -95,7 +97,7 @@ void PhysicsFinal::run(void)
 		cloth->addForce(glm::vec3(0,-0.2,0)*TIME_STEPSIZE2);
 		cloth->windForce(glm::vec3(0.5,0,0.2)*TIME_STEPSIZE2);
 		cloth->timeStep();
-		cloth->ballCollision(fingerSpheresPos, 2.1f);
+		cloth->ballCollision(fingerSpheresPos, 2.2f);
 		cloth->drawShaded();
 		
 
@@ -110,7 +112,7 @@ void PhysicsFinal::run(void)
 		//
 
 
-
+		leapMotionUpdate();
 		//glUseProgram(m_shader->GetProgramID());
 
 // 		fingerSpheresMat[3][0] = fingerSpheresPos.x;
@@ -127,15 +129,9 @@ void PhysicsFinal::run(void)
 // 		fingerSphereBuffers->Update(fingerSpheres->vertices);
 
 		fingerSpheresMat = glm::translate(fingerSpheresPos);
-
-// 		m_camera->computeMatricesFromInputs(window);
-// 		modelLoc = glGetUniformLocation(m_shader->GetProgramID(), "model");
-// 		viewLoc = glGetUniformLocation(m_shader->GetProgramID(), "view");
-// 		projLoc = glGetUniformLocation(m_shader->GetProgramID(), "projection");
-// 		m_camera->handleMVP(modelLoc, viewLoc, projLoc, fingerSpheresMat);
-
 		update(fingerSpheresMat, m_shader->GetProgramID());
 		draw(fingerSphereBuffers->vao, fingerSpheres->vertices.size());
+
 
 
 		TwDraw();
@@ -290,5 +286,63 @@ void PhysicsFinal::initTweakBar()
 // 
 // 	TwAddVarRW(bar, "force", TW_TYPE_DIR3F, &applyForcePoint, " label='Force Pos: '");
 // 	TwAddVarRW(bar, "forceD", TW_TYPE_DIR3F, &applyForceF, " label='Force Dir: '");
+}
+
+bool PhysicsFinal::leapMotionInit(void)
+{
+	if (leapMotionController.addListener(leapMotionListener))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void PhysicsFinal::leapMotionUpdate(void)
+{
+	if(leapMotionController.isConnected())
+	{
+		Leap::Frame leapFrameData = leapMotionController.frame();
+		Leap::Hand leapHand = leapFrameData.hands().rightmost();
+
+		Leap::FingerList fingerListNow = leapFrameData.hands()[0].fingers();
+		std::vector<glm::vec3> fingerPositions;
+
+		//printf("ye!!");
+
+		for(int i = 0; i < fingerListNow.count(); i++)
+		{
+			Leap::Vector fp = fingerListNow[i].tipPosition();
+			fingerPositions.push_back(glm::vec3(fp.x, fp.y, fp.z));
+		}
+ 
+		if(fingerPositions.size() > 0)
+		{
+			//printf("yet");
+			//finger 1
+			Leap::Finger finger0 = leapHand.fingers()[0];
+			Leap::Vector fp0 = finger0.tipPosition();
+
+			fingerSpheresPos = glm::vec3(fp0.x * 0.2, (fp0.y-100) * 0.2, fp0.z * 0.2);
+		}
+
+
+		if(leapFrameData.hands().isEmpty() )
+		{
+// 			fingerSpheresPos = glm::vec3(2,-2,3);
+// 			fingerSpheresMat = glm::translate(fingerSpheresPos);
+// 			update(fingerSpheresMat, m_shader->GetProgramID());
+// 			draw(fingerSphereBuffers->vao, fingerSpheres->vertices.size());
+			printf("emputy");
+		}
+
+ 	}
+}
+
+void PhysicsFinal::leapMotionCleanup(void)
+{
+	leapMotionController.removeListener(leapMotionListener);
 }
 

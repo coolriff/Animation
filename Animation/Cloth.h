@@ -5,7 +5,7 @@
 #include "Constraint.h"
 #include "ObjectBuffer.h"
 
-#define CONSTRAINT_ITERATIONS 40
+#define CONSTRAINT_ITERATIONS 15
 
 class Cloth
 {
@@ -225,7 +225,7 @@ public:
 
 		v.clear();
 		n.clear();
-		c.clear();
+		//c.clear();
 
 		for(int x = 0; x<num_particles_width-2; x++)
 		{
@@ -246,25 +246,15 @@ public:
 				n.push_back(getParticle(x+1,y+1)->getNormal());
 				n.push_back(getParticle(x+1,y)->getNormal());
 				n.push_back(getParticle(x,y+1)->getNormal());
-			}
-		}
 
-		for(int x = 0; x<num_particles_width-2; x++)
-		{
-			for(int y=0; y<num_particles_height-2; y++)
-			{
 				v.push_back(getParticle(x+1,y)->getPos());
 				v.push_back(getParticle(x,y)->getPos());
 				v.push_back(getParticle(x,y+1)->getPos());
 				v.push_back(getParticle(x+1,y+1)->getPos());
 				v.push_back(getParticle(x+1,y)->getPos());
 				v.push_back(getParticle(x,y+1)->getPos());
-			}
-		}
 
-		for (int i=0; i<v.size(); i++)
-		{
-			c.push_back(glm::vec4(1,0,0,0));
+			}
 		}
 
 		clothBuffer->GenerateVBO(v,c,n);

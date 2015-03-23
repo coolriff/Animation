@@ -120,6 +120,9 @@
     <ClCompile Include="Shader.cpp">
       <Filter>PhysicsFinal</Filter>
     </ClCompile>
+    <ClCompile Include="LeapListener.cpp">
+      <Filter>PhysicsFinal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="diffuse.ps">
@@ -284,6 +287,9 @@
       <Filter>PhysicsFinal</Filter>
     </ClInclude>
     <ClInclude Include="Cloth.h">
+      <Filter>PhysicsFinal</Filter>
+    </ClInclude>
+    <ClInclude Include="LeapListener.h">
       <Filter>PhysicsFinal</Filter>
     </ClInclude>
   </ItemGroup>

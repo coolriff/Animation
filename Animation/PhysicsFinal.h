@@ -11,6 +11,8 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include "Leap.h"
+#include "LeapListener.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
@@ -46,4 +48,13 @@ public:
 	void update(glm::mat4 ModelMatrix, GLuint shaderProgramID);
 	void draw(GLuint vao, int size);
 	void drawLine(GLuint vao, int size);
+
+	//Leap
+	LeapListener leapMotionListener;
+	Leap::Controller leapMotionController;
+	bool leapMotionRunning;
+
+	bool leapMotionInit(void);
+	void leapMotionUpdate(void);
+	void leapMotionCleanup(void);
 };

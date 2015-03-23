@@ -53,13 +53,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\Dependancies\AntTweakBar\include;..\Dependancies\soil\src;..\Dependancies\SOIL2;..\Dependancies\ImageMagick-6;..\Dependancies\assimp\include;..\Dependancies\glm;..\Dependancies\glfw-3.0.4.bin.WIN32\include;..\Dependancies\glew-1.11.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependancies\LeapSDK\include;..\Dependancies\AntTweakBar\include;..\Dependancies\soil\src;..\Dependancies\SOIL2;..\Dependancies\ImageMagick-6;..\Dependancies\assimp\include;..\Dependancies\glm;..\Dependancies\glfw-3.0.4.bin.WIN32\include;..\Dependancies\glew-1.11.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Dependancies\AntTweakBar\lib;..\Dependancies\soil\lib;..\Dependancies\ImageMagick-6\lib;..\Dependancies\assimp\lib;..\Dependancies\glfw-3.0.4.bin.WIN32\lib-msvc110;..\Dependancies\glew-1.11.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;assimp.lib;CORE_DB_Magick++_.lib;SOIL.lib;soil2.lib;AntTweakBar.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Dependancies\LeapSDK\lib\x86;..\Dependancies\AntTweakBar\lib;..\Dependancies\soil\lib;..\Dependancies\ImageMagick-6\lib;..\Dependancies\assimp\lib;..\Dependancies\glfw-3.0.4.bin.WIN32\lib-msvc110;..\Dependancies\glew-1.11.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;assimp.lib;CORE_DB_Magick++_.lib;SOIL.lib;soil2.lib;AntTweakBar.lib;Leap.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -72,15 +72,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\Dependancies\AntTweakBar\include;..\Dependancies\ImageMagick-6;..\Dependancies\assimp\include;..\Dependancies\glm;..\Dependancies\glfw-3.0.4.bin.WIN32\include;..\Dependancies\glew-1.11.0\include;..\Dependancies\soil\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependancies\LeapSDK\include;..\Dependancies\AntTweakBar\include;..\Dependancies\ImageMagick-6;..\Dependancies\assimp\include;..\Dependancies\glm;..\Dependancies\glfw-3.0.4.bin.WIN32\include;..\Dependancies\glew-1.11.0\include;..\Dependancies\soil\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\Dependancies\AntTweakBar\lib;..\Dependancies\ImageMagick-6\lib;..\Dependancies\assimp\lib;..\Dependancies\glfw-3.0.4.bin.WIN32\lib-msvc110;..\Dependancies\glew-1.11.0\lib\Release\Win32;..\Dependancies\soil\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;assimp.lib;CORE_RL_Magick++_.lib;SOIL.lib;soil2.lib;AntTweakBar.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Dependancies\LeapSDK\lib\x86;..\Dependancies\AntTweakBar\lib;..\Dependancies\ImageMagick-6\lib;..\Dependancies\assimp\lib;..\Dependancies\glfw-3.0.4.bin.WIN32\lib-msvc110;..\Dependancies\glew-1.11.0\lib\Release\Win32;..\Dependancies\soil\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;assimp.lib;CORE_RL_Magick++_.lib;SOIL.lib;soil2.lib;AntTweakBar.lib;Leap.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -97,6 +97,7 @@
     <ClCompile Include="Lab2.cpp" />
     <ClCompile Include="Lab3.cpp" />
     <ClCompile Include="Lab3Model.cpp" />
+    <ClCompile Include="LeapListener.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="maths_funcs.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Lab2.h" />
     <ClInclude Include="Lab3.h" />
     <ClInclude Include="Lab3Model.h" />
+    <ClInclude Include="LeapListener.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="maths_funcs.h" />
     <ClInclude Include="Mesh.h" />
