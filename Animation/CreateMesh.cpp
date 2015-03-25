@@ -407,7 +407,7 @@ void CreateMesh::loadMesh(const char* filename)
 void CreateMesh::setTexture(const char* filename, GLuint shaderID)
 {
 	isTextured = true;
-	gSampler = glGetUniformLocation(shaderID, "gSampler");
+	gSampler = glGetUniformLocation(shaderID, "diffuse_map");
 	glUniform1i(gSampler, 0);
 
 	texture = new TextureLoader(GL_TEXTURE_2D, filename);
@@ -420,7 +420,7 @@ void CreateMesh::setTexture(const char* filename, GLuint shaderID)
 
 void CreateMesh::setNormalTexture(const char* textureName, GLuint shaderID)
 {
-	nSampler = glGetUniformLocation(shaderID, "nSampler");
+	nSampler = glGetUniformLocation(shaderID, "relief_map");
 	glUniform1i(nSampler, 1);
 
 	normalTexture = new TextureLoader(GL_TEXTURE_2D,textureName);

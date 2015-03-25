@@ -221,6 +221,18 @@
     <None Include="..\Shader\Fresnel.vs">
       <Filter>Physics Lab2\Shader</Filter>
     </None>
+    <None Include="..\Shader\relief.ps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Shader\relief.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Shader\normalMapReflect.ps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Shader\normalMapReflect.vs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lab1.h">

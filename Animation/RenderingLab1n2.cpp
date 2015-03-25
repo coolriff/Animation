@@ -68,6 +68,8 @@ RenderingLab1n2::RenderingLab1n2(void)
 	extraBody = new Cube();
 	extraMesh = new CreateMesh();
 
+	scaler = 0.1f;
+
 // 	ambientColor = glm::vec3(1.0f,1.0f,1.0f);
 // 	ambientIntensity = 0.1f;	
 // 
@@ -115,13 +117,14 @@ void RenderingLab1n2::run(void)
 	
 	normalMapMesh->loadMesh("../Models/cube.obj");
 	normalMapMesh->setTexture("../Models/tile1.png",normalMapShader->GetProgramID());
-	normalMapMesh->setNormalTexture("../Models/tile1N.jpg",normalMapShader->GetProgramID());
+	normalMapMesh->setNormalTexture("../Models/wood_relief.png",normalMapShader->GetProgramID());
 // 	normalMapMesh->setTexture("../Models/face.jpg",normalMapShader->GetProgramID());
 // 	normalMapMesh->setNormalTexture("../Models/face_NRM.jpg",normalMapShader->GetProgramID());
-	normalMapBody->SetPosition(glm::vec3(0,3,0));
+	normalMapBody->SetPosition(glm::vec3(0,0,0));
 	normalMapBody->SetScale(glm::vec3(1.0f,1.0f,1.0f));
 
-	vLightDirGLM = glm::vec3(0,0,-1);
+	//vLightDirGLM = glm::vec3(0,0,-1);
+	vLightDirGLM = glm::vec3(0,0,5);
 	ambientColorGLM = glm::vec3(1,1,1);
 	specularColorGLM =glm::vec3(1,1,1);
 	diffuseColorGLM = glm::vec3(1,1,1);
@@ -163,6 +166,10 @@ void RenderingLab1n2::run(void)
 		normalMapBody->Update(delta);
 		normalMapShader->findAllShaderID();
 		normalMapShader->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
+
+		GLuint s = glGetUniformLocation(normalMapShader->GetProgramID(), "scale");
+		glUniform1f(s, scaler);
+
 		updateCamera(normalMapShader->GetProgramID());
 		update(normalMapBody->GetTransformationMatrix(), normalMapShader->GetProgramID());
 		normalMapMesh->renderNormalMap(normalMapShader->GetProgramID());
@@ -355,28 +362,29 @@ void RenderingLab1n2::initTweakBar()
 	TwDefine(" Simulation size='300 400' ");
 
 	TwAddVarRW(bar, "diffuseDirection", TW_TYPE_DIR3F, &vLightDirGLM, " label='vLightDir '");
-	TwAddVarRW(bar, "lightPosition", TW_TYPE_COLOR3F, &ambientColorGLM, " label='ambientColor '");
-	TwAddVarRW(bar, "lightIntensity",  TW_TYPE_COLOR3F, &specularColorGLM, " label='specularColor '");
-	TwAddVarRW(bar, "lightIntensdsdsity",  TW_TYPE_COLOR3F, &diffuseColorGLM, " label='diffuseColor '");
-	TwAddVarRW(bar, "materialAmbient", TW_TYPE_FLOAT, &ambientIntensityGLM, "step = 0.1" " label='ambientIntensity '");
-	TwAddVarRW(bar, "materialDiffuse", TW_TYPE_FLOAT, &specularIntensityGLM, "step = 0.1" " label='specularIntensity '");
-	TwAddVarRW(bar, "materiaSpecular", TW_TYPE_FLOAT, &diffuseIntensityGLM, "step = 0.1" " label='diffuseIntensity '");
-	TwAddVarRW(bar, "roughness", TW_TYPE_FLOAT, &specularShininessGLM, "step = 0.1" " label='specularShininess '");
-
-	TwAddVarRW(bar, "reflectFactor1", TW_TYPE_FLOAT, &reflectFactor1, "step = 0.1" " label='reflectFactor(fle) '");
-	TwAddVarRW(bar, "reflectFactor2", TW_TYPE_FLOAT, &reflectFactor2, "step = 0.1" " label='reflectFactor(fre) '");
-	TwAddVarRW(bar, "reflectFactorCombined", TW_TYPE_FLOAT, &reflectFactorCombined, "step = 0.1" " label='reflectFactorCombined '");
-	TwAddVarRW(bar, "eta", TW_TYPE_FLOAT, &eta, "step = 0.1" " label='eta '");
-
-	TwAddVarRW(bar, "MaterialColorGLM",  TW_TYPE_COLOR4F, &MaterialColorGLM, " label='MaterialColor '");
-	TwAddVarRW(bar, "ratioR", TW_TYPE_FLOAT, &ratioR, "step = 0.1" " label='ratioR '");
-	TwAddVarRW(bar, "ratioG", TW_TYPE_FLOAT, &ratioG, "step = 0.1" " label='ratioG '");
-	TwAddVarRW(bar, "ratioB", TW_TYPE_FLOAT, &ratioB, "step = 0.1" " label='ratioB '");
-
-	TwAddVarRW(bar, "fRatioR", TW_TYPE_FLOAT, &fRatioR, "step = 0.1" " label='fRatioR '");
-	TwAddVarRW(bar, "fRatioG", TW_TYPE_FLOAT, &fRatioG, "step = 0.1" " label='fRatioG '");
-	TwAddVarRW(bar, "fRatioB", TW_TYPE_FLOAT, &fRatioB, "step = 0.1" " label='fRatioB '");
-	TwAddVarRW(bar, "fReflectFactor", TW_TYPE_FLOAT, &fReflectFactor, "step = 0.1" " label='fReflectFactor '");
+	TwAddVarRW(bar, "scaler", TW_TYPE_FLOAT, &scaler, "step = 0.02" " label='scaler '");
+// 	TwAddVarRW(bar, "lightPosition", TW_TYPE_COLOR3F, &ambientColorGLM, " label='ambientColor '");
+// 	TwAddVarRW(bar, "lightIntensity",  TW_TYPE_COLOR3F, &specularColorGLM, " label='specularColor '");
+// 	TwAddVarRW(bar, "lightIntensdsdsity",  TW_TYPE_COLOR3F, &diffuseColorGLM, " label='diffuseColor '");
+// 	TwAddVarRW(bar, "materialAmbient", TW_TYPE_FLOAT, &ambientIntensityGLM, "step = 0.1" " label='ambientIntensity '");
+// 	TwAddVarRW(bar, "materialDiffuse", TW_TYPE_FLOAT, &specularIntensityGLM, "step = 0.1" " label='specularIntensity '");
+// 	TwAddVarRW(bar, "materiaSpecular", TW_TYPE_FLOAT, &diffuseIntensityGLM, "step = 0.1" " label='diffuseIntensity '");
+// 	TwAddVarRW(bar, "roughness", TW_TYPE_FLOAT, &specularShininessGLM, "step = 0.1" " label='specularShininess '");
+// 
+// 	TwAddVarRW(bar, "reflectFactor1", TW_TYPE_FLOAT, &reflectFactor1, "step = 0.1" " label='reflectFactor(fle) '");
+// 	TwAddVarRW(bar, "reflectFactor2", TW_TYPE_FLOAT, &reflectFactor2, "step = 0.1" " label='reflectFactor(fre) '");
+// 	TwAddVarRW(bar, "reflectFactorCombined", TW_TYPE_FLOAT, &reflectFactorCombined, "step = 0.1" " label='reflectFactorCombined '");
+// 	TwAddVarRW(bar, "eta", TW_TYPE_FLOAT, &eta, "step = 0.1" " label='eta '");
+// 
+// 	TwAddVarRW(bar, "MaterialColorGLM",  TW_TYPE_COLOR4F, &MaterialColorGLM, " label='MaterialColor '");
+// 	TwAddVarRW(bar, "ratioR", TW_TYPE_FLOAT, &ratioR, "step = 0.1" " label='ratioR '");
+// 	TwAddVarRW(bar, "ratioG", TW_TYPE_FLOAT, &ratioG, "step = 0.1" " label='ratioG '");
+// 	TwAddVarRW(bar, "ratioB", TW_TYPE_FLOAT, &ratioB, "step = 0.1" " label='ratioB '");
+// 
+// 	TwAddVarRW(bar, "fRatioR", TW_TYPE_FLOAT, &fRatioR, "step = 0.1" " label='fRatioR '");
+// 	TwAddVarRW(bar, "fRatioG", TW_TYPE_FLOAT, &fRatioG, "step = 0.1" " label='fRatioG '");
+// 	TwAddVarRW(bar, "fRatioB", TW_TYPE_FLOAT, &fRatioB, "step = 0.1" " label='fRatioB '");
+// 	TwAddVarRW(bar, "fReflectFactor", TW_TYPE_FLOAT, &fReflectFactor, "step = 0.1" " label='fReflectFactor '");
 
 }
 
@@ -427,20 +435,20 @@ void RenderingLab1n2::updateCamera(GLuint ShaderID)
 void RenderingLab1n2::initShaders()
 {
 	//Lab 3 
-	createShaders(normalMapShader, "../Shader/NormalMap.vs", "../Shader/NormalMap.ps");
-	createShaders(shaderSkyBox, "../Shader/Reflect.vs", "../Shader/Reflect.ps");
-	createShaders(shaderRefraction, "../Shader/Refract.vs", "../Shader/Refract.ps");
-	createShaders(fresnelShader, "../Shader/Fresnel.vs", "../Shader/Fresnel.ps");
-	createShaders(shaderCombined, "../Shader/Combined.vs", "../Shader/Combined.ps");
-	
-
-	//Lab 2
-	createShaders(shaderBlinnPhongTexture, "../Shader/BlinnPhongTexture.vs", "../Shader/BlinnPhongTexture.ps");
-	createShaders(shaderBlinnPhong, "../Shader/BlinnPhong.vs", "../Shader/BlinnPhong.ps");
-	createShaders(shaderToonTexture, "../Shader/toonTexture.vs", "../Shader/toonTexture.ps");
-	createShaders(shaderToon, "../Shader/toon.vs", "../Shader/toon.ps");
-	createShaders(shaderOrenNayarTexture, "../Shader/orenNayarTexture.vs", "../Shader/orenNayarTexture.ps");
-	createShaders(shaderOrenNayar, "../Shader/orenNayar.vs", "../Shader/orenNayar.ps");
+	createShaders(normalMapShader, "../Shader/relief.vs", "../Shader/relief.ps");
+ 	createShaders(shaderSkyBox, "../Shader/Reflect.vs", "../Shader/Reflect.ps");
+// 	createShaders(shaderRefraction, "../Shader/Refract.vs", "../Shader/Refract.ps");
+// 	createShaders(fresnelShader, "../Shader/Fresnel.vs", "../Shader/Fresnel.ps");
+// 	createShaders(shaderCombined, "../Shader/Combined.vs", "../Shader/Combined.ps");
+// 	
+// 
+// 	//Lab 2
+// 	createShaders(shaderBlinnPhongTexture, "../Shader/BlinnPhongTexture.vs", "../Shader/BlinnPhongTexture.ps");
+// 	createShaders(shaderBlinnPhong, "../Shader/BlinnPhong.vs", "../Shader/BlinnPhong.ps");
+// 	createShaders(shaderToonTexture, "../Shader/toonTexture.vs", "../Shader/toonTexture.ps");
+// 	createShaders(shaderToon, "../Shader/toon.vs", "../Shader/toon.ps");
+// 	createShaders(shaderOrenNayarTexture, "../Shader/orenNayarTexture.vs", "../Shader/orenNayarTexture.ps");
+// 	createShaders(shaderOrenNayar, "../Shader/orenNayar.vs", "../Shader/orenNayar.ps");
 }
 
 void RenderingLab1n2::createShaders(Shader *shader, std::string v, std::string p)

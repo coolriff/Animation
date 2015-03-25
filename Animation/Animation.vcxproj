@@ -129,6 +129,8 @@
     <None Include="..\Shader\Combined.vs" />
     <None Include="..\Shader\Fresnel.ps" />
     <None Include="..\Shader\Fresnel.vs" />
+    <None Include="..\Shader\normalMapReflect.ps" />
+    <None Include="..\Shader\normalMapReflect.vs" />
     <None Include="..\Shader\Reflect.ps" />
     <None Include="..\Shader\Reflect.vs" />
     <None Include="..\Shader\Refract.ps" />
@@ -139,6 +141,8 @@
     <None Include="..\Shader\orenNayar.vs" />
     <None Include="..\Shader\orenNayarTexture.ps" />
     <None Include="..\Shader\orenNayarTexture.vs" />
+    <None Include="..\Shader\relief.ps" />
+    <None Include="..\Shader\relief.vs" />
     <None Include="..\Shader\toon.ps" />
     <None Include="..\Shader\toon.vs" />
     <None Include="..\Shader\toonTexture.ps" />

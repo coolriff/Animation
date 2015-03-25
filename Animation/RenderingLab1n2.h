@@ -87,7 +87,7 @@ public:
 	glm::vec3 materialDiffuseGLM;
 	glm::vec3 materiaSpecularGLM;
 	float materiaShininessGLM;
-
+	float scaler;
 
 	glm::vec3 s;
 	glm::vec3 a;
