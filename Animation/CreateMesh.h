@@ -52,6 +52,7 @@ public:
 	void setCubeMapTexture(const char* directory, GLuint shaderID);
 	void renderNormalMap(GLuint shaderID);
 	void loadMeshNormal(const char* filename);
+	void setTgaTexture(const char* textureName, GLuint shaderID);
 	TextureLoader *texture;
 	TextureLoader *normalTexture;
 	TextureLoader *cubeTexture;

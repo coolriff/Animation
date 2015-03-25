@@ -28,6 +28,22 @@ bool TextureLoader::Load()
 	return true;
 }
 
+bool TextureLoader::LoadTGA()
+{
+	int width,height,channels;
+	unsigned char* image = SOIL_load_image(filename.c_str(), &width, &height, &channels, SOIL_LOAD_RGBA);
+
+	glGenTextures(1, &textureObj);
+	glBindTexture(textureTarget, textureObj);
+	glTexImage2D(textureTarget, 0 , GL_RGBA, width,height,0, GL_RGBA, GL_UNSIGNED_BYTE,image);
+
+	glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
+	glBindTexture(textureTarget, 0);
+
+	return true;
+}
+
 bool TextureLoader::LoadCubeMap()
 {
 	int width,height;

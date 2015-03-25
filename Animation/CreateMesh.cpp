@@ -432,6 +432,20 @@ void CreateMesh::setNormalTexture(const char* textureName, GLuint shaderID)
 
 }
 
+void CreateMesh::setTgaTexture(const char* textureName, GLuint shaderID)
+{
+	nSampler = glGetUniformLocation(shaderID, "relief_map");
+	glUniform1i(nSampler, 1);
+
+	normalTexture = new TextureLoader(GL_TEXTURE_2D,textureName);
+
+	if (!normalTexture->LoadTGA()) 
+	{
+		std::cout << "Unable to load normal texture" << std::endl;
+	}
+
+}
+
 void CreateMesh::setCubeMapTexture(const char* directory, GLuint shaderID)
 {
 	gSampler = glGetUniformLocation(shaderID, "gSampler");
