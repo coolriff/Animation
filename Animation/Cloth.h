@@ -257,7 +257,7 @@ public:
 			}
 		}
 
-		clothBuffer->GenerateVBO(v,c,n);
+		clothBuffer->Update(v,c,n);
 		clothBuffer->LinkBufferToShaderWithNormal();
 
 // 		for(int x = 0; x<num_particles_width-1; x++)

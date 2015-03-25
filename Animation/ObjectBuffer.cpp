@@ -97,6 +97,17 @@ void ObjectBuffer::Update(const std::vector<glm::vec3> & vertices)
 	glBindVertexArray(0);
 }
 
+void ObjectBuffer::Update(const std::vector<glm::vec3> & vertices, const std::vector<glm::vec4> & colors , const std::vector<glm::vec3> & normals)
+{
+	glBindVertexArray(vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vSize, (const GLvoid*)(&vertices[0]));
+	glBufferSubData(GL_ARRAY_BUFFER, vSize, cSize, (const GLvoid*)(&colors[0]));
+	glBufferSubData(GL_ARRAY_BUFFER, vSize + cSize, nSize, (const GLvoid*)(&normals[0]));
+	glBindVertexArray(0);
+}
+
 void ObjectBuffer::LinkBufferToShader(GLuint shaderProgramID)
 {
 	// find the location of the variables that we will be using in the shader program
