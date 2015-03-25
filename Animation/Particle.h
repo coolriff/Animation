@@ -51,6 +51,7 @@ public:
 	void resetAcceleration() {acceleration = glm::vec3(0);}
 	void offsetPos(const glm::vec3 v) { if(movable){ pos += v;}}
 	void makeUnmovable() {movable = false;}
+	void makeMovable() {movable = true;}
 	void addToNormal(glm::vec3 normal) {accumulated_normal += glm::normalize(normal);}
 };
 

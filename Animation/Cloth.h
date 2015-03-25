@@ -150,6 +150,15 @@ public:
 		}
 	}
 
+	void removePins()
+	{
+		for(int i=0;i<3; i++)
+		{
+			getParticle(0+i, 0)->makeMovable(); 
+			getParticle(num_particles_width-i-2, 0)->makeMovable();
+		}
+	}
+
 	void addForce(glm::vec3 direction)
 	{
 		std::vector<Particle>::iterator particle;
@@ -197,7 +206,14 @@ public:
 
 	void planeCollision(glm::vec3 planePos)
 	{
-		//TODO
+		std::vector<Particle>::iterator particle;
+		for(particle = particles.begin(); particle != particles.end(); particle++)
+		{
+			if ((*particle).pos.y < planePos.y)
+			{
+				(*particle).pos.y = planePos.y;
+			}
+		}
 	}
 
 	void selfCollision()

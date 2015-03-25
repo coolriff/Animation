@@ -53,16 +53,9 @@ void PhysicsFinal::run(void)
 
 	cloth = new Cloth(14, 10, 55, 45);
 
-	fingerSpheres->createBoundingSphereMesh(2.0f, 20);
+	fingerSpheres->createBoundingSphereMesh(3.0f, 20);
 	fingerSphereBuffers->GenerateVBO(fingerSpheres->vertices,fingerSpheres->colors,fingerSpheres->normals);
 	fingerSphereBuffers->LinkBufferToShaderWithNormal();
-
-// 	for (int i=0; i<fingerSpheres->vertices.size(); i++)
-// 	{
-// 		fingerSpheresMats[i][3][0] = fingerSpheres->vertices[i].x;
-// 		fingerSpheresMats[i][3][1] = fingerSpheres->vertices[i].y;
-// 		fingerSpheresMats[i][3][2] = fingerSpheres->vertices[i].z;
-// 	}
 
 	do{
 		preDraw();
@@ -93,46 +86,24 @@ void PhysicsFinal::run(void)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
+		if (glfwGetKey(window, GLFW_KEY_0 ) == GLFW_PRESS){
+			cloth->removePins();
+		}
 
+		cloth->planeCollision(glm::vec3(0,-10,0));
 		cloth->addForce(glm::vec3(0,-0.2,0)*TIME_STEPSIZE2);
 		cloth->windForce(glm::vec3(0.5,0,0.2)*TIME_STEPSIZE2);
 		cloth->timeStep();
-		cloth->ballCollision(fingerSpheresPos, 2.2f);
+		cloth->ballCollision(fingerSpheresPos, 3.3f);
 		cloth->drawShaded();
 		
-
-// 		for (int i=0; i<cloth->v.size(); i++)
-// 		{
-// 			update(cloth->particles[i].getTransform(),m_shader->GetProgramID());
-// 		}
-
-		//cloth->clothBuffer->Update(cloth->v);
 		draw(cloth->clothBuffer->vao, cloth->v.size());
 
-		//
-
-
 		leapMotionUpdate();
-		//glUseProgram(m_shader->GetProgramID());
-
-// 		fingerSpheresMat[3][0] = fingerSpheresPos.x;
-// 		fingerSpheresMat[3][1] = fingerSpheresPos.y;
-// 		fingerSpheresMat[3][2] = fingerSpheresPos.z;
-
-// 		for (int i=0; i<fingerSpheres->vertices.size(); i++)
-// 		{
-// 			fingerSpheres->vertices[i] += fingerSpheresPos;
-// // 			fingerSpheres->vertices[i].x = fingerSpheresMats[i][3][0];
-// // 			fingerSpheres->vertices[i].y = fingerSpheresMats[i][3][1];
-// // 			fingerSpheres->vertices[i].z = fingerSpheresMats[i][3][2];
-// 		}
-// 		fingerSphereBuffers->Update(fingerSpheres->vertices);
 
 		fingerSpheresMat = glm::translate(fingerSpheresPos);
 		update(fingerSpheresMat, m_shader->GetProgramID());
 		draw(fingerSphereBuffers->vao, fingerSpheres->vertices.size());
-
-
 
 		TwDraw();
 		// Swap buffers
@@ -325,7 +296,7 @@ void PhysicsFinal::leapMotionUpdate(void)
 			Leap::Finger finger0 = leapHand.fingers()[0];
 			Leap::Vector fp0 = finger0.tipPosition();
 
-			fingerSpheresPos = glm::vec3(fp0.x * 0.2, (fp0.y-100) * 0.2, fp0.z * 0.2);
+			fingerSpheresPos = glm::vec3(fp0.x * 0.2, (fp0.y-110) * 0.2, fp0.z * 0.2);
 		}
 
 
@@ -335,7 +306,7 @@ void PhysicsFinal::leapMotionUpdate(void)
 // 			fingerSpheresMat = glm::translate(fingerSpheresPos);
 // 			update(fingerSpheresMat, m_shader->GetProgramID());
 // 			draw(fingerSphereBuffers->vao, fingerSpheres->vertices.size());
-			printf("emputy");
+			//printf("emputy");
 		}
 
  	}
