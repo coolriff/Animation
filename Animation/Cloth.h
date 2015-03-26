@@ -35,7 +35,8 @@ public:
 			for(int x=0; x<num_particles_width; x++)
 			{
 				glm::vec3 pos = glm::vec3(width * (x/(float)num_particles_width), -height * (y/(float)num_particles_height),0);
-				particles[y*num_particles_width+x] = Particle(pos); 
+				particles[y*num_particles_width+x] = Particle(pos);
+				particles[y*num_particles_width+x].id = y+x;
 				//particles[y*num_particles_width+x].setMass(1/(num_particles_width * num_particles_height));
 			}
 		}
@@ -218,6 +219,31 @@ public:
 		}
 	}
 
+	void ballTearing(glm::vec3 center, float radius )
+	{
+		std::vector<Particle>::iterator particle;
+		for(particle = particles.begin(); particle != particles.end(); particle++)
+		{
+			glm::vec3 v = (*particle).getPos()-center;
+			float l = glm::length(v);
+			if ( glm::length(v) < radius) 
+			{
+				//(*particle).offsetPos(glm::normalize(v)*(radius-l)); 
+				//particles.
+
+				//std::vector<Particle>::iterator newEnd = std::remove(particles.begin(), particles.end(), particle->id);
+				particles.erase(particles.begin()+particle->id);
+				for (int i=0; i<constraints.size(); i++)
+				{
+					if (constraints[i].p1->id == particle->id || constraints[i].p2->id == particle->id )
+					{
+						constraints.erase(constraints.begin()+i);
+					}
+				}
+			}
+		}
+	}
+
 	void planeCollision(glm::vec3 planePos)
 	{
 		std::vector<Particle>::iterator particle;
@@ -241,6 +267,7 @@ public:
 	        |/ |
 	(x,y+1) *--* (x+1,y+1)
 	*/
+
 	void Cloth::drawShaded()
 	{
 		numNode = 0;

@@ -32,7 +32,7 @@ PhysicsFinal::PhysicsFinal(void)
 	m_camera = new PhysicsLabCamera();
 	fingerSpheres = new CreateMesh();
 	fingerSphereBuffers = new ObjectBuffer();
-	fingerSpheresPos = glm::vec3(2,-2,3);
+	fingerSpheresPos = glm::vec3(2,100,3);
 	fingerSpheresMat = glm::mat4(0);
 }
 
@@ -95,6 +95,7 @@ void PhysicsFinal::run(void)
 		//cloth->windForce(glm::vec3(0.5,0,0.2)*TIME_STEPSIZE2);
 		cloth->timeStep();
 		cloth->ballCollision(fingerSpheresPos, 3.3f);
+		//cloth->ballTearing(fingerSpheresPos, 3.3f);
 		cloth->drawShaded();
 		
 		draw(cloth->clothBuffer->vao, cloth->v.size());

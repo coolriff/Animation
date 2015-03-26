@@ -13,11 +13,12 @@ public:
 	Particle(glm::vec3 pos) : pos(pos), oldPosition(pos),acceleration(glm::vec3(0,0,0)), mass(1), movable(true), accumulated_normal(glm::vec3(0,0,0)) {}
 	Particle(){}
 
-	glm::vec3 pos;
+	glm::vec3 pos; 
 	glm::vec3 oldPosition;
 	glm::vec3 acceleration;
 	glm::vec3 accumulated_normal;
 
+	int id;
 	float mass;
 	float inverseMass;
 	bool movable;
