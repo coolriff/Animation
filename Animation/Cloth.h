@@ -36,6 +36,20 @@ public:
 			{
 				glm::vec3 pos = glm::vec3(width * (x/(float)num_particles_width), -height * (y/(float)num_particles_height),0);
 				particles[y*num_particles_width+x] = Particle(pos); 
+				//particles[y*num_particles_width+x].setMass(1/(num_particles_width * num_particles_height));
+			}
+		}
+
+
+		float mass = 1.f/( num_particles_width * num_particles_height);
+
+
+		//
+		for(int y=0; y<num_particles_height; y++)
+		{
+			for(int x=0; x<num_particles_width; x++)
+			{
+				particles[y*num_particles_width+x].setMass(1/mass);
 			}
 		}
 

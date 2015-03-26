@@ -46,6 +46,7 @@ public:
 		return tPos;
 	}
 
+	void setMass(float mass) { this->mass = mass;}
 	void addForce(glm::vec3 f) {acceleration += f/mass;}
 	void resetNormal() {accumulated_normal = glm::vec3(0);}
 	void resetAcceleration() {acceleration = glm::vec3(0);}
