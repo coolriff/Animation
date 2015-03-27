@@ -292,6 +292,9 @@
     <ClInclude Include="LeapListener.h">
       <Filter>PhysicsFinal</Filter>
     </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>PhysicsFinal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="simpleFragmentShader.txt" />

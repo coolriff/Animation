@@ -1,9 +1,10 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <vector>
-#include "particle.h"
+#include "Particle.h"
 #include "Constraint.h"
 #include "ObjectBuffer.h"
+#include "Triangle.h"
 
 #define CONSTRAINT_ITERATIONS 15
 
@@ -15,7 +16,9 @@ public:
 	int num_particles_width; 
 	int num_particles_height; 
 	std::vector<Particle> particles; 
+	std::vector<Particle*> tearingParticles; 
 	std::vector<Constraint> constraints; 
+	std::vector<Triangle> triangles; 
 
 	ObjectBuffer* clothBuffer;
 	std::vector<glm::vec3> v;
@@ -28,6 +31,7 @@ public:
 		this->num_particles_width = num_particles_width;
 		this->num_particles_height = num_particles_height;
 		particles.resize(num_particles_width*num_particles_height); 
+		tearingParticles.resize(num_particles_width*num_particles_height); 
 
 
 		for(int y=0; y<num_particles_height; y++)
@@ -36,9 +40,15 @@ public:
 			{
 				glm::vec3 pos = glm::vec3(width * (x/(float)num_particles_width), -height * (y/(float)num_particles_height),0);
 				particles[y*num_particles_width+x] = Particle(pos);
-				particles[y*num_particles_width+x].id = y+x;
+				//tearingParticles[y*num_particles_width+x] = Particle(pos);
+				//particles[y*num_particles_width+x].id = y+x;
 				//particles[y*num_particles_width+x].setMass(1/(num_particles_width * num_particles_height));
 			}
+		}
+
+		for (int i=0; i<particles.size(); i++)
+		{
+			particles[i].id = i;
 		}
 
 
@@ -85,9 +95,9 @@ public:
 			getParticle(num_particles_width-i-2, 0)->makeUnmovable();
 		}
 
-		v.clear();
-		n.clear();
-		c.clear();
+// 		v.clear();
+// 		n.clear();
+// 		c.clear();
 
 		for(int x = 0; x<num_particles_width-2; x++)
 		{
@@ -97,40 +107,38 @@ public:
 				getParticle(x+1,y)->addToNormal(normal);
 				getParticle(x,y)->addToNormal(normal);
 				getParticle(x,y+1)->addToNormal(normal);
-				n.push_back(getParticle(x+1,y)->getNormal());
-				n.push_back(getParticle(x,y)->getNormal());
-				n.push_back(getParticle(x,y+1)->getNormal());
+
+				triangles.push_back(Triangle(getParticle(x+1,y),getParticle(x,y),getParticle(x,y+1)));
 
 				normal = calcTriangleNormal(getParticle(x+1,y+1),getParticle(x+1,y),getParticle(x,y+1));
 				getParticle(x+1,y+1)->addToNormal(normal);
 				getParticle(x+1,y)->addToNormal(normal);
 				getParticle(x,y+1)->addToNormal(normal);
-				n.push_back(getParticle(x+1,y+1)->getNormal());
-				n.push_back(getParticle(x+1,y)->getNormal());
-				n.push_back(getParticle(x,y+1)->getNormal());
+
+				triangles.push_back(Triangle(getParticle(x+1,y+1),getParticle(x+1,y),getParticle(x,y+1)));
 			}
 		}
 
-		for(int x = 0; x<num_particles_width-2; x++)
-		{
-			for(int y=0; y<num_particles_height-2; y++)
-			{
-				v.push_back(getParticle(x+1,y)->getPos());
-				v.push_back(getParticle(x,y)->getPos());
-				v.push_back(getParticle(x,y+1)->getPos());
-				v.push_back(getParticle(x+1,y+1)->getPos());
-				v.push_back(getParticle(x+1,y)->getPos());
-				v.push_back(getParticle(x,y+1)->getPos());
-			}
-		}
-
-		for (int i=0; i<v.size(); i++)
-		{
-			c.push_back(glm::vec4(1,0,0,0));
-		}
-
-		clothBuffer->GenerateVBO(v,c,n);
-		clothBuffer->LinkBufferToShaderWithNormal();
+// 		for(int x = 0; x<num_particles_width-2; x++)
+// 		{
+// 			for(int y=0; y<num_particles_height-2; y++)
+// 			{
+// 				v.push_back(getParticle(x+1,y)->getPos());
+// 				v.push_back(getParticle(x,y)->getPos());
+// 				v.push_back(getParticle(x,y+1)->getPos());
+// 				v.push_back(getParticle(x+1,y+1)->getPos());
+// 				v.push_back(getParticle(x+1,y)->getPos());
+// 				v.push_back(getParticle(x,y+1)->getPos());
+// 			}
+// 		}
+// 
+// 		for (int i=0; i<v.size(); i++)
+// 		{
+// 			c.push_back(glm::vec4(1,0,0,0));
+// 		}
+// 
+// 		clothBuffer->GenerateVBO(v,c,n);
+// 		clothBuffer->LinkBufferToShaderWithNormal();
 	}
 
 	glm::vec3 calcTriangleNormal(Particle *p1,Particle *p2,Particle *p3)
@@ -219,6 +227,8 @@ public:
 		}
 	}
 
+	int conter;
+
 	void ballTearing(glm::vec3 center, float radius )
 	{
 		std::vector<Particle>::iterator particle;
@@ -232,16 +242,40 @@ public:
 				//particles.
 
 				//std::vector<Particle>::iterator newEnd = std::remove(particles.begin(), particles.end(), particle->id);
-				particles.erase(particles.begin()+particle->id);
+				//particles.erase(particles.begin()+(*particle).id);
 				for (int i=0; i<constraints.size(); i++)
 				{
-					if (constraints[i].p1->id == particle->id || constraints[i].p2->id == particle->id )
+					if (constraints[i].p1->id == (*particle).id || constraints[i].p2->id == (*particle).id )
 					{
 						constraints.erase(constraints.begin()+i);
 					}
 				}
+
+// 				for (constraint = constraints.begin(); constraint != constraints.end(); constraint++)
+// 				{
+// 					if (constraint->p1->id == (*particle).id || constraint->p2->id == (*particle).id )
+// 					{
+// 						constraints.erase(constraint);
+// 					}
+// 				}
+
+				for (int i=0; i<triangles.size(); i++)
+				{
+					if (triangles[i].p1->id == (*particle).id || triangles[i].p2->id == (*particle).id || triangles[i].p3->id == (*particle).id)
+					{
+						triangles[i].drawable = false;
+					}
+				}
 			}
 		}
+
+// 		for (int i=0; i<particles.size(); i++)
+// 		{
+// 			if (particles[i].pos.y < -13)
+// 			{
+// 				particles.erase(particles.begin()+i);
+// 			}
+// 		}
 	}
 
 	void planeCollision(glm::vec3 planePos)
@@ -270,18 +304,17 @@ public:
 
 	void Cloth::drawShaded()
 	{
-		numNode = 0;
 		numTri = 0;
 
 		std::vector<Particle>::iterator particle;
 		for(particle = particles.begin(); particle != particles.end(); particle++)
 		{
 			(*particle).resetNormal();
-			numNode += 1;
 		}
 
-		v.clear();
-		n.clear();
+		tearingParticles.clear();
+// 		v.clear();
+// 		n.clear();
 		//c.clear();
 
 		for(int x = 0; x<num_particles_width-2; x++)
@@ -292,30 +325,31 @@ public:
 				getParticle(x+1,y)->addToNormal(normal);
 				getParticle(x,y)->addToNormal(normal);
 				getParticle(x,y+1)->addToNormal(normal);
-				n.push_back(getParticle(x+1,y)->getNormal());
-				n.push_back(getParticle(x,y)->getNormal());
-				n.push_back(getParticle(x,y+1)->getNormal());
+				tearingParticles.push_back(getParticle(x+1,y));
+				tearingParticles.push_back(getParticle(x,y));
+				tearingParticles.push_back(getParticle(x,y+1));
 
 				normal = calcTriangleNormal(getParticle(x+1,y+1),getParticle(x+1,y),getParticle(x,y+1));
 				getParticle(x+1,y+1)->addToNormal(normal);
 				getParticle(x+1,y)->addToNormal(normal);
 				getParticle(x,y+1)->addToNormal(normal);
-				n.push_back(getParticle(x+1,y+1)->getNormal());
-				n.push_back(getParticle(x+1,y)->getNormal());
-				n.push_back(getParticle(x,y+1)->getNormal());
-
-				v.push_back(getParticle(x+1,y)->getPos());
-				v.push_back(getParticle(x,y)->getPos());
-				v.push_back(getParticle(x,y+1)->getPos());
-				v.push_back(getParticle(x+1,y+1)->getPos());
-				v.push_back(getParticle(x+1,y)->getPos());
-				v.push_back(getParticle(x,y+1)->getPos());
-
+				tearingParticles.push_back(getParticle(x+1,y+1));
+				tearingParticles.push_back(getParticle(x+1,y));
+				tearingParticles.push_back(getParticle(x,y+1));
 			}
 		}
 
-		clothBuffer->Update(v,c,n);
-		clothBuffer->LinkBufferToShaderWithNormal();
+		for (int i=0; i<triangles.size(); i++)
+		{
+// 			triangles[i].setP1(tearingParticles[i*3]);
+// 			triangles[i].setP2(tearingParticles[i*3+1]);
+// 			triangles[i].setP3(tearingParticles[i*3+2]);
+
+			triangles[i].update(tearingParticles[i*3],tearingParticles[i*3+1],tearingParticles[i*3+2]);
+		}
+
+// 		clothBuffer->Update(v,c,n);
+// 		clothBuffer->LinkBufferToShaderWithNormal();
 
 // 		for(int x = 0; x<num_particles_width-1; x++)
 // 		{

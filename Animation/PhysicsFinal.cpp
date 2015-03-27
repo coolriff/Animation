@@ -90,15 +90,22 @@ void PhysicsFinal::run(void)
 			cloth->removePins();
 		}
 
-		cloth->planeCollision(glm::vec3(0,-10,0));
+		cloth->planeCollision(glm::vec3(0,-12,0));
 		cloth->addForce(glm::vec3(0,-9.8f,0));
-		//cloth->windForce(glm::vec3(0.5,0,0.2)*TIME_STEPSIZE2);
+		//cloth->windForce(glm::vec3(0.5,0,0.2));
 		cloth->timeStep();
 		cloth->ballCollision(fingerSpheresPos, 3.3f);
-		//cloth->ballTearing(fingerSpheresPos, 3.3f);
+		cloth->ballTearing(fingerSpheresPos, 3.3f);
 		cloth->drawShaded();
 		
-		draw(cloth->clothBuffer->vao, cloth->v.size());
+		for (int i=0; i<cloth->triangles.size(); i++)
+		{
+			if (cloth->triangles[i].drawable)
+			{
+				draw(cloth->triangles[i].triangleBuffer->vao, cloth->triangles[i].v.size());
+			}
+		}
+		//draw(cloth->clothBuffer->vao, cloth->v.size());
 
 		leapMotionUpdate();
 

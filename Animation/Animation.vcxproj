@@ -176,6 +176,7 @@
     <ClInclude Include="skinning_technique.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="technique.h" />
+    <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="simpleFragmentShader.txt" />
