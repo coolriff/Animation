@@ -6,7 +6,14 @@
 #include "ObjectBuffer.h"
 #include "Triangle.h"
 
-#define CONSTRAINT_ITERATIONS 15
+#define CONSTRAINT_ITERATIONS 3
+
+struct Simplex
+{
+	glm::vec3 minkowskiDifference;
+	glm::vec3 pointA;
+	glm::vec3 pointB;
+};
 
 class Cloth
 {
@@ -25,7 +32,9 @@ public:
 	std::vector<glm::vec3> n;
 	std::vector<glm::vec4> c;
 
-	Cloth(float width, float height, int num_particles_width, int num_particles_height)
+	glm::vec3 initPos;
+
+	Cloth(float width, float height, int num_particles_width, int num_particles_height, glm::vec3 initPos)
 	{
 		clothBuffer = new ObjectBuffer();
 		this->num_particles_width = num_particles_width;
@@ -38,7 +47,7 @@ public:
 		{
 			for(int x=0; x<num_particles_width; x++)
 			{
-				glm::vec3 pos = glm::vec3(width * (x/(float)num_particles_width), -height * (y/(float)num_particles_height),0);
+				glm::vec3 pos = glm::vec3(width * (x/(float)num_particles_width) + initPos.x, -height * (y/(float)num_particles_height) + initPos.y ,0 + initPos.z);
 				particles[y*num_particles_width+x] = Particle(pos);
 				//tearingParticles[y*num_particles_width+x] = Particle(pos);
 				//particles[y*num_particles_width+x].id = y+x;
@@ -86,14 +95,20 @@ public:
 			}
 		}
 
-		for(int i=0;i<3; i++)
-		{
-			getParticle(0+i, 0)->offsetPos(glm::vec3(0.5,0.0,0.0)); 
-			getParticle(0+i, 0)->makeUnmovable(); 
+// 		for(int i=0;i<1; i++)
+// 		{
+// 			getParticle(0+i, 0)->offsetPos(glm::vec3(0.5,0.0,0.0)); 
+// 			getParticle(0+i, 0)->makeUnmovable(); 
+// 
+// 			getParticle(num_particles_width-i-2, 0)->offsetPos(glm::vec3(-0.5,0.0,0.0)); 
+// 			getParticle(num_particles_width-i-2, 0)->makeUnmovable();
+// 		}
 
-			getParticle(num_particles_width-i-2, 0)->offsetPos(glm::vec3(-0.5,0.0,0.0)); 
-			getParticle(num_particles_width-i-2, 0)->makeUnmovable();
-		}
+		//getParticle(0, 0)->pos = glm::vec3(0.0,100.0,0.0); 
+		getParticle(0, 0)->makeUnmovable();
+
+		//getParticle(num_particles_width-2, 0)->pos = glm::vec3(3,100.0,0.0); 
+		getParticle(num_particles_width-2, 0)->makeUnmovable();
 
 // 		v.clear();
 // 		n.clear();
@@ -223,6 +238,7 @@ public:
 			if ( glm::length(v) < radius) 
 			{
 				(*particle).offsetPos(glm::normalize(v)*(radius-l)); 
+				//(*particle).offsetPos((*particle).oldPosition); 
 			}
 		}
 	}
@@ -292,7 +308,245 @@ public:
 
 	void selfCollision()
 	{
-		//TODO
+		for (int i=0; i<triangles.size(); i++)
+		{
+			for (int j=0; j<triangles.size(); j++)
+			{
+				if (triangles[i].p1->id != triangles[j].p1->id && triangles[i].p1->id != triangles[j].p2->id && triangles[i].p1->id != triangles[j].p3->id &&
+					triangles[i].p2->id != triangles[j].p1->id && triangles[i].p2->id != triangles[j].p2->id && triangles[i].p2->id != triangles[j].p3->id && 
+					triangles[i].p3->id != triangles[j].p1->id && triangles[i].p3->id != triangles[j].p2->id && triangles[i].p3->id != triangles[j].p3->id
+					)
+				{
+					if (CheckCollisionNarrow(triangles[i],triangles[j]))
+					{
+						triangles[i].p1->pos = triangles[i].p1->oldPosition;
+						triangles[i].p2->pos = triangles[i].p2->oldPosition;
+						triangles[i].p3->pos = triangles[i].p3->oldPosition;
+// 						triangles[j].p1->pos = triangles[j].p1->oldPosition;
+// 						triangles[j].p2->pos = triangles[j].p2->oldPosition;
+// 						triangles[j].p3->pos = triangles[j].p3->oldPosition;
+						//printf("Ye!!!");
+					}
+				}
+			}
+		}
+	}
+
+	//GJK 
+	bool CheckCollisionNarrow(Triangle &body1, Triangle &body2)
+	{
+		//demoResult.clear();
+		std::vector<Simplex> simplex;
+
+		glm::vec3 direction = body1.p1->pos - body2.p1->pos;
+
+		simplex.push_back(support(direction, body1, body2));
+
+		direction = -simplex[0].minkowskiDifference;
+		int counter = 100;
+
+		while (counter > 0)
+		{
+			Simplex tempSimplex;
+			tempSimplex = support(direction, body1, body2);
+
+			// Last point added was not past the origin in this direction
+			if(glm::dot(tempSimplex.minkowskiDifference, direction) < 0)
+			{
+				return false;
+			}
+			simplex.push_back(tempSimplex);
+
+			//check intersect
+			if (processSimplex(simplex, direction))
+			{
+// 				if (simplex.size() == 4)
+// 				{
+// 					glm::vec3 normal = EPA(simplex, body1, body2);
+// 					return true;
+// 				}
+				return true;
+			}
+			counter--;
+		}
+	}
+
+	Simplex support(glm::vec3 direction, Triangle &body1, Triangle &body2)
+	{
+		Simplex s;
+		s.pointA = getFarthestPointInDirection(direction, body1.v);
+		s.pointB = getFarthestPointInDirection(-direction, body2.v);
+		s.minkowskiDifference = s.pointA - s.pointB;
+
+		return s;
+	}
+
+	glm::vec3 getFarthestPointInDirection(glm::vec3 direction, const std::vector<glm::vec3>& vertices)
+	{
+		float maxDot = glm::dot(vertices[0],direction);
+
+		int indexDot = 0;
+		float currentDot;
+		for (int i = 1; i < vertices.size(); i++)
+		{
+			currentDot = glm::dot(direction,vertices[i]);
+			if (currentDot > maxDot){
+				maxDot = currentDot;
+				indexDot = i;
+			}
+		}
+
+		return vertices[indexDot];
+	}
+
+	bool processSimplex(std::vector<Simplex> &simplex, glm::vec3 &direction)
+	{
+		Simplex A,B,C,D;
+		glm::vec3 AB,AC,AD,AO;
+
+		switch(simplex.size())
+		{
+		case 2:
+
+			A = simplex.at(1);
+			B = simplex.at(0);
+
+			AB = B.minkowskiDifference - A.minkowskiDifference;
+			AO = -A.minkowskiDifference;
+
+
+			if(isSameDirection(AO,AB))
+			{
+				direction = glm::cross(glm::cross(AB, AO), AB);
+			}
+			else
+			{
+				direction = AO;
+			}
+
+			return false;
+		case 3:
+
+			//simplex.erase(simplex.begin());
+
+			return checkTriangle(simplex, direction);
+
+			//return false;
+// 		case 4:
+// 			A = simplex.at(3);
+// 			B = simplex.at(2);
+// 			C = simplex.at(1);
+// 			D = simplex.at(0);
+// 
+// 			AB = B.minkowskiDifference - A.minkowskiDifference;
+// 			AC = C.minkowskiDifference - A.minkowskiDifference;
+// 			AD = D.minkowskiDifference - A.minkowskiDifference;
+// 			AO = -A.minkowskiDifference;
+// 
+// 			glm::vec3 ABC = glm::cross(AB, AC);
+// 			glm::vec3 ADB = glm::cross(AD, AB);
+// 			glm::vec3 ACD = glm::cross(AC, AD);
+// 
+// 			if(isSameDirection(ABC, AO))
+// 			{			
+// 				simplex.erase(simplex.begin());
+// 
+// 				return checkTriangle(simplex, direction);
+// 			}
+// 			else if(isSameDirection(ADB, AO))
+// 			{
+// 				simplex.erase(simplex.begin() + 1);
+// 				simplex[0] = B;
+// 				simplex[1] = D;
+// 
+// 				return checkTriangle(simplex, direction);
+// 			}
+// 			else if(isSameDirection(ACD, AO))
+// 			{
+// 				simplex.erase(simplex.begin() + 2);
+// 
+// 				return checkTriangle(simplex, direction);
+// 			}
+// 
+// 			return true;
+ 		}
+	}
+
+	bool isSameDirection(glm::vec3 &a, glm::vec3 &b)
+	{
+		float dot = glm::dot(a, b);
+		return dot > 0.0f;
+	}
+
+	bool checkTriangle(std::vector<Simplex> &simplex, glm::vec3 &direction)
+	{
+		Simplex A,B,C;
+		glm::vec3 AB,AC,AO;
+
+		A = simplex[2];
+		B = simplex[1];
+		C = simplex[0];
+
+		AB = B.minkowskiDifference - A.minkowskiDifference;
+		AC = C.minkowskiDifference - A.minkowskiDifference;
+		AO = -A.minkowskiDifference;
+
+		glm::vec3 ABC = glm::cross(AB, AC);
+
+		if(isSameDirection(glm::cross(ABC, AC), AO)) // AC plane 
+		{
+			if(isSameDirection(AC, AO)) // outside AC edge
+			{
+				direction = glm::cross(glm::cross(AC, AO), AC);
+				simplex.erase(simplex.begin() + 1);
+			}
+			else
+			{
+				if(isSameDirection(AB, AO)) // outside AB edge
+				{
+					direction = glm::cross(glm::cross(AB, AO), AB);
+					simplex.erase(simplex.begin());
+				}
+				else // outside A
+				{
+					direction = AO;
+					simplex.erase(simplex.begin());
+					simplex.erase(simplex.begin());
+				}
+			}
+		}
+		else // inside AC 
+		{
+			if(isSameDirection(glm::cross(AB, ABC), AO)) // AB plane 
+			{
+				if(isSameDirection(AB, AO)) // outside AB plane
+				{
+					direction = glm::cross(glm::cross(AB, AO), AB);
+					simplex.erase(simplex.begin());
+				}
+				else // outside A
+				{
+					direction = AO;
+					simplex.erase(simplex.begin());
+					simplex.erase(simplex.begin());
+				}
+			}
+			else // orthogonal to face
+			{
+				if(isSameDirection(ABC, AO)) // outside face
+				{
+					direction = ABC;
+				}
+				else // inside face
+				{
+					simplex[0] = B;
+					simplex[1] = C;
+
+					direction = -ABC;
+				}
+			}
+		}
+		return false;
 	}
 
 	/*
