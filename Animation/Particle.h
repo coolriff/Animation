@@ -3,7 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp> 
 #include <glm/gtx/transform.hpp>
 
-#define DAMPING 0.01f
+#define DAMPING 0.001f
 #define TIME_STEPSIZE2 0.5f*0.5f
 
 class Particle

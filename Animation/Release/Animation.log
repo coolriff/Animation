@@ -1,18 +1,28 @@
-﻿Build started 3/27/2015 1:45:50 AM.
+﻿Build started 3/28/2015 9:08:49 PM.
      1>Project "C:\Animation\Animation\Animation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\Dependancies\LeapSDK\include /I..\Dependancies\AntTweakBar\include /I"..\Dependancies\ImageMagick-6" /I..\Dependancies\assimp\include /I..\Dependancies\glm /I"..\Dependancies\glfw-3.0.4.bin.WIN32\include" /I"..\Dependancies\glew-1.11.0\include" /I..\Dependancies\soil\src /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /D _CRT_SECURE_NO_WARNINGS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt PhysicsFinal.cpp main.cpp
          PhysicsFinal.cpp
-     1>c:\animation\animation\Cloth.h(49): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\animation\animation\Cloth.h(246): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\Cloth.h(58): warning C4018: '<' : signed/unsigned mismatch
      1>c:\animation\animation\Cloth.h(262): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\animation\animation\Cloth.h(342): warning C4018: '<' : signed/unsigned mismatch
-     1>PhysicsFinal.cpp(101): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\Cloth.h(278): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\Cloth.h(311): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\Cloth.h(313): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\Cloth.h(390): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\Cloth.h(596): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\PhysicsFinal.h(19): warning C4005: 'DAMPING' : macro redefinition
+                 c:\animation\animation\Particle.h(6) : see previous definition of 'DAMPING'
+     1>PhysicsFinal.cpp(112): warning C4018: '<' : signed/unsigned mismatch
          main.cpp
-     1>c:\animation\animation\Cloth.h(49): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\animation\animation\Cloth.h(246): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\Cloth.h(58): warning C4018: '<' : signed/unsigned mismatch
      1>c:\animation\animation\Cloth.h(262): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\animation\animation\Cloth.h(342): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\Cloth.h(278): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\Cloth.h(311): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\Cloth.h(313): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\Cloth.h(390): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\Cloth.h(596): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\animation\animation\PhysicsFinal.h(19): warning C4005: 'DAMPING' : macro redefinition
+                 c:\animation\animation\Particle.h(6) : see previous definition of 'DAMPING'
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Animation\Release\Animation.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:..\Dependancies\LeapSDK\lib\x86 /LIBPATH:..\Dependancies\AntTweakBar\lib /LIBPATH:"..\Dependancies\ImageMagick-6\lib" /LIBPATH:..\Dependancies\assimp\lib /LIBPATH:"..\Dependancies\glfw-3.0.4.bin.WIN32\lib-msvc110" /LIBPATH:"..\Dependancies\glew-1.11.0\lib\Release\Win32" /LIBPATH:..\Dependancies\soil\lib glew32.lib glfw3.lib opengl32.lib assimp.lib CORE_RL_Magick++_.lib SOIL.lib soil2.lib AntTweakBar.lib Leap.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Animation\Release\Animation.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Animation\Release\Animation.lib" /MACHINE:X86 /SAFESEH Release\ArmSkeleton.obj
          Release\Bone.obj
@@ -50,6 +60,8 @@
      1>SOIL.lib(SOIL.obj) : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:ICF' specification
      1>LINK : warning LNK4098: defaultlib 'MSVCRTD' conflicts with use of other libs; use /NODEFAULTLIB:library
          Generating code
+     1>c:\animation\animation\cloth.h(473): warning C4715: 'Cloth::processSimplex' : not all control paths return a value
+     1>c:\animation\animation\cloth.h(372): warning C4715: 'Cloth::CheckCollisionNarrow' : not all control paths return a value
          Finished generating code
      1>SOIL.lib(image_DXT.obj) : warning LNK4099: PDB 'vc110.pdb' was not found with 'SOIL.lib(image_DXT.obj)' or at 'C:\Animation\Release\vc110.pdb'; linking object as if no debug info
      1>SOIL.lib(image_helper.obj) : warning LNK4099: PDB 'vc110.pdb' was not found with 'SOIL.lib(image_helper.obj)' or at 'C:\Animation\Release\vc110.pdb'; linking object as if no debug info
@@ -60,4 +72,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.98
+Time Elapsed 00:00:02.88
