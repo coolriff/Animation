@@ -36,6 +36,9 @@ public:
 	glm::mat4 fingerSpheresMat;
 	std::vector<glm::mat4> fingerSpheresMats;
 
+	CreateMesh* boundingSpheres[1600];
+	ObjectBuffer* boundingSphereBuffers[1600];
+
 	Cloth* cloth;
 	Cloth* cloth2;
 
@@ -59,6 +62,8 @@ public:
 	glm::vec3 planePos;
 	float leapPos;
 	bool isCollision;
+	int numP;
+	bool drawPoints;
 
 	bool leapMotionInit(void);
 	void leapMotionUpdate(void);

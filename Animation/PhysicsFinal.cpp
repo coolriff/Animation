@@ -37,7 +37,14 @@ PhysicsFinal::PhysicsFinal(void)
 	SphereRadius = 4.0f;
 	planePos = glm::vec3(0,-44.0f,0);
 	leapPos = 220.0f;
-	isCollision= true;
+	isCollision = true;
+	drawPoints = true;
+
+	for (int i=0; i<1600; i++)
+	{
+		boundingSpheres[i] = new CreateMesh();
+		boundingSphereBuffers[i] = new ObjectBuffer();
+	}
 }
 
 
@@ -55,11 +62,20 @@ void PhysicsFinal::run(void)
 	initTweakBar();
 	leapMotionInit();
 
-	cloth = new Cloth(20, 20, 60, 60, glm::vec3(0,10,0),false);
+	cloth = new Cloth(40,40, 40, 40, glm::vec3(0,10,0),false);
 
 	fingerSpheres->createBoundingSphereMesh(SphereRadius, 20);
 	fingerSphereBuffers->GenerateVBO(fingerSpheres->vertices,fingerSpheres->colors,fingerSpheres->normals);
 	fingerSphereBuffers->LinkBufferToShaderWithNormal();
+
+	numP = cloth->particles.size();
+
+	for (int j=0; j<numP; j++)
+	{
+		boundingSpheres[j]->createBoundingSphereMesh(0.15, 5);
+		boundingSphereBuffers[j]->GenerateVBO(boundingSpheres[j]->vertices,boundingSpheres[j]->colors,boundingSpheres[j]->normals);
+		boundingSphereBuffers[j]->LinkBufferToShaderWithNormal(m_shader->GetProgramID());
+	}
 
 	do{
 		preDraw();
@@ -74,6 +90,16 @@ void PhysicsFinal::run(void)
 		m_shader->SetDirectionalLight(glm::vec3(0,0,-1));
 
 		m_camera->handleMVP(modelLoc, viewLoc, projLoc);
+
+// 		for (int i=0; i<numP; i++)
+// 		{
+// 			boundingSphereBuffers[i]->ChangeColors(boundingSpheres[i]->colors);
+// 		}
+
+		for (int i=0; i<cloth->particles.size(); i++)
+		{
+			cloth->particles[i].isContacted = false;
+		}
 
 		if (glfwGetKey(window, GLFW_KEY_LEFT_BRACKET ) == GLFW_PRESS){
 			m_camera->enabled = true;
@@ -92,6 +118,14 @@ void PhysicsFinal::run(void)
 
 		if (glfwGetKey(window, GLFW_KEY_0 ) == GLFW_PRESS){
 			cloth->removePins();
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_4 ) == GLFW_PRESS){
+			drawPoints = true;
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_5 ) == GLFW_PRESS){
+			drawPoints = false;
 		}
 
 
@@ -125,7 +159,7 @@ void PhysicsFinal::run(void)
 			cloth->selfCollision();
 		}
 
-		//cloth->ballTearing(fingerSpheresPos, SphereRadius + 0.3f);
+		cloth->ballTearing(fingerSpheresPos, SphereRadius + 0.3f);
 		cloth->drawShaded();
 		
 		for (int i=0; i<cloth->triangles.size(); i++)
@@ -133,6 +167,30 @@ void PhysicsFinal::run(void)
 			if (cloth->triangles[i].drawable)
 			{
 				draw(cloth->triangles[i].triangleBuffer->vao, cloth->triangles[i].v.size());
+			}
+		}
+
+		if (drawPoints)
+		{
+			for (int j=0; j<numP; j++)
+			{
+				glm::mat4 tPos = glm::mat4(1);
+				tPos[3][0] = cloth->particles[j].pos.x;
+				tPos[3][1] = cloth->particles[j].pos.y;
+				tPos[3][2] = cloth->particles[j].pos.z;
+
+				update(tPos,m_shader->GetProgramID());
+				if (cloth->particles[j].isContacted)
+				{
+					boundingSphereBuffers[j]->ChangeColors(boundingSpheres[j]->greenColors);
+					draw(boundingSphereBuffers[j]->vao, boundingSpheres[j]->vertices.size());
+				}
+				else
+				{
+					boundingSphereBuffers[j]->ChangeColors(boundingSpheres[j]->colors);
+					draw(boundingSphereBuffers[j]->vao, boundingSpheres[j]->vertices.size());
+				}
+
 			}
 		}
 
@@ -278,7 +336,7 @@ void PhysicsFinal::initTweakBar()
 // 	TwAddVarRW(bar, "Camera", TW_TYPE_DIR3F, &m_physicsLabCamera->position, " label='Camera Pos: '");
 // 
  	TwAddVarRW(bar, "fingerSpheresPos", TW_TYPE_DIR3F, &fingerSpheresPos, " label='fingerSpheresPos: '");
-// 	TwAddVarRO(bar, "boxPoint1", TW_TYPE_DIR3F, &cubes[0]->m_points.at(1), " label='p1: '");
+ 	TwAddVarRO(bar, "boxPoint1", TW_TYPE_INT16, &numP, " label='Number of P: '");
 // 	TwAddVarRO(bar, "boxPoint2", TW_TYPE_DIR3F, &cubes[0]->m_points.at(2), " label='p2: '");
 // 	TwAddVarRO(bar, "boxPoint3", TW_TYPE_DIR3F, &cubes[0]->m_points.at(3), " label='p3: '");
 // 	TwAddVarRO(bar, "boxPoint4", TW_TYPE_DIR3F, &cubes[0]->m_points.at(4), " label='p4: '");

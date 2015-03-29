@@ -10,7 +10,7 @@ class Particle
 {
 public:
 
-	Particle(glm::vec3 pos) : pos(pos), oldPosition(pos),posToOldDirection(glm::vec3(0)),acceleration(glm::vec3(0,0,0)), mass(1), movable(true), drawable(true), accumulated_normal(glm::vec3(0,0,0)) {}
+	Particle(glm::vec3 pos) : pos(pos), oldPosition(pos),isContacted(false),posToOldDirection(glm::vec3(0)),acceleration(glm::vec3(0,0,0)), mass(1), movable(true), drawable(true), accumulated_normal(glm::vec3(0,0,0)) {}
 	Particle(){}
 
 	glm::vec3 pos; 
@@ -24,6 +24,7 @@ public:
 	float inverseMass;
 	bool movable;
 	bool drawable;
+	bool isContacted;
 
 	void timeStep()
 	{

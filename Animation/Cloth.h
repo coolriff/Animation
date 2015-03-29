@@ -6,7 +6,7 @@
 #include "ObjectBuffer.h"
 #include "Triangle.h"
 
-#define CONSTRAINT_ITERATIONS 15
+#define CONSTRAINT_ITERATIONS 3
 
 struct Simplex
 {
@@ -296,6 +296,7 @@ public:
 			if ( glm::length(v) < radius) 
 			{
 				(*particle).offsetPos(glm::normalize(v)*(radius-l)); 
+				(*particle).isContacted = true;
 				//(*particle).offsetPos((*particle).oldPosition); 
 			}
 		}
