@@ -57,6 +57,7 @@ public:
 
 	float SphereRadius;
 	glm::vec3 planePos;
+	float leapPos;
 
 	bool leapMotionInit(void);
 	void leapMotionUpdate(void);

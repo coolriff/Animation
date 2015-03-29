@@ -6,7 +6,7 @@
 #include "ObjectBuffer.h"
 #include "Triangle.h"
 
-#define CONSTRAINT_ITERATIONS 15
+#define CONSTRAINT_ITERATIONS 3
 
 struct Simplex
 {
@@ -130,7 +130,7 @@ public:
 		getParticle(0, 0)->makeUnmovable();
 
 		//getParticle(num_particles_width-2, 0)->offsetPos(glm::vec3(0.5,0.0,0.0)); 
-		getParticle(num_particles_width-2, 0)->makeUnmovable();
+		getParticle(num_particles_width-1, 0)->makeUnmovable();
 
 // 		v.clear();
 // 		n.clear();

@@ -35,7 +35,8 @@ PhysicsFinal::PhysicsFinal(void)
 	fingerSpheresPos = glm::vec3(2,100,3);
 	fingerSpheresMat = glm::mat4(0);
 	SphereRadius = 1.0f;
-	planePos = glm::vec3(0,-44.0f,0);
+	planePos = glm::vec3(0,-16.0f,0);
+	leapPos = 220.0f;
 }
 
 
@@ -53,7 +54,7 @@ void PhysicsFinal::run(void)
 	initTweakBar();
 	leapMotionInit();
 
-	cloth = new Cloth(2, 40, 5, 100, glm::vec3(0,0,0));
+	cloth = new Cloth(10, 14, 30, 42, glm::vec3(0,0,0));
 	//cloth2 = new Cloth(2, 40, 5, 100, glm::vec3(0,0,0));
 
 	fingerSpheres->createBoundingSphereMesh(SphereRadius, 20);
@@ -320,7 +321,7 @@ void PhysicsFinal::leapMotionUpdate(void)
 			Leap::Finger finger0 = leapHand.fingers()[0];
 			Leap::Vector fp0 = finger0.tipPosition();
 
-			fingerSpheresPos = glm::vec3(fp0.x * 0.2, (fp0.y-150) * 0.2, fp0.z * 0.2);
+			fingerSpheresPos = glm::vec3(fp0.x * 0.2, (fp0.y-leapPos) * 0.2, fp0.z * 0.2);
 		}
 
 
