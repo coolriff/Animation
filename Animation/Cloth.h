@@ -6,7 +6,7 @@
 #include "ObjectBuffer.h"
 #include "Triangle.h"
 
-#define CONSTRAINT_ITERATIONS 5
+#define CONSTRAINT_ITERATIONS 15
 
 struct Simplex
 {
