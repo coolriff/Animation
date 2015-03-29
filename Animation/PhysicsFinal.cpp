@@ -34,6 +34,8 @@ PhysicsFinal::PhysicsFinal(void)
 	fingerSphereBuffers = new ObjectBuffer();
 	fingerSpheresPos = glm::vec3(2,100,3);
 	fingerSpheresMat = glm::mat4(0);
+	SphereRadius = 1.0f;
+	planePos = glm::vec3(0,-24.0f,0);
 }
 
 
@@ -51,9 +53,9 @@ void PhysicsFinal::run(void)
 	initTweakBar();
 	leapMotionInit();
 
-	cloth = new Cloth(3, 10, 8, 40, glm::vec3(0,0,0));
+	cloth = new Cloth(3, 20, 10, 100, glm::vec3(0,0,0));
 
-	fingerSpheres->createBoundingSphereMesh(3.0f, 20);
+	fingerSpheres->createBoundingSphereMesh(SphereRadius, 20);
 	fingerSphereBuffers->GenerateVBO(fingerSpheres->vertices,fingerSpheres->colors,fingerSpheres->normals);
 	fingerSphereBuffers->LinkBufferToShaderWithNormal();
 
@@ -94,19 +96,19 @@ void PhysicsFinal::run(void)
 		cloth->addForce(glm::vec3(0,-0.2f,0) * TIME_STEPSIZE2);
 
 		if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
-			cloth->windForce(glm::vec3(0.5,0,0.2) * TIME_STEPSIZE2);
+			cloth->windForce(glm::vec3(0.5,0,0.2) * 0.5f);
 		}
 		cloth->timeStep();
 		//cloth->windForce(glm::vec3(0.5,0,0.2));
-		cloth->planeCollision(glm::vec3(0,-14.0f,0));
-		cloth->ballCollision(fingerSpheresPos, 3.3f);
+		cloth->planeCollision(planePos);
+		cloth->ballCollision(fingerSpheresPos, SphereRadius + 0.1f);
 		cloth->selfCollision();
 
 		if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
 			cloth->selfCollision();
 		}
 
-		//cloth->ballTearing(fingerSpheresPos, 3.3f);
+		cloth->ballTearing(fingerSpheresPos, SphereRadius + 0.1f);
 		cloth->drawShaded();
 		
 		for (int i=0; i<cloth->triangles.size(); i++)
@@ -316,7 +318,7 @@ void PhysicsFinal::leapMotionUpdate(void)
 			Leap::Finger finger0 = leapHand.fingers()[0];
 			Leap::Vector fp0 = finger0.tipPosition();
 
-			fingerSpheresPos = glm::vec3(fp0.x * 0.2, (fp0.y-110) * 0.2, fp0.z * 0.2);
+			fingerSpheresPos = glm::vec3(fp0.x * 0.2, (fp0.y-100) * 0.2, fp0.z * 0.2);
 		}
 
 

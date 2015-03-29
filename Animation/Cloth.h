@@ -232,12 +232,23 @@ public:
 
 	void windForce(glm::vec3 direction)
 	{
-		for(int x = 0; x<num_particles_width-1; x++)
+// 		for(int x = 0; x<num_particles_width-1; x++)
+// 		{
+// 			for(int y=0; y<num_particles_height-1; y++)
+// 			{
+// 				addWindForcesForTriangle(getParticle(x+1,y),getParticle(x,y),getParticle(x,y+1),direction);
+// 				addWindForcesForTriangle(getParticle(x+1,y+1),getParticle(x+1,y),getParticle(x,y+1),direction);
+// 			}
+// 		}
+
+		std::vector<Triangle>::iterator triangle;
+
+
+		for (triangle = triangles.begin(); triangle != triangles.end(); triangle++)
 		{
-			for(int y=0; y<num_particles_height-1; y++)
+			if ((*triangle).drawable)
 			{
-				addWindForcesForTriangle(getParticle(x+1,y),getParticle(x,y),getParticle(x,y+1),direction);
-				addWindForcesForTriangle(getParticle(x+1,y+1),getParticle(x+1,y),getParticle(x,y+1),direction);
+				addWindForcesForTriangle((*triangle).p1,(*triangle).p2,(*triangle).p3,direction);
 			}
 		}
 	}
@@ -333,84 +344,14 @@ public:
 
 	void selfCollision()
 	{
-// 		for (int i=0; i<triangles.size(); i++)
-// 		{
-// 			for (int j=0; j<triangles.size(); j++)
-// 			{
-// 				if (triangles[i].p1->id != triangles[j].p1->id && triangles[i].p1->id != triangles[j].p2->id && triangles[i].p1->id != triangles[j].p3->id &&
-// 					triangles[i].p2->id != triangles[j].p1->id && triangles[i].p2->id != triangles[j].p2->id && triangles[i].p2->id != triangles[j].p3->id && 
-// 					triangles[i].p3->id != triangles[j].p1->id && triangles[i].p3->id != triangles[j].p2->id && triangles[i].p3->id != triangles[j].p3->id
-// 					)
-// 				{
-// // 					if (CheckCollisionNarrow(triangles[i],triangles[j]))
-// // 					{
-// // 						triangles[i].p1->pos = triangles[i].p1->oldPosition;
-// // 						triangles[i].p2->pos = triangles[i].p2->oldPosition;
-// // 						triangles[i].p3->pos = triangles[i].p3->oldPosition;
-// // 						triangles[j].p1->pos = triangles[j].p1->oldPosition;
-// // 						triangles[j].p2->pos = triangles[j].p2->oldPosition;
-// // 						triangles[j].p3->pos = triangles[j].p3->oldPosition;
-// // 						//printf("Ye!!!");
-// // 					}
-// 					int c = 100;
-// 
-// 					if (CheckCollisionNarrow(triangles[i],triangles[j]))
-// 					{
-// 						glm::vec3 direcion_1 = triangles[i].p1->oldPosition - triangles[i].p1->pos;
-// 						triangles[i].p1->pos += triangles[i].p1->pos * 0.1f;
-// 
-// 						glm::vec3 direcion_2 = triangles[i].p2->oldPosition - triangles[i].p2->pos;
-// 						triangles[i].p2->pos += collisionNormal * 0.1f;
-// 
-// 						glm::vec3 direcion_3 = triangles[i].p3->oldPosition - triangles[i].p3->pos;
-// 						triangles[i].p3->pos += collisionNormal * 0.1f;
-// 
-// 
-// 						glm::vec3 direcion_4 = triangles[j].p1->oldPosition - triangles[j].p1->pos;
-// 						triangles[j].p1->pos += -collisionNormal * 0.1f;
-// 
-// 						glm::vec3 direcion_5 = triangles[j].p2->oldPosition - triangles[j].p2->pos;
-// 						triangles[j].p2->pos += -collisionNormal * 0.1f;
-// 
-// 						glm::vec3 direcion_6 = triangles[j].p3->oldPosition - triangles[j].p3->pos;
-// 						triangles[j].p3->pos += -collisionNormal * 0.1f;
-// 						c--;
-// 					}
-// 				}
-// 			}
-// 		}
-
  		std::vector<Particle>::iterator particle;
  		std::vector<Triangle>::iterator triangle;
-// 		for(particle = particles.begin(); particle != particles.end(); particle++)
-// 		{
-// 			(*particle).timeStep(); 
-// 			//v.push_back((*particle).pos);
-// 		}
-
-// 		for (int i=0; i<particles.size(); i++)
-// 		{
-// 			for (int j=0; j<triangles.size(); j++)
-// 			{
-// 				if (particles[i].id != triangles[j].p1->id && particles[i].id  != triangles[j].p2->id && particles[i].id  != triangles[j].p3->id)
-// 				{
-// 					// 					if (PointInTriangle((*triangle).p1->pos, (*triangle).p2->pos, (*triangle).p3->pos, (*particle).pos))
-// 					// 					{
-// 					// 						(*particle).pos = (*particle).oldPosition;
-// 					// 						printf("ye");
-// 					// 					}
-// 					//testTriangleIntersect(&particles[i]);
-// 					PointInTriangle(triangles[j].p1->pos, triangles[j].p2->pos, triangles[j].p3->pos, particles[i].pos);
-// 				}
-// 			}
-// 		}
-
 
 		for (particle = particles.begin(); particle != particles.end(); particle++)
 		{
 			for (triangle = triangles.begin(); triangle != triangles.end(); triangle++)
 			{
-				if ((*particle).id != (*triangle).p1->id && (*particle).id  != (*triangle).p2->id && (*particle).id  != (*triangle).p3->id)
+				if ((*particle).id != (*triangle).p1->id && (*particle).id  != (*triangle).p2->id && (*particle).id  != (*triangle).p3->id && (*triangle).drawable == true)
 				{
 					if (PointInTriangle((*triangle).p1->pos, (*triangle).p2->pos, (*triangle).p3->pos, (*particle).pos))
 					{
@@ -418,11 +359,9 @@ public:
 						//printf("ye");
 					}
 					//testTriangleIntersect((*&particle));
-
 				}
 			}
 		}
-		
 	}
 
 // 	bool testTriangleIntersect(Particle* currentParticle)

@@ -17,7 +17,7 @@
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
 #define DAMPING 0.01f
-#define TIME_STEPSIZE2 0.5f*0.5f*0.5f
+#define TIME_STEPSIZE2 0.5f*0.5f*0.5f*0.5f
 
 class PhysicsFinal
 {
@@ -53,6 +53,9 @@ public:
 	LeapListener leapMotionListener;
 	Leap::Controller leapMotionController;
 	bool leapMotionRunning;
+
+	float SphereRadius;
+	glm::vec3 planePos;
 
 	bool leapMotionInit(void);
 	void leapMotionUpdate(void);
