@@ -34,8 +34,8 @@ PhysicsFinal::PhysicsFinal(void)
 	fingerSphereBuffers = new ObjectBuffer();
 	fingerSpheresPos = glm::vec3(2,100,3);
 	fingerSpheresMat = glm::mat4(0);
-	SphereRadius = 1.0f;
-	planePos = glm::vec3(0,-16.0f,0);
+	SphereRadius = 4.0f;
+	planePos = glm::vec3(0,-44.0f,0);
 	leapPos = 220.0f;
 }
 
@@ -54,8 +54,8 @@ void PhysicsFinal::run(void)
 	initTweakBar();
 	leapMotionInit();
 
-	cloth = new Cloth(10, 14, 30, 42, glm::vec3(0,0,0));
-	//cloth2 = new Cloth(2, 40, 5, 100, glm::vec3(0,0,0));
+	cloth = new Cloth(10, 10, 20, 20, glm::vec3(0,10,0),true);
+	cloth2 = new Cloth(5, 5, 10, 10, glm::vec3(3,20,-3),false);
 
 	fingerSpheres->createBoundingSphereMesh(SphereRadius, 20);
 	fingerSphereBuffers->GenerateVBO(fingerSpheres->vertices,fingerSpheres->colors,fingerSpheres->normals);
@@ -91,11 +91,12 @@ void PhysicsFinal::run(void)
 		}
 
 		if (glfwGetKey(window, GLFW_KEY_0 ) == GLFW_PRESS){
-			cloth->removePins();
+			//cloth->removePins();
 		}
 
 
 		cloth->addForce(glm::vec3(0,-0.2f,0) * TIME_STEPSIZE2);
+
 
 		if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
 			cloth->windForce(glm::vec3(0.5,0,0.2) * 0.5f);
@@ -103,15 +104,16 @@ void PhysicsFinal::run(void)
 		cloth->timeStep();
 		//cloth->windForce(glm::vec3(0.5,0,0.2));
 		cloth->planeCollision(planePos);
-		cloth->ballCollision(fingerSpheresPos, SphereRadius + 0.1f);
-		cloth->reflectDirection();
-		cloth->selfCollision();
+		cloth->ballCollision(fingerSpheresPos, SphereRadius + 0.3f);
+		//cloth->reflectDirection();
+		//cloth->selfCollision();
+		cloth->clothWithClothCollision(cloth2->particles);
 
 		if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
 			cloth->selfCollision();
 		}
 
-		cloth->ballTearing(fingerSpheresPos, SphereRadius + 0.1f);
+		//cloth->ballTearing(fingerSpheresPos, SphereRadius + 0.3f);
 		cloth->drawShaded();
 		
 		for (int i=0; i<cloth->triangles.size(); i++)
@@ -121,6 +123,40 @@ void PhysicsFinal::run(void)
 				draw(cloth->triangles[i].triangleBuffer->vao, cloth->triangles[i].v.size());
 			}
 		}
+
+		//cloth 2
+		if (glfwGetKey(window, GLFW_KEY_0 ) == GLFW_PRESS){
+			cloth2->removePins();
+		}
+
+		cloth2->addForce(glm::vec3(0,-0.2f,0) * TIME_STEPSIZE2);
+
+		if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
+			cloth2->windForce(glm::vec3(0.5,0,0.2) * 0.5f);
+		}
+		cloth2->timeStep();
+		//cloth->windForce(glm::vec3(0.5,0,0.2));
+		cloth2->planeCollision(planePos);
+		cloth2->ballCollision(fingerSpheresPos, SphereRadius + 0.3f);
+		//cloth2->reflectDirection();
+		//cloth2->selfCollision();
+		cloth2->clothWithClothCollision(cloth->particles);
+
+		if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
+			cloth2->selfCollision();
+		}
+
+		//cloth2->ballTearing(fingerSpheresPos, SphereRadius + 0.3f);
+		cloth2->drawShaded();
+
+		for (int i=0; i<cloth2->triangles.size(); i++)
+		{
+			if (cloth2->triangles[i].drawable)
+			{
+				draw(cloth2->triangles[i].triangleBuffer->vao, cloth2->triangles[i].v.size());
+			}
+		}
+
 
 		//draw(cloth->clothBuffer->vao, cloth->v.size());
 

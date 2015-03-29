@@ -6,7 +6,7 @@
 #include "ObjectBuffer.h"
 #include "Triangle.h"
 
-#define CONSTRAINT_ITERATIONS 3
+#define CONSTRAINT_ITERATIONS 5
 
 struct Simplex
 {
@@ -40,6 +40,7 @@ class Cloth
 {
 public:
 
+	bool pined;
 	int numNode,numTri;
 	int num_particles_width; 
 	int num_particles_height; 
@@ -56,7 +57,7 @@ public:
 	glm::vec3 initPos;
 	glm::vec3 collisionNormal;
 
-	Cloth(float width, float height, int num_particles_width, int num_particles_height, glm::vec3 initPos)
+	Cloth(float width, float height, int num_particles_width, int num_particles_height, glm::vec3 initPos, bool pined)
 	{
 		clothBuffer = new ObjectBuffer();
 		this->num_particles_width = num_particles_width;
@@ -125,12 +126,25 @@ public:
 // 			getParticle(num_particles_width-i-1, 0)->offsetPos(glm::vec3(-0.5,0.0,0.0)); 
 // 			getParticle(num_particles_width-i-1, 0)->makeUnmovable();
 // 		}
+		if (pined)
+		{
+			//getParticle(0, 0)->offsetPos(glm::vec3(0.5,0.0,0.0)); 
+			getParticle(0, 0)->makeUnmovable();
+			getParticle(num_particles_width-1, num_particles_height-1)->makeUnmovable();
 
-		//getParticle(0, 0)->offsetPos(glm::vec3(0.5,0.0,0.0)); 
-		getParticle(0, 0)->makeUnmovable();
+			//getParticle(num_particles_width-2, 0)->offsetPos(glm::vec3(0.5,0.0,0.0)); 
+			getParticle(num_particles_width-1, 0)->makeUnmovable();
+			getParticle(0, num_particles_height-1)->makeUnmovable();
 
-		//getParticle(num_particles_width-2, 0)->offsetPos(glm::vec3(0.5,0.0,0.0)); 
-		getParticle(num_particles_width-1, 0)->makeUnmovable();
+			getParticle(num_particles_width-1, num_particles_height-1)->pos = glm::vec3(initPos.y, initPos.y, -initPos.y);
+			getParticle(0, num_particles_height-1)->pos = glm::vec3(0, initPos.y, -initPos.y);
+		}
+		else
+		{
+			getParticle(0, 0)->makeUnmovable();
+			getParticle(num_particles_width-1, 0)->makeUnmovable();
+		}
+
 
 // 		v.clear();
 // 		n.clear();
@@ -391,6 +405,34 @@ public:
 						//printf("ye");
 					}
 					//testTriangleIntersect((*&particle));
+				}
+			}
+		}
+	}
+
+	void clothWithClothCollision(std::vector<Particle> particle)
+	{
+		//std::vector<Particle>::iterator particle;
+		std::vector<Triangle>::iterator triangle;
+
+		for (int i=0; i<particle.size(); i++)
+		{
+			for (triangle = triangles.begin(); triangle != triangles.end(); triangle++)
+			{
+				if (PointInTriangle((*triangle).p1->pos, (*triangle).p2->pos, (*triangle).p3->pos, particle[i].pos))
+				{
+
+					particle[i].pos = particle[i].oldPosition;
+					(*triangle).p1->pos = (*triangle).p1->oldPosition;
+					(*triangle).p2->pos = (*triangle).p2->oldPosition;
+					(*triangle).p3->pos = (*triangle).p3->oldPosition;
+					if (PointInTriangle((*triangle).p1->pos, (*triangle).p2->pos, (*triangle).p3->pos, particle[i].pos))
+					{
+						particle[i].pos += particle[i].posToOldDirection * 0.5f;
+						(*triangle).p1->pos += (*triangle).p1->posToOldDirection * 0.5f;
+						(*triangle).p2->pos += (*triangle).p2->posToOldDirection * 0.5f;
+						(*triangle).p3->pos += (*triangle).p3->posToOldDirection * 0.5f;
+					}
 				}
 			}
 		}
