@@ -37,6 +37,7 @@ public:
 	std::vector<glm::mat4> fingerSpheresMats;
 
 	Cloth* cloth;
+	Cloth* cloth2;
 
 	void run(void);
 	void initShaders();

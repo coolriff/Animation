@@ -207,17 +207,26 @@ public:
 		{
 			for(constraint = constraints.begin(); constraint != constraints.end(); constraint++ )
 			{
-				(*constraint).satisfyConstraint(); 
+				if ((*constraint).drawable)
+				{
+					(*constraint).satisfyConstraint(); 
+				}
 			}
 		}
 	}
 
 	void removePins()
 	{
-		for(int i=0;i<3; i++)
+// 		for(int i=0;i<3; i++)
+// 		{
+// 			getParticle(0+i, 0)->makeMovable(); 
+// 			getParticle(num_particles_width-i-2, 0)->makeMovable();
+// 		}
+
+		std::vector<Particle>::iterator particle;
+		for(particle = particles.begin(); particle != particles.end(); particle++)
 		{
-			getParticle(0+i, 0)->makeMovable(); 
-			getParticle(num_particles_width-i-2, 0)->makeMovable();
+			(*particle).makeMovable(); 
 		}
 	}
 
@@ -294,11 +303,13 @@ public:
 
 				//std::vector<Particle>::iterator newEnd = std::remove(particles.begin(), particles.end(), particle->id);
 				//particles.erase(particles.begin()+(*particle).id);
+				//std::vector<Particle>::iterator constraint;
 				for (int i=0; i<constraints.size(); i++)
 				{
 					if (constraints[i].p1->id == (*particle).id || constraints[i].p2->id == (*particle).id )
 					{
-						constraints.erase(constraints.begin()+i);
+						//constraints.erase(constraints.begin()+i);
+						constraints[i].drawable = false;
 					}
 				}
 
@@ -342,6 +353,15 @@ public:
 		}
 	}
 
+	void reflectDirection()
+	{
+		std::vector<Particle>::iterator particle;
+		for (particle = particles.begin(); particle != particles.end(); particle++)
+		{
+			(*particle).posToOldDirection = (*particle).oldPosition - (*particle).pos;
+		}
+	}
+
 	void selfCollision()
 	{
  		std::vector<Particle>::iterator particle;
@@ -355,7 +375,19 @@ public:
 				{
 					if (PointInTriangle((*triangle).p1->pos, (*triangle).p2->pos, (*triangle).p3->pos, (*particle).pos))
 					{
+
 						(*particle).pos = (*particle).oldPosition;
+						(*triangle).p1->pos = (*triangle).p1->oldPosition;
+						(*triangle).p2->pos = (*triangle).p2->oldPosition;
+						(*triangle).p3->pos = (*triangle).p3->oldPosition;
+						if (PointInTriangle((*triangle).p1->pos, (*triangle).p2->pos, (*triangle).p3->pos, (*particle).pos))
+						{
+							(*particle).pos += (*particle).posToOldDirection * 0.5f;
+							(*triangle).p1->pos += (*triangle).p1->posToOldDirection * 0.5f;
+							(*triangle).p2->pos += (*triangle).p2->posToOldDirection * 0.5f;
+							(*triangle).p3->pos += (*triangle).p3->posToOldDirection * 0.5f;
+						}
+
 						//printf("ye");
 					}
 					//testTriangleIntersect((*&particle));

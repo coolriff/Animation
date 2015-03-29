@@ -9,6 +9,7 @@ public:
 
 	Particle *p1, *p2; 
 	float rest_distance;
+	bool drawable;
 
 	Constraint(Particle *p1, Particle *p2)
 	{
@@ -16,6 +17,7 @@ public:
 		this->p2 = p2;
 
 		rest_distance = glm::length(p1->getPos()-p2->getPos());
+		drawable = true;
 	}
 
 	void satisfyConstraint()

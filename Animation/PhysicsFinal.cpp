@@ -35,7 +35,7 @@ PhysicsFinal::PhysicsFinal(void)
 	fingerSpheresPos = glm::vec3(2,100,3);
 	fingerSpheresMat = glm::mat4(0);
 	SphereRadius = 1.0f;
-	planePos = glm::vec3(0,-24.0f,0);
+	planePos = glm::vec3(0,-44.0f,0);
 }
 
 
@@ -53,7 +53,8 @@ void PhysicsFinal::run(void)
 	initTweakBar();
 	leapMotionInit();
 
-	cloth = new Cloth(3, 20, 10, 100, glm::vec3(0,0,0));
+	cloth = new Cloth(2, 40, 5, 100, glm::vec3(0,0,0));
+	//cloth2 = new Cloth(2, 40, 5, 100, glm::vec3(0,0,0));
 
 	fingerSpheres->createBoundingSphereMesh(SphereRadius, 20);
 	fingerSphereBuffers->GenerateVBO(fingerSpheres->vertices,fingerSpheres->colors,fingerSpheres->normals);
@@ -102,6 +103,7 @@ void PhysicsFinal::run(void)
 		//cloth->windForce(glm::vec3(0.5,0,0.2));
 		cloth->planeCollision(planePos);
 		cloth->ballCollision(fingerSpheresPos, SphereRadius + 0.1f);
+		cloth->reflectDirection();
 		cloth->selfCollision();
 
 		if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
@@ -318,7 +320,7 @@ void PhysicsFinal::leapMotionUpdate(void)
 			Leap::Finger finger0 = leapHand.fingers()[0];
 			Leap::Vector fp0 = finger0.tipPosition();
 
-			fingerSpheresPos = glm::vec3(fp0.x * 0.2, (fp0.y-100) * 0.2, fp0.z * 0.2);
+			fingerSpheresPos = glm::vec3(fp0.x * 0.2, (fp0.y-150) * 0.2, fp0.z * 0.2);
 		}
 
 
