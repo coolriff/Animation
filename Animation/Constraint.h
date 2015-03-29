@@ -21,7 +21,7 @@ public:
 	void satisfyConstraint()
 	{
 		glm::vec3 p1_to_p2 = p2->getPos()-p1->getPos();
-		float current_distance = glm::length(p2->getPos()-p1->getPos());
+		float current_distance = glm::length(p1_to_p2);
 		glm::vec3 correctionVector = p1_to_p2 * (1.0f - rest_distance/current_distance); 
 		glm::vec3 correctionVectorHalf = correctionVector * 0.5f; 
 		p1->offsetPos(correctionVectorHalf); 

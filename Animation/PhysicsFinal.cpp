@@ -51,7 +51,7 @@ void PhysicsFinal::run(void)
 	initTweakBar();
 	leapMotionInit();
 
-	cloth = new Cloth(4, 50, 4, 50, glm::vec3(0,50.0f,0));
+	cloth = new Cloth(3, 10, 8, 40, glm::vec3(0,0,0));
 
 	fingerSpheres->createBoundingSphereMesh(3.0f, 20);
 	fingerSphereBuffers->GenerateVBO(fingerSpheres->vertices,fingerSpheres->colors,fingerSpheres->normals);
@@ -90,15 +90,15 @@ void PhysicsFinal::run(void)
 			cloth->removePins();
 		}
 
-		cloth->planeCollision(glm::vec3(0,-12,0));
-		cloth->addForce(glm::vec3(0,-0.98f,0));
+
+		cloth->addForce(glm::vec3(0,-0.2f,0) * TIME_STEPSIZE2);
 
 		if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
-			cloth->windForce(glm::vec3(0.5,0,0.2));
+			cloth->windForce(glm::vec3(0.5,0,0.2) * TIME_STEPSIZE2);
 		}
-
-		//cloth->windForce(glm::vec3(0.5,0,0.2));
 		cloth->timeStep();
+		//cloth->windForce(glm::vec3(0.5,0,0.2));
+		cloth->planeCollision(glm::vec3(0,-14.0f,0));
 		cloth->ballCollision(fingerSpheresPos, 3.3f);
 		cloth->selfCollision();
 
@@ -116,6 +116,7 @@ void PhysicsFinal::run(void)
 				draw(cloth->triangles[i].triangleBuffer->vao, cloth->triangles[i].v.size());
 			}
 		}
+
 		//draw(cloth->clothBuffer->vao, cloth->v.size());
 
 		leapMotionUpdate();
