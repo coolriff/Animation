@@ -6,13 +6,34 @@
 #include "ObjectBuffer.h"
 #include "Triangle.h"
 
-#define CONSTRAINT_ITERATIONS 3
+#define CONSTRAINT_ITERATIONS 15
 
 struct Simplex
 {
 	glm::vec3 minkowskiDifference;
 	glm::vec3 pointA;
 	glm::vec3 pointB;
+};
+
+struct Face
+{
+	Face(int index1, int index2, int index3, std::vector<Simplex> &simplex) : i1(index1), i2(index2), i3(index3)
+	{
+		v1 = simplex[i1];
+		v2 = simplex[i2];
+		v3 = simplex[i3];
+
+		normal = glm::normalize(glm::cross(v3.minkowskiDifference - v1.minkowskiDifference, v2.minkowskiDifference - v1.minkowskiDifference));
+		if(glm::dot(v1.minkowskiDifference, normal) < 0)
+		{
+			normal = -normal;
+		}
+	}
+
+	Simplex v1, v2, v3;
+	int i1, i2, i3;
+
+	glm::vec3 normal;
 };
 
 class Cloth
@@ -33,6 +54,7 @@ public:
 	std::vector<glm::vec4> c;
 
 	glm::vec3 initPos;
+	glm::vec3 collisionNormal;
 
 	Cloth(float width, float height, int num_particles_width, int num_particles_height, glm::vec3 initPos)
 	{
@@ -61,17 +83,17 @@ public:
 		}
 
 
-		float mass = 1.f/( num_particles_width * num_particles_height);
-
-
-		//
-		for(int y=0; y<num_particles_height; y++)
-		{
-			for(int x=0; x<num_particles_width; x++)
-			{
-				particles[y*num_particles_width+x].setMass(1/mass);
-			}
-		}
+// 		float mass = 1.f/( num_particles_width * num_particles_height);
+// 
+// 
+// 		//
+// 		for(int y=0; y<num_particles_height; y++)
+// 		{
+// 			for(int x=0; x<num_particles_width; x++)
+// 			{
+// 				particles[y*num_particles_width+x].setMass(1/mass);
+// 			}
+// 		}
 
 		for(int x=0; x<num_particles_width; x++)
 		{
@@ -95,28 +117,28 @@ public:
 			}
 		}
 
-// 		for(int i=0;i<1; i++)
+// 		for(int i=0;i<3; i++)
 // 		{
 // 			getParticle(0+i, 0)->offsetPos(glm::vec3(0.5,0.0,0.0)); 
 // 			getParticle(0+i, 0)->makeUnmovable(); 
 // 
-// 			getParticle(num_particles_width-i-2, 0)->offsetPos(glm::vec3(-0.5,0.0,0.0)); 
-// 			getParticle(num_particles_width-i-2, 0)->makeUnmovable();
+// 			getParticle(num_particles_width-i-1, 0)->offsetPos(glm::vec3(-0.5,0.0,0.0)); 
+// 			getParticle(num_particles_width-i-1, 0)->makeUnmovable();
 // 		}
 
-		//getParticle(0, 0)->pos = glm::vec3(0.0,100.0,0.0); 
+		//getParticle(0, 0)->offsetPos(glm::vec3(0.5,0.0,0.0)); 
 		getParticle(0, 0)->makeUnmovable();
 
-		//getParticle(num_particles_width-2, 0)->pos = glm::vec3(3,100.0,0.0); 
+		//getParticle(num_particles_width-2, 0)->offsetPos(glm::vec3(0.5,0.0,0.0)); 
 		getParticle(num_particles_width-2, 0)->makeUnmovable();
 
 // 		v.clear();
 // 		n.clear();
 // 		c.clear();
 
-		for(int x = 0; x<num_particles_width-2; x++)
+		for(int x = 0; x<num_particles_width-1; x++)
 		{
-			for(int y=0; y<num_particles_height-2; y++)
+			for(int y=0; y<num_particles_height-1; y++)
 			{
 				glm::vec3 normal = calcTriangleNormal(getParticle(x+1,y),getParticle(x,y),getParticle(x,y+1));
 				getParticle(x+1,y)->addToNormal(normal);
@@ -170,14 +192,7 @@ public:
 
 	void timeStep()
 	{
-		std::vector<Constraint>::iterator constraint;
-		for(int i=0; i<CONSTRAINT_ITERATIONS; i++) 
-		{
-			for(constraint = constraints.begin(); constraint != constraints.end(); constraint++ )
-			{
-				(*constraint).satisfyConstraint(); 
-			}
-		}
+
 
 		//v.clear();
 		std::vector<Particle>::iterator particle;
@@ -185,6 +200,15 @@ public:
 		{
 			(*particle).timeStep(); 
 			//v.push_back((*particle).pos);
+		}
+
+		std::vector<Constraint>::iterator constraint;
+		for(int i=0; i<CONSTRAINT_ITERATIONS; i++) 
+		{
+			for(constraint = constraints.begin(); constraint != constraints.end(); constraint++ )
+			{
+				(*constraint).satisfyConstraint(); 
+			}
 		}
 	}
 
@@ -302,34 +326,180 @@ public:
 			if ((*particle).pos.y < planePos.y)
 			{
 				(*particle).pos.y = planePos.y;
+				//(*particle).makeUnmovable();
 			}
 		}
 	}
 
 	void selfCollision()
 	{
-		for (int i=0; i<triangles.size(); i++)
+// 		for (int i=0; i<triangles.size(); i++)
+// 		{
+// 			for (int j=0; j<triangles.size(); j++)
+// 			{
+// 				if (triangles[i].p1->id != triangles[j].p1->id && triangles[i].p1->id != triangles[j].p2->id && triangles[i].p1->id != triangles[j].p3->id &&
+// 					triangles[i].p2->id != triangles[j].p1->id && triangles[i].p2->id != triangles[j].p2->id && triangles[i].p2->id != triangles[j].p3->id && 
+// 					triangles[i].p3->id != triangles[j].p1->id && triangles[i].p3->id != triangles[j].p2->id && triangles[i].p3->id != triangles[j].p3->id
+// 					)
+// 				{
+// // 					if (CheckCollisionNarrow(triangles[i],triangles[j]))
+// // 					{
+// // 						triangles[i].p1->pos = triangles[i].p1->oldPosition;
+// // 						triangles[i].p2->pos = triangles[i].p2->oldPosition;
+// // 						triangles[i].p3->pos = triangles[i].p3->oldPosition;
+// // 						triangles[j].p1->pos = triangles[j].p1->oldPosition;
+// // 						triangles[j].p2->pos = triangles[j].p2->oldPosition;
+// // 						triangles[j].p3->pos = triangles[j].p3->oldPosition;
+// // 						//printf("Ye!!!");
+// // 					}
+// 					int c = 100;
+// 
+// 					if (CheckCollisionNarrow(triangles[i],triangles[j]))
+// 					{
+// 						glm::vec3 direcion_1 = triangles[i].p1->oldPosition - triangles[i].p1->pos;
+// 						triangles[i].p1->pos += triangles[i].p1->pos * 0.1f;
+// 
+// 						glm::vec3 direcion_2 = triangles[i].p2->oldPosition - triangles[i].p2->pos;
+// 						triangles[i].p2->pos += collisionNormal * 0.1f;
+// 
+// 						glm::vec3 direcion_3 = triangles[i].p3->oldPosition - triangles[i].p3->pos;
+// 						triangles[i].p3->pos += collisionNormal * 0.1f;
+// 
+// 
+// 						glm::vec3 direcion_4 = triangles[j].p1->oldPosition - triangles[j].p1->pos;
+// 						triangles[j].p1->pos += -collisionNormal * 0.1f;
+// 
+// 						glm::vec3 direcion_5 = triangles[j].p2->oldPosition - triangles[j].p2->pos;
+// 						triangles[j].p2->pos += -collisionNormal * 0.1f;
+// 
+// 						glm::vec3 direcion_6 = triangles[j].p3->oldPosition - triangles[j].p3->pos;
+// 						triangles[j].p3->pos += -collisionNormal * 0.1f;
+// 						c--;
+// 					}
+// 				}
+// 			}
+// 		}
+
+ 		std::vector<Particle>::iterator particle;
+ 		std::vector<Triangle>::iterator triangle;
+// 		for(particle = particles.begin(); particle != particles.end(); particle++)
+// 		{
+// 			(*particle).timeStep(); 
+// 			//v.push_back((*particle).pos);
+// 		}
+
+// 		for (int i=0; i<particles.size(); i++)
+// 		{
+// 			for (int j=0; j<triangles.size(); j++)
+// 			{
+// 				if (particles[i].id != triangles[j].p1->id && particles[i].id  != triangles[j].p2->id && particles[i].id  != triangles[j].p3->id)
+// 				{
+// 					// 					if (PointInTriangle((*triangle).p1->pos, (*triangle).p2->pos, (*triangle).p3->pos, (*particle).pos))
+// 					// 					{
+// 					// 						(*particle).pos = (*particle).oldPosition;
+// 					// 						printf("ye");
+// 					// 					}
+// 					//testTriangleIntersect(&particles[i]);
+// 					PointInTriangle(triangles[j].p1->pos, triangles[j].p2->pos, triangles[j].p3->pos, particles[i].pos);
+// 				}
+// 			}
+// 		}
+
+
+		for (particle = particles.begin(); particle != particles.end(); particle++)
 		{
-			for (int j=0; j<triangles.size(); j++)
+			for (triangle = triangles.begin(); triangle != triangles.end(); triangle++)
 			{
-				if (triangles[i].p1->id != triangles[j].p1->id && triangles[i].p1->id != triangles[j].p2->id && triangles[i].p1->id != triangles[j].p3->id &&
-					triangles[i].p2->id != triangles[j].p1->id && triangles[i].p2->id != triangles[j].p2->id && triangles[i].p2->id != triangles[j].p3->id && 
-					triangles[i].p3->id != triangles[j].p1->id && triangles[i].p3->id != triangles[j].p2->id && triangles[i].p3->id != triangles[j].p3->id
-					)
+				if ((*particle).id != (*triangle).p1->id && (*particle).id  != (*triangle).p2->id && (*particle).id  != (*triangle).p3->id)
 				{
-					if (CheckCollisionNarrow(triangles[i],triangles[j]))
+					if (PointInTriangle((*triangle).p1->pos, (*triangle).p2->pos, (*triangle).p3->pos, (*particle).pos))
 					{
-						triangles[i].p1->pos = triangles[i].p1->oldPosition;
-						triangles[i].p2->pos = triangles[i].p2->oldPosition;
-						triangles[i].p3->pos = triangles[i].p3->oldPosition;
-// 						triangles[j].p1->pos = triangles[j].p1->oldPosition;
-// 						triangles[j].p2->pos = triangles[j].p2->oldPosition;
-// 						triangles[j].p3->pos = triangles[j].p3->oldPosition;
-						//printf("Ye!!!");
+						(*particle).pos = (*particle).oldPosition;
+						//printf("ye");
 					}
+					//testTriangleIntersect((*&particle));
+
 				}
 			}
 		}
+		
+	}
+
+// 	bool testTriangleIntersect(Particle* currentParticle)
+// 	{
+// 		bool testResult = false;
+// 
+// 		std::vector<Triangle>::iterator triangle;
+// 		for (triangle = triangles.begin(); triangle != triangles.end(); triangle++)
+// 		{
+// 			if (triangle->p1->id != currentParticle->id && triangle->p1->id != currentParticle->id && triangle->p3->id != currentParticle->id)
+// 			{
+// 				//Triangle currentface = faces[i];
+// 				glm::vec3 n = glm::normalize(calcTriangleNormal(triangle->p1,triangle->p2,triangle->p3));
+// 
+// 				glm::vec3 p = currentParticle->pos;
+// 				glm::vec3 rayDirection = p - currentParticle->oldPosition;
+// 				float nDotD = glm::dot(rayDirection, n);
+// 				if (abs(nDotD) <= 0.0001)
+// 				{
+// 					return false;
+// 				}
+// 				else
+// 				{
+// 					float d = glm::dot(n, triangle->p1->getPos());
+// 					//find out the intersect point
+// 					float t = (d-glm::dot(n,currentParticle->oldPosition))/(nDotD);
+// 					//float t = dot(n,(faces[i].particleA->getPos()-currentParticle->old_pos))/(nDotD);
+// 					glm::vec3 intersectQ = p + t*rayDirection;
+// 					if (((intersectQ.x)>glm::max(p.x,currentParticle->oldPosition.x)) || ((intersectQ.y)>glm::max(p.y,currentParticle->oldPosition.y)) || ((intersectQ.z)>glm::max(p.z,currentParticle->oldPosition.z)) ||
+// 						((intersectQ.x)<glm::min(p.x,currentParticle->oldPosition.x)) || ((intersectQ.y)<glm::min(p.y,currentParticle->oldPosition.y)) || ((intersectQ.z)<glm::min(p.z,currentParticle->oldPosition.z))
+// 						)
+// 					{
+// 						return false;
+// 					}
+// 
+// 					if(PointInTriangle(triangle->p1->getPos(),triangle->p2->getPos(),triangle->p3->getPos(),intersectQ))
+// 					{
+// 						currentParticle->pos = currentParticle->oldPosition; 
+// 
+// 						printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+// 						return true;
+// 					}
+// 				}	
+// 			}
+// 		}
+// 		return false;
+// 	}
+
+	bool PointInTriangle(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 P)
+	{
+		// Prepare our barycentric variables
+		glm::vec3 u = B - A;
+		glm::vec3 v = C - A;
+		glm::vec3 w = P - A;
+
+		glm::vec3 vCrossW = glm::cross(v, w);
+		glm::vec3 vCrossU = glm::cross(v, u);
+
+		// Test sign of r
+		if (glm::dot(vCrossW, vCrossU) < 0)
+			return false;
+
+		glm::vec3 uCrossW = glm::cross(u, w);
+		glm::vec3 uCrossV = glm::cross(u, v);
+
+		// Test sign of t
+		if (glm::dot(uCrossW, uCrossV) < 0)
+			return false;
+
+		// At this point, we know that r and t and both > 0.
+		// Therefore, as long as their sum is <= 1, each must be less <= 1
+		float denom = glm::length(uCrossV);
+		float r = glm::length(vCrossW) / denom;
+		float t = glm::length(uCrossW) / denom;
+
+
+		return (r + t <= 1);
 	}
 
 	//GJK 
@@ -360,11 +530,11 @@ public:
 			//check intersect
 			if (processSimplex(simplex, direction))
 			{
-// 				if (simplex.size() == 4)
-// 				{
-// 					glm::vec3 normal = EPA(simplex, body1, body2);
-// 					return true;
-// 				}
+				if (simplex.size() == 3)
+				{
+					collisionNormal = EPA(simplex, body1, body2);
+					return true;
+				}
 				return true;
 			}
 			counter--;
@@ -472,6 +642,38 @@ public:
  		}
 	}
 
+	glm::vec3 EPA(std::vector<Simplex>& simplex, Triangle &body1, Triangle &body2)
+	{
+		std::vector<Face> faces;
+
+		faces.push_back(Face(0, 1, 2, simplex));
+
+		int counter = 100;
+		while (counter > 0)
+		{
+			//Face face = faces.at[0];
+			Simplex newPoint = support(faces[0].normal, body1, body2);
+
+			if(glm::dot(newPoint.minkowskiDifference - faces[0].v1.minkowskiDifference, faces[0].normal) - glm::dot(faces[0].v1.minkowskiDifference, faces[0].normal) < 0.01f) 
+			{
+				glm::vec3 result = -faces[0].normal * glm::dot(-faces[0].v1.minkowskiDifference, -faces[0].normal);
+
+				if(result != glm::vec3())
+				{
+					glm::vec3 collidingNormal = glm::normalize(result);
+					return collidingNormal;
+				}
+				else
+				{
+					return glm::vec3(glm::vec3::_null);
+				}
+			}
+			counter--;
+		}
+
+		return glm::vec3(glm::vec3::_null);
+	}
+
 	bool isSameDirection(glm::vec3 &a, glm::vec3 &b)
 	{
 		float dot = glm::dot(a, b);
@@ -571,9 +773,9 @@ public:
 // 		n.clear();
 		//c.clear();
 
-		for(int x = 0; x<num_particles_width-2; x++)
+		for(int x = 0; x<num_particles_width-1; x++)
 		{
-			for(int y=0; y<num_particles_height-2; y++)
+			for(int y=0; y<num_particles_height-1; y++)
 			{
 				glm::vec3 normal = calcTriangleNormal(getParticle(x+1,y),getParticle(x,y),getParticle(x,y+1));
 				getParticle(x+1,y)->addToNormal(normal);
