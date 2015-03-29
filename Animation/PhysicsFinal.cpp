@@ -37,6 +37,7 @@ PhysicsFinal::PhysicsFinal(void)
 	SphereRadius = 4.0f;
 	planePos = glm::vec3(0,-44.0f,0);
 	leapPos = 220.0f;
+	isCollision= true;
 }
 
 
@@ -99,15 +100,27 @@ void PhysicsFinal::run(void)
 
 
 		if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
-			cloth->windForce(glm::vec3(0.5,0,0.2) * 0.5f);
+			cloth->windForce(glm::vec3(0.5,0.5,0.2) * 0.5f);
+
+			isCollision = false;
 		}
+
+		if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
+			cloth->windForce(glm::vec3(0.5,0,0.2) * 0.5f);
+		
+		}
+
 		cloth->timeStep();
 		//cloth->windForce(glm::vec3(0.5,0,0.2));
 		cloth->planeCollision(planePos);
 		cloth->ballCollision(fingerSpheresPos, SphereRadius + 0.3f);
 		//cloth->reflectDirection();
 		//cloth->selfCollision();
-		cloth->clothWithClothCollision(cloth2->particles);
+		if (isCollision)
+		{
+			cloth->clothWithClothCollision(cloth2->particles);
+		}
+
 
 		if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
 			cloth->selfCollision();
@@ -132,6 +145,11 @@ void PhysicsFinal::run(void)
 		cloth2->addForce(glm::vec3(0,-0.2f,0) * TIME_STEPSIZE2);
 
 		if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
+			cloth2->windForce(glm::vec3(0.5,0.5,0.2) * 0.5f);
+			isCollision = false;
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
 			cloth2->windForce(glm::vec3(0.5,0,0.2) * 0.5f);
 		}
 		cloth2->timeStep();
@@ -140,7 +158,12 @@ void PhysicsFinal::run(void)
 		cloth2->ballCollision(fingerSpheresPos, SphereRadius + 0.3f);
 		//cloth2->reflectDirection();
 		//cloth2->selfCollision();
-		cloth2->clothWithClothCollision(cloth->particles);
+
+		if (isCollision)
+		{
+			cloth2->clothWithClothCollision(cloth->particles);
+		}
+
 
 		if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
 			cloth2->selfCollision();
