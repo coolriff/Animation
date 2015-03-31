@@ -32,7 +32,7 @@ public:
 
 	GLuint numElements;
 	GLuint vSize, cSize;
-	GLuint VAO, v_VBO, t_VBO, n_VBO, i_VBO, tb_VBO;
+	GLuint VAO, v_VBO, t_VBO, n_VBO, i_VBO, tb_VBO, bt_VBO;
 	GLuint gSampler;
 	GLuint nSampler;
 

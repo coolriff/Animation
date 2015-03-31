@@ -115,10 +115,10 @@ void RenderingLab1n2::run(void)
 	skyBoxBody->SetScale(glm::vec3(100.0f,100.0f,100.0f));
 
 	
-	normalMapMesh->loadMesh("../Models/cube.obj");
+	normalMapMesh->loadMesh("../Models/data/cube_relief.obj");
 	normalMapMesh->setTexture("../Models/tile1.png",normalMapShader->GetProgramID());
 	//normalMapMesh->setNormalTexture("../Models/tile1.tga",normalMapShader->GetProgramID());
-	normalMapMesh->setTgaTexture("../Models/data/relief.tga",normalMapShader->GetProgramID());
+	normalMapMesh->setTgaTexture("../Models/data/tile1.tga",normalMapShader->GetProgramID());
 // 	normalMapMesh->setTexture("../Models/face.jpg",normalMapShader->GetProgramID());
 // 	normalMapMesh->setNormalTexture("../Models/face_NRM.jpg",normalMapShader->GetProgramID());
 	normalMapBody->SetPosition(glm::vec3(0,0,0));
@@ -170,6 +170,9 @@ void RenderingLab1n2::run(void)
 
 		GLuint s = glGetUniformLocation(normalMapShader->GetProgramID(), "scale");
 		glUniform1f(s, scaler);
+
+		GLuint cp = glGetUniformLocation(normalMapShader->GetProgramID(), "cameraPos");
+		glUniform3f(cp, m_physicsLabCamera->position.x,m_physicsLabCamera->position.y,m_physicsLabCamera->position.z);
 
 		updateCamera(normalMapShader->GetProgramID());
 		update(normalMapBody->GetTransformationMatrix(), normalMapShader->GetProgramID());

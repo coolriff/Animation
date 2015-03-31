@@ -380,23 +380,44 @@ void CreateMesh::loadMesh(const char* filename)
 
 	if(mesh->HasTangentsAndBitangents())
 	{
-		float *tangents = new float[mesh->mNumVertices * 3];
+// 		float *tangents = new float[mesh->mNumVertices * 3];
+// 
+// 		for(int i = 0; i < mesh->mNumVertices; i++)
+// 		{
+// 			tangents[i * 3] = mesh->mTangents[i].x;
+// 			tangents[i * 3 + 1] = mesh->mTangents[i].y;
+// 			tangents[i * 3 + 2] = mesh->mTangents[i].z;
+// 		}
 
+		std::vector<glm::vec3> tangents;
 		for(int i = 0; i < mesh->mNumVertices; i++)
 		{
-			tangents[i * 3] = mesh->mTangents[i].x;
-			tangents[i * 3 + 1] = mesh->mTangents[i].y;
-			tangents[i * 3 + 2] = mesh->mTangents[i].z;
+			tangents.push_back(glm::vec3(mesh->mTangents[i].x,mesh->mTangents[i].y,mesh->mTangents[i].z));
 		}
+
+
+		std::vector<glm::vec3> bitangent;
+		for(int i = 0; i < mesh->mNumVertices; i++)
+		{
+			bitangent.push_back(glm::vec3(mesh->mBitangents[i].x,mesh->mBitangents[i].y,mesh->mBitangents[i].z));
+		}
+
+
 
 		glGenBuffers(1,&tb_VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, tb_VBO);
-		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * 3 * sizeof(GLfloat), tangents, GL_STATIC_DRAW);
-
+		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * 3 * sizeof(GLfloat), (&tangents[0]), GL_STATIC_DRAW);
 		glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 		glEnableVertexAttribArray (5);
 
-		delete tangents;
+
+		glGenBuffers(1,&bt_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, bt_VBO);
+		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * 3 * sizeof(GLfloat), (&bitangent[0]), GL_STATIC_DRAW);
+		glVertexAttribPointer(6, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray (6);
+
+		//delete tangents;
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

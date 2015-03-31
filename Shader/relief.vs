@@ -5,11 +5,13 @@ layout(location = 1) in vec4 vColor;
 layout(location = 2) in vec2 vTexCoord;
 layout(location = 4) in vec3 vNormal;
 layout(location = 5) in vec3 vTangent;
+layout(location = 6) in vec3 vBitangent;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform vec3 vLightDir;
+uniform vec3 cameraPos;
 
 out vec3 eyePos, eyeNormal;
 out vec2 pTexCoord;
@@ -32,24 +34,28 @@ out vec3 eye_to_pos;
 
 void main()
 {
-    eyePos = vec3 (view * model * vec4 (vPosition, 1.0));
-    eyeNormal = vec3 (view * model * vec4 (vNormal, 0.0));
+	eye_to_pos = vec3 (view * model * vec4(vPosition,1.0));
 
-    vec3 n = normalize((model * vec4(vNormal,0.0)).xyz);
-    vec3 t = normalize((model * vec4(vTangent,0.0)).xyz);
+	mat3 MV3x3 = mat3(view * model);
 
-    t = normalize(t - dot(t,n) * n);
-    vec3 biTangent = cross(t, n);
-    tbnMatrix = mat3(t,biTangent,n);
+	vec3 vertexTangent_cameraspace = MV3x3 * vTangent;
+	vec3 vertexBitangent_cameraspace = MV3x3 * vBitangent;
+	vec3 vertexNormal_cameraspace = MV3x3 * vNormal;
+
+    tbnMatrix = transpose(mat3(vertexTangent_cameraspace,vertexBitangent_cameraspace,vertexNormal_cameraspace));
+
+	vec3 vertexPosition_cameraspace = ( view * model * vec4(vPosition,1)).xyz;
+	vec3 EyeDirection_cameraspace = vec3(0,0,0) - vertexPosition_cameraspace;
+	
+	vec3 LightPosition_cameraspace = ( view * vec4(vLightDir,1)).xyz;
+	vec3 LightDirection_cameraspace = LightPosition_cameraspace + EyeDirection_cameraspace;
+
+    to_light = tbnMatrix * LightDirection_cameraspace;
+    to_eye = tbnMatrix * EyeDirection_cameraspace;
 
     pTexCoord = vTexCoord;
-    gl_Position = projection * vec4(eyePos,1.0);
-    //gl_Position = projection * view * model * vec4(vPosition, 1.0);
-
-    to_light = (vLightDir - vec3(vPosition)) * tbnMatrix;
-    to_eye = (eyePos - vec3(vPosition)) * tbnMatrix;
 
     position_tan = vec3(vPosition) * tbnMatrix;
 
-    eye_to_pos = vec3 (view * model * vec4 (vPosition, 1.0));
+	gl_Position = projection * view * model * vec4(vPosition,1.0);
 }
