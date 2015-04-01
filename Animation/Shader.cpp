@@ -116,22 +116,22 @@ void Shader::findAllShaderID()
 // 	materiaShininess = glGetUniformLocation(shaderProgramID, "Material.Shininess");
 
 	vLightDir = glGetUniformLocation(shaderProgramID, "vLightDir");
-	std::cout << vLightDir << std::endl;
+	//std::cout << vLightDir << std::endl;
 	ambientColor = glGetUniformLocation(shaderProgramID, "ambientColor");
-	std::cout << ambientColor << std::endl;
+	//std::cout << ambientColor << std::endl;
 	specularColor = glGetUniformLocation(shaderProgramID, "specularColor");
-	std::cout << specularColor << std::endl;
+	//std::cout << specularColor << std::endl;
 	diffuseColor = glGetUniformLocation(shaderProgramID, "diffuseColor");
-	std::cout << diffuseColor << std::endl;
+	//std::cout << diffuseColor << std::endl;
 
 	ambientIntensity = glGetUniformLocation(shaderProgramID, "ambientIntensity");
-	std::cout << ambientIntensity << std::endl;
+	//std::cout << ambientIntensity << std::endl;
 	specularIntensity = glGetUniformLocation(shaderProgramID, "specularIntensity");
-	std::cout << specularIntensity << std::endl;
+	//std::cout << specularIntensity << std::endl;
 	diffuseIntensity = glGetUniformLocation(shaderProgramID, "diffuseIntensity");
-	std::cout << diffuseIntensity << std::endl;
+	//std::cout << diffuseIntensity << std::endl;
 	specularShininess = glGetUniformLocation(shaderProgramID, "specularShininess");
-	std::cout << specularShininess << std::endl;
+	//std::cout << specularShininess << std::endl;
 }
 
 void Shader::SetRoughness(float roughness)

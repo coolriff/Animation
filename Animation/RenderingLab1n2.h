@@ -20,7 +20,8 @@
 #define WINDOW_WIDTH 1200
 #define WINDOW_HIGH 900
 #define MAX 36
-#define MAXOBJECT 2
+#define MAXOBJECT 5
+#define RELIEF_MAPPING_MAXOBJECT 8
 #define MAXSHADERTYPE 3
 
 class RenderingLab1n2
@@ -44,6 +45,10 @@ public:
 	CreateMesh *normalMapMesh;
 	Shader *normalMapShader;
 	Shader *fresnelShader;
+
+	Cube *reliefMappingBody[RELIEF_MAPPING_MAXOBJECT];
+	CreateMesh *reliefMappingMesh[RELIEF_MAPPING_MAXOBJECT];
+	Shader *reliefMappingShader;
 
 	Shader *shaderSkyBox;
 	Shader *shaderRefraction;

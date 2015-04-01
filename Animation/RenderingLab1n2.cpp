@@ -59,6 +59,13 @@ RenderingLab1n2::RenderingLab1n2(void)
 		shaderType[i]= BLINNPHONGTEXTURE;
 	}
 
+	for (int i=0; i<RELIEF_MAPPING_MAXOBJECT; i++)
+	{
+		reliefMappingBody[i] = new Cube();
+		reliefMappingMesh[i] = new CreateMesh();
+	}
+	reliefMappingShader = new Shader();
+
 	normalMapBody = new Cube();
 	normalMapMesh = new CreateMesh();
 	normalMapShader = new Shader();
@@ -114,15 +121,56 @@ void RenderingLab1n2::run(void)
 	skyBoxBody->SetPosition(glm::vec3(0));
 	skyBoxBody->SetScale(glm::vec3(100.0f,100.0f,100.0f));
 
-	
-	normalMapMesh->loadMesh("../Models/data/cube_relief.obj");
-	normalMapMesh->setTexture("../Models/ca/tt.png",normalMapShader->GetProgramID());
-	//normalMapMesh->setNormalTexture("../Models/tile1.tga",normalMapShader->GetProgramID());
-	normalMapMesh->setTgaTexture("../Models/data/tile1.tga",normalMapShader->GetProgramID());
-// 	normalMapMesh->setTexture("../Models/face.jpg",normalMapShader->GetProgramID());
-// 	normalMapMesh->setNormalTexture("../Models/face_NRM.jpg",normalMapShader->GetProgramID());
-	normalMapBody->SetPosition(glm::vec3(0,0,0));
-	normalMapBody->SetScale(glm::vec3(1.0f,1.0f,1.0f));
+	//relief mapping init
+	reliefMappingMesh[0]->loadMesh("../Models/data/cube_relief.obj");
+	reliefMappingMesh[1]->loadMesh("../Models/data/cube_relief2.obj");
+	reliefMappingMesh[2]->loadMesh("../Models/data/cube_relief3.obj");
+	reliefMappingMesh[3]->loadMesh("../Models/data/cube_relief4.obj");
+	reliefMappingMesh[4]->loadMesh("../Models/data/cube_relief5.obj");
+	reliefMappingMesh[5]->loadMesh("../Models/data/cube_relief.obj");
+	reliefMappingMesh[6]->loadMesh("../Models/data/cube_relief.obj");
+	reliefMappingMesh[7]->loadMesh("../Models/data/cube_relief.obj");
+
+	reliefMappingMesh[0]->setTexture("../Models/data/tile1.png", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[1]->setTexture("../Models/data/tile1.png", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[2]->setTexture("../Models/data/rockbump.png", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[3]->setTexture("../Models/data/rockwall.png", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[4]->setTexture("../Models/data/stone.png", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[5]->setTexture("../Models/ca/111.jpg", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[6]->setTexture("../Models/ca/9.png", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[7]->setTexture("../Models/ca/awesome.png", reliefMappingShader->GetProgramID());
+
+	reliefMappingMesh[0]->setTgaTexture("../Models/data/tile1.tga", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[1]->setTgaTexture("../Models/data/relief.tga", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[2]->setTgaTexture("../Models/data/rockbump.tga", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[3]->setTgaTexture("../Models/data/rockwall.tga", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[4]->setTgaTexture("../Models/data/stone.tga", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[5]->setTgaTexture("../Models/ca/111_NRM.tga", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[6]->setTgaTexture("../Models/ca/9.tga", reliefMappingShader->GetProgramID());
+	reliefMappingMesh[7]->setTgaTexture("../Models/ca/awesome_NRM.tga", reliefMappingShader->GetProgramID());
+
+	reliefMappingBody[0]->SetPosition(glm::vec3(-7,0,0));
+	reliefMappingBody[1]->SetPosition(glm::vec3(-3.5,0,0));
+	reliefMappingBody[2]->SetPosition(glm::vec3(0,0,0));
+	reliefMappingBody[3]->SetPosition(glm::vec3(3.5,0,0));
+	reliefMappingBody[4]->SetPosition(glm::vec3(7,0,0));
+	reliefMappingBody[5]->SetPosition(glm::vec3(-7,0,10));
+	reliefMappingBody[6]->SetPosition(glm::vec3(-3.5,0,10));
+	reliefMappingBody[7]->SetPosition(glm::vec3(0,0,10));
+
+	for (int i=0; i<RELIEF_MAPPING_MAXOBJECT; i++)
+	{
+		reliefMappingBody[i]->SetScale(glm::vec3(1.0f,1.0f,1.0f));
+	}
+
+// 	normalMapMesh->loadMesh("../Models/data/cube_relief.obj");
+// 	normalMapMesh->setTexture("../Models/ca/tt.png",normalMapShader->GetProgramID());
+// 	//normalMapMesh->setNormalTexture("../Models/tile1.tga",normalMapShader->GetProgramID());
+// 	normalMapMesh->setTgaTexture("../Models/data/tile1.tga",normalMapShader->GetProgramID());
+// // 	normalMapMesh->setTexture("../Models/face.jpg",normalMapShader->GetProgramID());
+// // 	normalMapMesh->setNormalTexture("../Models/face_NRM.jpg",normalMapShader->GetProgramID());
+// 	normalMapBody->SetPosition(glm::vec3(0,0,0));
+// 	normalMapBody->SetScale(glm::vec3(1.0f,1.0f,1.0f));
 
 	//vLightDirGLM = glm::vec3(0,0,-1);
 	vLightDirGLM = glm::vec3(0,0,5);
@@ -162,21 +210,42 @@ void RenderingLab1n2::run(void)
 		preDraw();
 
 
-		//normal map
-		glUseProgram(normalMapShader->GetProgramID());
-		normalMapBody->Update(delta);
-		normalMapShader->findAllShaderID();
-		normalMapShader->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
+// 		//normal map
+// 		glUseProgram(normalMapShader->GetProgramID());
+// 		normalMapBody->Update(delta);
+// 		normalMapShader->findAllShaderID();
+// 		normalMapShader->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
+// 
+// 		GLuint s = glGetUniformLocation(normalMapShader->GetProgramID(), "scale");
+// 		glUniform1f(s, scaler);
+// 
+// 		GLuint cp = glGetUniformLocation(normalMapShader->GetProgramID(), "cameraPos");
+// 		glUniform3f(cp, m_physicsLabCamera->position.x,m_physicsLabCamera->position.y,m_physicsLabCamera->position.z);
+// 
+// 		updateCamera(normalMapShader->GetProgramID());
+// 		update(normalMapBody->GetTransformationMatrix(), normalMapShader->GetProgramID());
+// 		normalMapMesh->renderNormalMap(normalMapShader->GetProgramID());
 
-		GLuint s = glGetUniformLocation(normalMapShader->GetProgramID(), "scale");
-		glUniform1f(s, scaler);
+		//relief mapping
+		for (int i=0; i<RELIEF_MAPPING_MAXOBJECT; i++)
+		{
+			glUseProgram(reliefMappingShader->GetProgramID());
+			reliefMappingBody[i]->Update(delta);
+			reliefMappingShader->findAllShaderID();
+			reliefMappingShader->SetAll(vLightDirGLM,ambientColorGLM,specularColorGLM,diffuseColorGLM,ambientIntensityGLM,specularIntensityGLM,diffuseIntensityGLM,specularShininessGLM);
 
-		GLuint cp = glGetUniformLocation(normalMapShader->GetProgramID(), "cameraPos");
-		glUniform3f(cp, m_physicsLabCamera->position.x,m_physicsLabCamera->position.y,m_physicsLabCamera->position.z);
+			GLuint s = glGetUniformLocation(reliefMappingShader->GetProgramID(), "scale");
+			glUniform1f(s, scaler);
 
-		updateCamera(normalMapShader->GetProgramID());
-		update(normalMapBody->GetTransformationMatrix(), normalMapShader->GetProgramID());
-		normalMapMesh->renderNormalMap(normalMapShader->GetProgramID());
+			GLuint cp = glGetUniformLocation(reliefMappingShader->GetProgramID(), "cameraPos");
+			glUniform3f(cp, m_physicsLabCamera->position.x,m_physicsLabCamera->position.y,m_physicsLabCamera->position.z);
+
+			updateCamera(reliefMappingShader->GetProgramID());
+			update(reliefMappingBody[i]->GetTransformationMatrix(), reliefMappingShader->GetProgramID());
+			reliefMappingMesh[i]->renderNormalMap(reliefMappingShader->GetProgramID());
+		}
+
+
 
 
 		//SkyBox all value will remain the same
@@ -439,7 +508,8 @@ void RenderingLab1n2::updateCamera(GLuint ShaderID)
 void RenderingLab1n2::initShaders()
 {
 	//Lab 3 
-	createShaders(normalMapShader, "../Shader/relief.vs", "../Shader/relief.ps");
+	//createShaders(normalMapShader, "../Shader/relief.vs", "../Shader/relief.ps");
+	createShaders(reliefMappingShader, "../Shader/relief.vs", "../Shader/relief.ps");
  	createShaders(shaderSkyBox, "../Shader/Reflect.vs", "../Shader/Reflect.ps");
 // 	createShaders(shaderRefraction, "../Shader/Refract.vs", "../Shader/Refract.ps");
 // 	createShaders(fresnelShader, "../Shader/Fresnel.vs", "../Shader/Fresnel.ps");
@@ -550,75 +620,74 @@ void RenderingLab1n2::update(glm::mat4 ModelMatrix, GLuint shaderProgramID)
 
 void RenderingLab1n2::keyControl()
 {
-	//Object left
-	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
-		shaderType[0] = BLINNPHONGTEXTURE;
-	}
-	if (glfwGetKey(window, GLFW_KEY_T ) == GLFW_PRESS){
-		shaderType[0] = TOONTEXTURE;
-	}
-	if (glfwGetKey(window, GLFW_KEY_Y ) == GLFW_PRESS){
-		shaderType[0] = OREN_NAYARTEXTURE;
-	}
-	if (glfwGetKey(window, GLFW_KEY_U ) == GLFW_PRESS){
-		shaderType[0] = REFLECTION;
-	}
-	if (glfwGetKey(window, GLFW_KEY_I ) == GLFW_PRESS){
-		shaderType[0] = RERACTION;
-	}
-	if (glfwGetKey(window, GLFW_KEY_O ) == GLFW_PRESS){
-		shaderType[0] = FRESENL;
-	}
-	if (glfwGetKey(window, GLFW_KEY_P ) == GLFW_PRESS){
-		shaderType[0] = EXTRA;
-	}
-
-	//Object right
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS){
-		shaderType[1] = BLINNPHONGTEXTURE;
-	}
-	if (glfwGetKey(window, GLFW_KEY_G ) == GLFW_PRESS){
-		shaderType[1] = TOONTEXTURE;
-	}
-	if (glfwGetKey(window, GLFW_KEY_H ) == GLFW_PRESS){
-		shaderType[1] = OREN_NAYARTEXTURE;
-	}
-	if (glfwGetKey(window, GLFW_KEY_J ) == GLFW_PRESS){
-		shaderType[1] = REFLECTION;
-	}
-	if (glfwGetKey(window, GLFW_KEY_K ) == GLFW_PRESS){
-		shaderType[1] = RERACTION;
-	}
-	if (glfwGetKey(window, GLFW_KEY_L ) == GLFW_PRESS){
-		shaderType[1] = FRESENL;
-	}
-	if (glfwGetKey(window, GLFW_KEY_SEMICOLON ) == GLFW_PRESS){
-		shaderType[1] = EXTRA;
-	}
+// 	//Object left
+// 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
+// 		shaderType[0] = BLINNPHONGTEXTURE;
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_T ) == GLFW_PRESS){
+// 		shaderType[0] = TOONTEXTURE;
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_Y ) == GLFW_PRESS){
+// 		shaderType[0] = OREN_NAYARTEXTURE;
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_U ) == GLFW_PRESS){
+// 		shaderType[0] = REFLECTION;
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_I ) == GLFW_PRESS){
+// 		shaderType[0] = RERACTION;
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_O ) == GLFW_PRESS){
+// 		shaderType[0] = FRESENL;
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_P ) == GLFW_PRESS){
+// 		shaderType[0] = EXTRA;
+// 	}
+// 
+// 	//Object right
+// 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS){
+// 		shaderType[1] = BLINNPHONGTEXTURE;
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_G ) == GLFW_PRESS){
+// 		shaderType[1] = TOONTEXTURE;
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_H ) == GLFW_PRESS){
+// 		shaderType[1] = OREN_NAYARTEXTURE;
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_J ) == GLFW_PRESS){
+// 		shaderType[1] = REFLECTION;
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_K ) == GLFW_PRESS){
+// 		shaderType[1] = RERACTION;
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_L ) == GLFW_PRESS){
+// 		shaderType[1] = FRESENL;
+// 	}
+// 	if (glfwGetKey(window, GLFW_KEY_SEMICOLON ) == GLFW_PRESS){
+// 		shaderType[1] = EXTRA;
+// 	}
 
 	//transfer
 	if (glfwGetKey(window, GLFW_KEY_Z ) == GLFW_PRESS){
-		for (int i=0; i<MAXOBJECT; i++)
+		for (int i=0; i<RELIEF_MAPPING_MAXOBJECT; i++)
 		{
-			m_body[i]->SetAngularMomentum(glm::vec3(0.5f,0,0));
-
+			reliefMappingBody[i]->SetAngularMomentum(glm::vec3(0.25f,0,0));
 		}
-		normalMapBody->SetAngularMomentum(glm::vec3(0.5f,0,0));
+		//normalMapBody->SetAngularMomentum(glm::vec3(0.5f,0,0));
 	}
 	if (glfwGetKey(window, GLFW_KEY_X ) == GLFW_PRESS){
-		for (int i=0; i<MAXOBJECT; i++)
+		for (int i=0; i<RELIEF_MAPPING_MAXOBJECT; i++)
 		{
-			m_body[i]->SetAngularMomentum(glm::vec3(0,0.5f,0));
+			reliefMappingBody[i]->SetAngularMomentum(glm::vec3(0,0.25f,0));
 
 		}
-		normalMapBody->SetAngularMomentum(glm::vec3(0,0.5f,0));
+		//normalMapBody->SetAngularMomentum(glm::vec3(0,0.5f,0));
 	}
 	if (glfwGetKey(window, GLFW_KEY_C ) == GLFW_PRESS){
-		for (int i=0; i<MAXOBJECT; i++)
+		for (int i=0; i<RELIEF_MAPPING_MAXOBJECT; i++)
 		{
-			m_body[i]->SetAngularMomentum(glm::vec3(0,0,0.5f));
+			reliefMappingBody[i]->SetAngularMomentum(glm::vec3(0,0,0.25f));
 		}
-		normalMapBody->SetAngularMomentum(glm::vec3(0,0,0.5f));
+		//normalMapBody->SetAngularMomentum(glm::vec3(0,0,0.5f));
 	}
 
 	//dt
