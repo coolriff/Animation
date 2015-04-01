@@ -116,7 +116,7 @@ void RenderingLab1n2::run(void)
 
 	
 	normalMapMesh->loadMesh("../Models/data/cube_relief.obj");
-	normalMapMesh->setTexture("../Models/tile1.png",normalMapShader->GetProgramID());
+	normalMapMesh->setTexture("../Models/ca/tt.png",normalMapShader->GetProgramID());
 	//normalMapMesh->setNormalTexture("../Models/tile1.tga",normalMapShader->GetProgramID());
 	normalMapMesh->setTgaTexture("../Models/data/tile1.tga",normalMapShader->GetProgramID());
 // 	normalMapMesh->setTexture("../Models/face.jpg",normalMapShader->GetProgramID());

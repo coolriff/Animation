@@ -1,4 +1,4 @@
-﻿Build started 3/31/2015 8:47:23 PM.
+﻿Build started 4/1/2015 12:45:10 PM.
      1>Project "C:\Animation\Animation\Animation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\Dependancies\AntTweakBar\include /I"..\Dependancies\ImageMagick-6" /I..\Dependancies\assimp\include /I..\Dependancies\glm /I"..\Dependancies\glfw-3.0.4.bin.WIN32\include" /I"..\Dependancies\glew-1.11.0\include" /I..\Dependancies\soil\src /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /D _CRT_SECURE_NO_WARNINGS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt RenderingLab1n2.cpp
@@ -76,4 +76,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.96
+Time Elapsed 00:00:01.95
