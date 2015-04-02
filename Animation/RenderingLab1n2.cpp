@@ -77,6 +77,9 @@ RenderingLab1n2::RenderingLab1n2(void)
 
 	scaler = 0.1f;
 
+	show_depth = false;
+	show_shadow = true;
+
 // 	ambientColor = glm::vec3(1.0f,1.0f,1.0f);
 // 	ambientIntensity = 0.1f;	
 // 
@@ -117,7 +120,8 @@ void RenderingLab1n2::run(void)
 
 	skyBoxMesh->loadMesh("../Models/cube2.obj");
 	//skyBoxMesh->SetCubeMapTexture("../Models/SantaMariaDeiMiracoli/",shaderSkyBox->GetProgramID());
-	skyBoxMesh->setCubeMapTexture("../Models/LancellottiChapel/",shaderSkyBox->GetProgramID());
+	//NissiBeach, NissiBeach2, NiagaraFalls3, SaintLazarusChurch2, SaintPetersBasilica, SaintPetersSquare1, SantaMariaDeiMiracoli, Teide, Vasa, LancellottiChapel
+	skyBoxMesh->setCubeMapTexture("../Models/Teide/",shaderSkyBox->GetProgramID());
 	skyBoxBody->SetPosition(glm::vec3(0));
 	skyBoxBody->SetScale(glm::vec3(100.0f,100.0f,100.0f));
 
@@ -149,14 +153,14 @@ void RenderingLab1n2::run(void)
 	reliefMappingMesh[6]->setTgaTexture("../Models/ca/9.tga", reliefMappingShader->GetProgramID());
 	reliefMappingMesh[7]->setTgaTexture("../Models/ca/awesome_NRM.tga", reliefMappingShader->GetProgramID());
 
-	reliefMappingBody[0]->SetPosition(glm::vec3(-7,0,0));
-	reliefMappingBody[1]->SetPosition(glm::vec3(-3.5,0,0));
-	reliefMappingBody[2]->SetPosition(glm::vec3(0,0,0));
-	reliefMappingBody[3]->SetPosition(glm::vec3(3.5,0,0));
-	reliefMappingBody[4]->SetPosition(glm::vec3(7,0,0));
-	reliefMappingBody[5]->SetPosition(glm::vec3(-7,0,10));
-	reliefMappingBody[6]->SetPosition(glm::vec3(-3.5,0,10));
-	reliefMappingBody[7]->SetPosition(glm::vec3(0,0,10));
+	reliefMappingBody[0]->SetPosition(glm::vec3(-15,0,0));
+	reliefMappingBody[1]->SetPosition(glm::vec3(-10,0,0));
+	reliefMappingBody[2]->SetPosition(glm::vec3(-5,0,0));
+	reliefMappingBody[3]->SetPosition(glm::vec3(-0,0,0));
+	reliefMappingBody[4]->SetPosition(glm::vec3(5,0,0));
+	reliefMappingBody[5]->SetPosition(glm::vec3(10,0,0));
+	reliefMappingBody[6]->SetPosition(glm::vec3(15,0,0));
+	reliefMappingBody[7]->SetPosition(glm::vec3(20,0,0));
 
 	for (int i=0; i<RELIEF_MAPPING_MAXOBJECT; i++)
 	{
@@ -173,7 +177,7 @@ void RenderingLab1n2::run(void)
 // 	normalMapBody->SetScale(glm::vec3(1.0f,1.0f,1.0f));
 
 	//vLightDirGLM = glm::vec3(0,0,-1);
-	vLightDirGLM = glm::vec3(0,0,5);
+	vLightDirGLM = glm::vec3(0,2,15);
 	ambientColorGLM = glm::vec3(1,1,1);
 	specularColorGLM =glm::vec3(1,1,1);
 	diffuseColorGLM = glm::vec3(1,1,1);
@@ -239,6 +243,12 @@ void RenderingLab1n2::run(void)
 
 			GLuint cp = glGetUniformLocation(reliefMappingShader->GetProgramID(), "cameraPos");
 			glUniform3f(cp, m_physicsLabCamera->position.x,m_physicsLabCamera->position.y,m_physicsLabCamera->position.z);
+
+			GLuint showS = glGetUniformLocation(reliefMappingShader->GetProgramID(), "show_shadow");
+			glUniform1f(showS, show_shadow);
+
+			GLuint showD = glGetUniformLocation(reliefMappingShader->GetProgramID(), "show_depth");
+			glUniform1f(showD, show_depth);
 
 			updateCamera(reliefMappingShader->GetProgramID());
 			update(reliefMappingBody[i]->GetTransformationMatrix(), reliefMappingShader->GetProgramID());
@@ -435,7 +445,9 @@ void RenderingLab1n2::initTweakBar()
 	TwDefine(" Simulation size='300 400' ");
 
 	TwAddVarRW(bar, "diffuseDirection", TW_TYPE_DIR3F, &vLightDirGLM, " label='vLightDir '");
-	TwAddVarRW(bar, "scaler", TW_TYPE_FLOAT, &scaler, "step = 0.02" " label='scaler '");
+	TwAddVarRW(bar, "scaler", TW_TYPE_FLOAT, &scaler, "step = 0.002" " label='Scaler '");
+	TwAddVarRW(bar, "showS", TW_TYPE_BOOL8, &show_shadow, " label='Show Shadows '");
+	TwAddVarRW(bar, "showD", TW_TYPE_BOOL8, &show_depth, " label='Show Depth '");
 // 	TwAddVarRW(bar, "lightPosition", TW_TYPE_COLOR3F, &ambientColorGLM, " label='ambientColor '");
 // 	TwAddVarRW(bar, "lightIntensity",  TW_TYPE_COLOR3F, &specularColorGLM, " label='specularColor '");
 // 	TwAddVarRW(bar, "lightIntensdsdsity",  TW_TYPE_COLOR3F, &diffuseColorGLM, " label='diffuseColor '");
@@ -697,6 +709,56 @@ void RenderingLab1n2::keyControl()
 
 	if (glfwGetKey(window, GLFW_KEY_RIGHT_BRACKET ) == GLFW_PRESS){
 		stopTime = false;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_Y ) == GLFW_PRESS){
+		scaler += 0.001f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_T ) == GLFW_PRESS){
+		scaler -= 0.001f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_1 ) == GLFW_PRESS){
+		scaler = 0.1f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_2 ) == GLFW_PRESS){
+		scaler = 0.2f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_0 ) == GLFW_PRESS){
+		scaler = 0.0f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_3 ) == GLFW_PRESS){
+		scaler = 0.3f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_4 ) == GLFW_PRESS){
+		scaler = 0.4f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_5 ) == GLFW_PRESS){
+		scaler = 0.5f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_6 ) == GLFW_PRESS){
+		show_depth = true;
+		//show_shadow = false;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_7 ) == GLFW_PRESS){
+		show_depth = false;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_8 ) == GLFW_PRESS){
+		show_shadow = true;
+		//show_depth = false;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_9 ) == GLFW_PRESS){
+		show_shadow = false;
 	}
 }
 

@@ -49,6 +49,8 @@ public:
 	Cube *reliefMappingBody[RELIEF_MAPPING_MAXOBJECT];
 	CreateMesh *reliefMappingMesh[RELIEF_MAPPING_MAXOBJECT];
 	Shader *reliefMappingShader;
+	bool show_depth;
+	bool show_shadow;
 
 	Shader *shaderSkyBox;
 	Shader *shaderRefraction;
