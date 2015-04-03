@@ -17,24 +17,17 @@ out vec3 eyePos, eyeNormal;
 out vec2 pTexCoord;
 out mat3 tbnMatrix;
 
-
-
-// tangent space vector to the light
-out vec3 to_light;
-
-//tangent space vector to the eye
-out vec3 to_eye;
+out vec3 LightDirection_tangentspace;
+out vec3 EyeDirection_tangentspace;
 
 // fragment position in tangent space
-out vec3 position_tan;
-
-// eye space vector to fragment. used for depth correct.
-out vec3 eye_to_pos;
+out vec3 position_tangentspace;
+out vec3 vertexPosition_cameraspace;
 
 
 void main()
 {
-	eye_to_pos = vec3 (view * model * vec4(vPosition,1.0));
+	vertexPosition_cameraspace = vec3 (view * model * vec4(vPosition,1.0));
 
 	mat3 MV3x3 = mat3(view * model);
 
@@ -50,12 +43,12 @@ void main()
 	vec3 LightPosition_cameraspace = ( view * vec4(vLightDir,1)).xyz;
 	vec3 LightDirection_cameraspace = LightPosition_cameraspace + EyeDirection_cameraspace;
 
-    to_light = tbnMatrix * LightDirection_cameraspace;
-    to_eye = tbnMatrix * EyeDirection_cameraspace;
+    LightDirection_tangentspace = tbnMatrix * LightDirection_cameraspace;
+    EyeDirection_tangentspace = tbnMatrix * EyeDirection_cameraspace;
 
     pTexCoord = vTexCoord;
 
-    position_tan = vec3(vPosition) * tbnMatrix;
+    position_tangentspace = vec3(vPosition) * tbnMatrix;
 
 	gl_Position = projection * view * model * vec4(vPosition,1.0);
 }
